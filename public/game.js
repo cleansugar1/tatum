@@ -540,11 +540,13 @@ function startRunner(){
   if(runnerRAF)cancelAnimationFrame(runnerRAF);runnerRunning=true;
   const canvas=document.getElementById('runner-canvas');
   const dpr=window.devicePixelRatio||1;
-  const availW=Math.min((canvas.parentElement?.clientWidth||700),900);
-  const availH=Math.min(Math.round(availW*0.38),320);
+  const screenEl=document.getElementById('runner-screen');
+  const availW=screenEl?screenEl.clientWidth:Math.min(window.innerWidth-20,960);
+  const availH=Math.max(Math.round(availW*0.38),220);
   const W=availW,H=availH;
   canvas.width=W*dpr;canvas.height=H*dpr;
   canvas.style.width=W+'px';canvas.style.height=H+'px';
+  canvas.style.maxWidth='100%';
   const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
   const GROUND=H-38,PLAYER_X=80;
   let score=0,frame=0,speed=5.5,jumping=false,jumpVel=0,playerY=GROUND-46,jumpHeld=false;
@@ -831,8 +833,10 @@ function startBoss(){
   document.getElementById('boss-overlay').style.display='none';
   const bossCanvas=document.getElementById('boss-canvas');
   const bossWrap=bossCanvas.parentElement;
+  const dprB=window.devicePixelRatio||1;
   const bossW=Math.min(bossWrap?bossWrap.clientWidth:460,560);const bossH=Math.round(bossW*1.08);
-  bossCanvas.width=bossW;bossCanvas.height=bossH;bossCanvas.style.width=bossW+'px';bossCanvas.style.height=bossH+'px';
+  bossCanvas.width=bossW*dprB;bossCanvas.height=bossH*dprB;bossCanvas.style.width=bossW+'px';bossCanvas.style.height=bossH+'px';
+  const bossCtxScale=dprB;
   bossState={bossIdx:0,bossHp:BOSSES[0].maxHp,playerHp:100,playerMaxHp:100,snacks:0,shieldCharges:3,maxShield:3,shielded:false,weaponIdx:0,log:[],animFrame:0,running:true,bossAnim:0,hit:false,playerHit:false,projectiles:[],playerProjectiles:[],warnActive:false};
   updateBossUI();renderStore();bossAttackLoop();bossSnackLoop();drawBossCanvas();
   activeCleanup=()=>{bossState&&(bossState.running=false);clearTimeout(bossAtkTimeout);clearTimeout(bossSnackTimeout);cancelAnimationFrame(bossRAF);};
@@ -868,15 +872,19 @@ function bossSnackLoop(){
   bossSnackTimeout=setTimeout(()=>{
     if(!bossState||!bossState.running)return;
     bossState.snacks++;updateSnackDisplay();bossLog('🍎 A snack dropped! (+1)');renderStore();bossSnackLoop();
-  },2500+Math.random()*1500);
+  },1200+Math.random()*800);
 }
 function updateSnackDisplay(){
   if(!bossState)return;
   document.getElementById('snack-count').textContent=bossState.snacks;
   document.getElementById('heal-btn').disabled=bossState.snacks<1;
-  // Animate apple falling into bag
+  // Big visible apple notification
   const wrap=document.getElementById('snack-bag-wrap');
-  const apple=document.createElement('div');apple.className='falling-apple';apple.textContent='🍎';apple.style.left=(Math.random()*60+20)+'%';wrap.appendChild(apple);setTimeout(()=>apple.remove(),900);
+  wrap.style.transition='transform 0.1s';wrap.style.transform='scale(1.18)';
+  setTimeout(()=>{wrap.style.transform='scale(1)';},200);
+  const apple=document.createElement('div');apple.className='falling-apple';apple.textContent='🍎';apple.style.left=(Math.random()*50+25)+'%';wrap.appendChild(apple);setTimeout(()=>apple.remove(),900);
+  // Flash +1 toast
+  const toast=document.createElement('div');toast.textContent='+1 🍎';toast.style.cssText='position:fixed;top:40%;left:50%;transform:translate(-50%,-50%) scale(1);font-family:Boogaloo,cursive;font-size:2.8rem;color:#ff7b00;text-shadow:0 0 20px rgba(255,123,0,0.9);z-index:9999;pointer-events:none;animation:appleToast 0.9s ease forwards;';document.body.appendChild(toast);setTimeout(()=>toast.remove(),900);
 }
 function attackBoss(){
   if(!bossState||!bossState.running)return;
@@ -924,7 +932,10 @@ function updateBossUI(){
 function drawBossCanvas(){
   if(!bossState||!bossState.running){cancelAnimationFrame(bossRAF);return;}
   bossRAF=requestAnimationFrame(drawBossCanvas);bossState.animFrame++;
-  const canvas=document.getElementById('boss-canvas');const ctx=canvas.getContext('2d');const W=canvas.width,H=canvas.height;
+  const canvas=document.getElementById('boss-canvas');const ctx=canvas.getContext('2d');
+  const dprD=window.devicePixelRatio||1;
+  const W=canvas.width/dprD,H=canvas.height/dprD;
+  ctx.save();ctx.scale(dprD,dprD);
   const boss=BOSSES[bossState.bossIdx];
   ctx.clearRect(0,0,W,H);
   const grad=ctx.createRadialGradient(W/2,H/2,50,W/2,H/2,W/2);grad.addColorStop(0,'#2a0010');grad.addColorStop(1,'#0a0c14');ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
@@ -976,6 +987,7 @@ function drawBossCanvas(){
   ctx.fillStyle='rgba(255,45,120,0.12)';ctx.beginPath();ctx.roundRect&&ctx.roundRect(W/2-65,H-36,130,28,8)||ctx.fillRect(W/2-65,H-36,130,28);ctx.fill();
   ctx.strokeStyle='rgba(255,45,120,0.5)';ctx.lineWidth=1;ctx.strokeRect(W/2-65,H-36,130,28);
   ctx.fillStyle='rgba(255,45,120,0.9)';ctx.font='bold 12px Nunito';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('TAP TO ATTACK ⚔️',W/2,H-22);
+  ctx.restore();
 }
 document.addEventListener('DOMContentLoaded',()=>{
   const bc=document.getElementById('boss-canvas');if(bc){bc.addEventListener('click',attackBoss);bc.addEventListener('touchstart',e=>{e.preventDefault();attackBoss();},{passive:false});}

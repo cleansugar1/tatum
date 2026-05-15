@@ -208,6 +208,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 .snack-bag-icon{font-size:1.8rem;}
 .falling-apple{position:absolute;font-size:1.2rem;animation:fallApple .8s ease forwards;pointer-events:none;}
 @keyframes fallApple{0%{top:-20px;opacity:1;transform:rotate(0deg)}100%{top:60px;opacity:0;transform:rotate(180deg)}}
+@keyframes appleToast{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}60%{opacity:1;transform:translate(-50%,-70%) scale(1)}100%{opacity:0;transform:translate(-50%,-90%) scale(0.8)}}
 .boss-store{background:var(--card);border:1px solid rgba(255,123,0,.3);border-radius:12px;padding:10px;}
 .boss-store-title{font-family:'Boogaloo',cursive;font-size:.88rem;color:var(--orange);margin-bottom:8px;}
 .store-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem;font-weight:700;}
@@ -353,8 +354,8 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
     <div class="hud-item"><span class="hud-label">Score</span><span class="hud-val" style="color:var(--blue)" id="r-score">0</span></div>
     <div class="hud-item"><span class="hud-label">Best</span><span class="hud-val" style="color:var(--green)" id="r-best">0</span></div>
   </div>
-  <div style="position:relative">
-    <canvas id="runner-canvas" style="display:block;width:100%;max-width:100%"></canvas>
+  <div style="position:relative;width:100%;overflow:hidden">
+    <canvas id="runner-canvas" style="display:block;max-width:100%"></canvas>
     <div class="overlay" id="runner-overlay">
       <h2 style="color:var(--blue)">🏃 ENDLESS RUNNER</h2>
       <p>TAP / HOLD to jump — hold longer = jump higher!<br>Stay LOW when you see ⬇️ enemies!</p>
