@@ -1,43 +1,41 @@
-# 🎮 Tatum's Zone
+# 🎮 Tatum's Zone v2
 
-A personal gaming website for Tatum! Password protected with three games and an AI-generated greeting on every login.
+Tatum's personal gaming hub! Password protected with 6 games, AI greeting, and leaderboards.
 
-## Games
-- 💥 **Dodge or Die** – Dodge falling emoji enemies. Score tracked with a personal best.
-- 🧠 **Big Brain Quiz** – 12-question Roblox & Minecraft trivia (8 random per game).
-- 🧑‍🎤 **Character Builder** – Build and save custom emoji characters.
+## 🎮 Games
+1. 💥 **Dodge or Die** — dodge enemies, catch diamonds, leaderboard with names
+2. 🧠 **Big Brain Quiz** — 300 questions on Roblox, Minecraft & brainrot, 10 random per game
+3. 🏃 **Endless Runner** — tap to jump over brainrot enemies
+4. 🔨 **Whack-a-Creeper** — tap brainrot creepers before they escape
+5. ⛏️ **Mining Clicker** — tap to mine ores, upgrade pickaxes (progress saves!)
+6. 🎯 **Target Shooter** — tap flying brainrot enemies before they escape
 
-## Setup
+## 🔐 Password
+`tatumtatum`
 
-### 1. Clone & push to GitHub
+## 🚀 Deploy
+
+### Push to GitHub
 ```bash
 git init
 git add .
-git commit -m "Tatum's Zone 🎮"
+git commit -m "Tatum's Zone v2 🎮"
 git remote add origin https://github.com/YOUR_USERNAME/tatums-zone.git
 git push -u origin main
 ```
 
-### 2. Deploy on Vercel
-1. Go to [vercel.com](https://vercel.com) and import your GitHub repo
-2. In **Settings → Environment Variables**, add:
-   - `ANTHROPIC_API_KEY` = your API key from [console.anthropic.com](https://console.anthropic.com)
-3. Deploy!
+### Vercel Environment Variable
+In Vercel → Settings → Environment Variables:
+- **Name:** `ANTHROPIC_API_KEY`
+- **Value:** your key from console.anthropic.com
 
-### 3. Get your API key (free account)
-1. Sign up at [console.anthropic.com](https://console.anthropic.com) with your other account
-2. Go to **API Keys** → **Create Key**
-3. Paste it into Vercel as described above
+Then redeploy.
 
-## Password
-`tatumtatum`
-
-## Project Structure
+## 📁 Structure
 ```
 /
-├── api/
-│   └── greeting.js       ← Serverless function for AI greeting
-├── public/
-│   └── index.html        ← The whole site
-└── vercel.json           ← Vercel config
+├── api/greeting.js     ← AI greeting serverless function
+├── public/index.html   ← Entire site (single file)
+├── vercel.json         ← Vercel routing config
+└── .gitignore
 ```

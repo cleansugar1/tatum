@@ -2,1085 +2,1326 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>TATUM'S ZONE 🎮</title>
 <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f1a;
-    --bg2: #141728;
-    --card: #1a1f35;
-    --neon-green: #39ff14;
-    --neon-blue: #00d4ff;
-    --neon-yellow: #ffe600;
-    --neon-pink: #ff2d78;
-    --neon-orange: #ff7b00;
-    --minecraft-brown: #8B5E3C;
-    --minecraft-green: #5a8a36;
-    --text: #e8eaf6;
-    --text-dim: #8892b0;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ===== STARS BG ===== */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
-      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.6) 0%, transparent 100%),
-      radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 60% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 45% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 15% 45%, rgba(255,255,255,0.6) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ===== SCREENS ===== */
-  .screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
-  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-
-  /* ===== PASSWORD SCREEN ===== */
-  #password-screen {
-    background: radial-gradient(ellipse at center, #1a0a2e 0%, #0d0f1a 70%);
-  }
-
-  .pw-box {
-    background: var(--card);
-    border: 2px solid var(--neon-blue);
-    border-radius: 24px;
-    padding: 48px 56px;
-    text-align: center;
-    box-shadow: 0 0 40px rgba(0, 212, 255, 0.2), 0 0 80px rgba(0, 212, 255, 0.05);
-    max-width: 420px;
-    width: 90%;
-    animation: fadeInUp 0.6s ease;
-  }
-
-  .pw-title {
-    font-family: 'Boogaloo', cursive;
-    font-size: 3rem;
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-  }
-
-  .pw-subtitle { color: var(--text-dim); margin-bottom: 32px; font-size: 1rem; }
-
-  .pw-icon { font-size: 4rem; margin-bottom: 16px; animation: bounce 2s infinite; }
-
-  .pw-input {
-    width: 100%;
-    padding: 14px 20px;
-    background: var(--bg2);
-    border: 2px solid rgba(0,212,255,0.3);
-    border-radius: 12px;
-    color: var(--text);
-    font-size: 1.1rem;
-    font-family: 'Nunito', sans-serif;
-    text-align: center;
-    letter-spacing: 3px;
-    outline: none;
-    transition: border-color 0.3s;
-    margin-bottom: 16px;
-  }
-
-  .pw-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0,212,255,0.3); }
-
-  .pw-btn {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
-    border: none;
-    border-radius: 12px;
-    color: #000;
-    font-size: 1.1rem;
-    font-weight: 900;
-    font-family: 'Boogaloo', cursive;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .pw-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,255,0.4); }
-  .pw-btn:active { transform: translateY(0); }
-
-  .pw-error {
-    color: var(--neon-pink);
-    font-size: 0.9rem;
-    margin-top: 12px;
-    display: none;
-    animation: shake 0.4s ease;
-  }
-
-  /* ===== HOME SCREEN ===== */
-  #home-screen {
-    background: radial-gradient(ellipse at 20% 20%, #0a1a2e 0%, #0d0f1a 60%);
-    padding: 40px 20px;
-    gap: 0;
-    justify-content: flex-start;
-    padding-top: 60px;
-  }
-
-  .home-header { text-align: center; margin-bottom: 48px; }
-
-  .home-title {
-    font-family: 'Boogaloo', cursive;
-    font-size: clamp(2.5rem, 8vw, 5rem);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .title-tatum {
-    background: linear-gradient(135deg, var(--neon-yellow), var(--neon-orange));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 20px rgba(255,230,0,0.4));
-  }
-
-  .title-zone {
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .greeting-box {
-    background: linear-gradient(135deg, rgba(57,255,20,0.1), rgba(0,212,255,0.1));
-    border: 1px solid rgba(57,255,20,0.3);
-    border-radius: 16px;
-    padding: 16px 24px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--neon-green);
-    margin-top: 16px;
-    max-width: 600px;
-    text-align: center;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .greeting-loading { color: var(--text-dim); font-weight: 400; }
-
-  /* ===== GAME CARDS ===== */
-  .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    max-width: 960px;
-    width: 100%;
-  }
-
-  .game-card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 32px 28px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative;
-    overflow: hidden;
-    border: 2px solid transparent;
-    text-align: center;
-  }
-
-  .game-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.3s;
-    border-radius: 18px;
-  }
-
-  .game-card:hover { transform: translateY(-8px); }
-  .game-card:hover::before { opacity: 1; }
-
-  .card-dodge { border-color: rgba(255,45,120,0.4); }
-  .card-dodge:hover { box-shadow: 0 20px 50px rgba(255,45,120,0.3); border-color: var(--neon-pink); }
-  .card-dodge::before { background: radial-gradient(ellipse at top, rgba(255,45,120,0.08) 0%, transparent 70%); }
-
-  .card-trivia { border-color: rgba(255,230,0,0.4); }
-  .card-trivia:hover { box-shadow: 0 20px 50px rgba(255,230,0,0.3); border-color: var(--neon-yellow); }
-  .card-trivia::before { background: radial-gradient(ellipse at top, rgba(255,230,0,0.08) 0%, transparent 70%); }
-
-  .card-builder { border-color: rgba(57,255,20,0.4); }
-  .card-builder:hover { box-shadow: 0 20px 50px rgba(57,255,20,0.3); border-color: var(--neon-green); }
-  .card-builder::before { background: radial-gradient(ellipse at top, rgba(57,255,20,0.08) 0%, transparent 70%); }
-
-  .card-emoji { font-size: 4rem; margin-bottom: 16px; display: block; }
-  .card-title { font-family: 'Boogaloo', cursive; font-size: 1.8rem; margin-bottom: 8px; }
-  .card-desc { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
-
-  .card-dodge .card-title { color: var(--neon-pink); }
-  .card-trivia .card-title { color: var(--neon-yellow); }
-  .card-builder .card-title { color: var(--neon-green); }
-
-  /* ===== GAME SCREENS ===== */
-  .game-screen {
-    padding: 20px;
-    gap: 20px;
-    justify-content: flex-start;
-    padding-top: 30px;
-  }
-
-  .back-btn {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: var(--text);
-    padding: 8px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 0.9rem;
-    transition: background 0.2s;
-    z-index: 100;
-  }
-  .back-btn:hover { background: rgba(255,255,255,0.2); }
-
-  .game-title {
-    font-family: 'Boogaloo', cursive;
-    font-size: 2.5rem;
-    text-align: center;
-  }
-
-  /* ===== DODGE GAME ===== */
-  #dodge-screen { background: radial-gradient(ellipse at center, #1a0015 0%, #0d0f1a 70%); }
-
-  #dodge-canvas {
-    border: 3px solid var(--neon-pink);
-    border-radius: 12px;
-    box-shadow: 0 0 30px rgba(255,45,120,0.3);
-    touch-action: none;
-    cursor: none;
-    display: block;
-    max-width: 100%;
-  }
-
-  .dodge-info {
-    display: flex;
-    gap: 32px;
-    font-family: 'Boogaloo', cursive;
-    font-size: 1.3rem;
-  }
-
-  .dodge-score-label { color: var(--text-dim); font-size: 0.85rem; font-family: 'Nunito', sans-serif; font-weight: 700; display: block; }
-  .score-val { color: var(--neon-pink); font-size: 2rem; }
-
-  #dodge-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.85);
-    border-radius: 12px;
-    z-index: 10;
-    gap: 16px;
-  }
-
-  #dodge-overlay h2 { font-family: 'Boogaloo', cursive; font-size: 2.5rem; color: var(--neon-pink); }
-  #dodge-overlay p { color: var(--text-dim); font-size: 1rem; }
-  .start-btn {
-    padding: 14px 32px;
-    border: none;
-    border-radius: 12px;
-    font-family: 'Boogaloo', cursive;
-    font-size: 1.3rem;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .start-btn:hover { transform: translateY(-3px); }
-  .btn-pink { background: var(--neon-pink); color: #fff; }
-  .btn-pink:hover { box-shadow: 0 8px 24px rgba(255,45,120,0.5); }
-  .btn-yellow { background: var(--neon-yellow); color: #000; }
-  .btn-yellow:hover { box-shadow: 0 8px 24px rgba(255,230,0,0.5); }
-  .btn-green { background: var(--neon-green); color: #000; }
-  .btn-green:hover { box-shadow: 0 8px 24px rgba(57,255,20,0.5); }
-
-  .dodge-wrap { position: relative; }
-
-  /* ===== TRIVIA ===== */
-  #trivia-screen { background: radial-gradient(ellipse at center, #1a1500 0%, #0d0f1a 70%); }
-
-  .trivia-box {
-    background: var(--card);
-    border: 2px solid var(--neon-yellow);
-    border-radius: 20px;
-    padding: 36px;
-    max-width: 640px;
-    width: 100%;
-    box-shadow: 0 0 30px rgba(255,230,0,0.15);
-  }
-
-  .trivia-progress {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-    color: var(--text-dim);
-    font-weight: 700;
-  }
-
-  .progress-bar {
-    height: 6px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 3px;
-    margin-bottom: 24px;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--neon-yellow), var(--neon-orange));
-    border-radius: 3px;
-    transition: width 0.5s ease;
-  }
-
-  .trivia-q {
-    font-family: 'Boogaloo', cursive;
-    font-size: 1.5rem;
-    margin-bottom: 24px;
-    line-height: 1.4;
-    color: var(--neon-yellow);
-  }
-
-  .trivia-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .trivia-opt {
-    padding: 14px 16px;
-    background: var(--bg2);
-    border: 2px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    color: var(--text);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-  }
-
-  .trivia-opt:hover:not(:disabled) { border-color: var(--neon-yellow); background: rgba(255,230,0,0.08); }
-  .trivia-opt.correct { border-color: var(--neon-green); background: rgba(57,255,20,0.15); color: var(--neon-green); }
-  .trivia-opt.wrong { border-color: var(--neon-pink); background: rgba(255,45,120,0.15); color: var(--neon-pink); }
-  .trivia-opt:disabled { cursor: default; }
-
-  .trivia-feedback {
-    margin-top: 16px;
-    font-weight: 700;
-    font-size: 1rem;
-    min-height: 28px;
-    text-align: center;
-  }
-
-  .trivia-next {
-    margin-top: 20px;
-    width: 100%;
-    padding: 14px;
-    background: var(--neon-yellow);
-    color: #000;
-    border: none;
-    border-radius: 12px;
-    font-family: 'Boogaloo', cursive;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: none;
-    transition: transform 0.2s;
-  }
-  .trivia-next:hover { transform: translateY(-2px); }
-
-  .trivia-result {
-    text-align: center;
-    padding: 20px;
-  }
-  .trivia-result h2 { font-family: 'Boogaloo', cursive; font-size: 2.5rem; color: var(--neon-yellow); margin-bottom: 12px; }
-  .trivia-result p { color: var(--text-dim); margin-bottom: 24px; font-size: 1.1rem; }
-  .result-score { font-family: 'Boogaloo', cursive; font-size: 4rem; color: var(--neon-green); }
-
-  /* ===== CHARACTER BUILDER ===== */
-  #builder-screen { background: radial-gradient(ellipse at center, #001a10 0%, #0d0f1a 70%); }
-
-  .builder-wrap {
-    display: flex;
-    gap: 32px;
-    max-width: 900px;
-    width: 100%;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .builder-preview {
-    background: var(--card);
-    border: 2px solid var(--neon-green);
-    border-radius: 20px;
-    padding: 24px;
-    text-align: center;
-    flex: 0 0 240px;
-    box-shadow: 0 0 30px rgba(57,255,20,0.15);
-  }
-
-  .character-display {
-    font-size: 1.8rem;
-    line-height: 1.4;
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-    background: var(--bg2);
-    border-radius: 12px;
-    padding: 16px;
-    gap: 4px;
-  }
-
-  .char-name {
-    font-family: 'Boogaloo', cursive;
-    font-size: 1.1rem;
-    color: var(--neon-green);
-    margin-top: 8px;
-  }
-
-  .builder-controls {
-    flex: 1;
-    min-width: 280px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .builder-section {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 20px;
-    border: 1px solid rgba(57,255,20,0.2);
-  }
-
-  .builder-section h3 {
-    font-family: 'Boogaloo', cursive;
-    font-size: 1.1rem;
-    color: var(--neon-green);
-    margin-bottom: 12px;
-  }
-
-  .option-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-
-  .opt-btn {
-    padding: 8px 14px;
-    background: var(--bg2);
-    border: 2px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    color: var(--text);
-    cursor: pointer;
-    font-size: 1.4rem;
-    transition: all 0.2s;
-  }
-  .opt-btn:hover { border-color: var(--neon-green); transform: scale(1.1); }
-  .opt-btn.selected { border-color: var(--neon-green); background: rgba(57,255,20,0.15); box-shadow: 0 0 12px rgba(57,255,20,0.2); }
-
-  .name-input-wrap { display: flex; gap: 10px; }
-  .char-name-input {
-    flex: 1;
-    padding: 10px 14px;
-    background: var(--bg2);
-    border: 2px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .char-name-input:focus { border-color: var(--neon-green); }
-  .char-name-input::placeholder { color: var(--text-dim); }
-
-  .save-btn {
-    padding: 10px 16px;
-    background: var(--neon-green);
-    color: #000;
-    border: none;
-    border-radius: 10px;
-    font-family: 'Boogaloo', cursive;
-    font-size: 1rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: transform 0.2s;
-  }
-  .save-btn:hover { transform: scale(1.05); }
-
-  .saved-chars {
-    margin-top: 12px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .saved-chip {
-    background: var(--bg2);
-    border: 1px solid rgba(57,255,20,0.3);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--text-dim);
-  }
-  .saved-chip:hover { border-color: var(--neon-green); color: var(--text); }
-
-  /* ===== ANIMATIONS ===== */
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    75% { transform: translateX(8px); }
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-
-  .card-enter {
-    animation: fadeInUp 0.5s ease both;
-  }
-  .card-enter:nth-child(1) { animation-delay: 0.1s; }
-  .card-enter:nth-child(2) { animation-delay: 0.2s; }
-  .card-enter:nth-child(3) { animation-delay: 0.3s; }
-
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 600px) {
-    .pw-box { padding: 36px 24px; }
-    .trivia-options { grid-template-columns: 1fr; }
-    .builder-preview { flex: 0 0 100%; }
-    .dodge-info { gap: 16px; }
-  }
+:root {
+  --bg: #0a0c14;
+  --bg2: #12152a;
+  --card: #181d33;
+  --card2: #1f2540;
+  --green: #39ff14;
+  --blue: #00d4ff;
+  --yellow: #ffe600;
+  --pink: #ff2d78;
+  --orange: #ff7b00;
+  --purple: #bf5fff;
+  --text: #e8eaf6;
+  --dim: #7986a8;
+  --r: 16px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; overflow:hidden; }
+body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); touch-action:manipulation; }
+
+/* SCREENS */
+.screen { display:none; width:100vw; height:100vh; overflow-y:auto; overflow-x:hidden; position:relative; -webkit-overflow-scrolling:touch; }
+.screen.active { display:flex; flex-direction:column; align-items:center; }
+
+/* STARS */
+#stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.star { position:absolute; border-radius:50%; background:#fff; animation:twinkle var(--d) infinite; opacity:0; }
+@keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--o)} }
+
+/* ======================== PASSWORD ======================== */
+#pw-screen { justify-content:center; background:radial-gradient(ellipse at center,#12082a 0%,#0a0c14 70%); }
+.pw-wrap { position:relative; z-index:1; background:var(--card); border:2px solid var(--blue); border-radius:24px; padding:48px 44px; text-align:center; max-width:400px; width:90%; box-shadow:0 0 60px rgba(0,212,255,.2); animation:fadeUp .6s ease; }
+.pw-icon { font-size:4rem; margin-bottom:12px; animation:bob 2s ease-in-out infinite; display:block; }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.pw-title { font-family:'Boogaloo',cursive; font-size:2.8rem; background:linear-gradient(135deg,var(--blue),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.pw-sub { color:var(--dim); margin:8px 0 28px; font-size:.95rem; }
+.pw-input { width:100%; padding:14px; background:var(--bg2); border:2px solid rgba(0,212,255,.3); border-radius:12px; color:var(--text); font-size:1.1rem; font-family:'Nunito',sans-serif; text-align:center; letter-spacing:3px; outline:none; margin-bottom:14px; transition:border-color .3s; }
+.pw-input:focus { border-color:var(--blue); box-shadow:0 0 14px rgba(0,212,255,.3); }
+.pw-btn { width:100%; padding:14px; background:linear-gradient(135deg,var(--blue),var(--green)); border:none; border-radius:12px; color:#000; font-size:1.1rem; font-weight:900; font-family:'Boogaloo',cursive; cursor:pointer; transition:transform .2s,box-shadow .2s; }
+.pw-btn:active { transform:scale(.97); }
+.pw-err { color:var(--pink); font-size:.9rem; margin-top:10px; display:none; }
+
+/* ======================== HOME ======================== */
+#home-screen { justify-content:flex-start; padding:32px 16px 40px; background:radial-gradient(ellipse at 30% 0%,#0d1a30 0%,#0a0c14 60%); }
+.home-inner { position:relative; z-index:1; width:100%; max-width:900px; }
+.home-header { text-align:center; margin-bottom:32px; }
+.home-title { font-family:'Boogaloo',cursive; font-size:clamp(2.4rem,8vw,4.5rem); line-height:1; }
+.ht-tatum { background:linear-gradient(135deg,var(--yellow),var(--orange)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; filter:drop-shadow(0 0 20px rgba(255,230,0,.3)); }
+.ht-zone { background:linear-gradient(135deg,var(--blue),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.greeting { background:linear-gradient(135deg,rgba(57,255,20,.08),rgba(0,212,255,.08)); border:1px solid rgba(57,255,20,.3); border-radius:14px; padding:14px 20px; font-size:1rem; font-weight:700; color:var(--green); margin-top:14px; min-height:52px; display:flex; align-items:center; justify-content:center; }
+.games-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:16px; }
+.gcard { background:var(--card); border-radius:20px; padding:24px 20px; cursor:pointer; transition:transform .25s,box-shadow .25s; border:2px solid transparent; text-align:center; position:relative; overflow:hidden; }
+.gcard:active { transform:scale(.97); }
+.gcard .gc-emoji { font-size:3rem; display:block; margin-bottom:10px; }
+.gc-title { font-family:'Boogaloo',cursive; font-size:1.5rem; margin-bottom:6px; }
+.gc-desc { color:var(--dim); font-size:.85rem; line-height:1.5; }
+.gcard-dodge { border-color:rgba(255,45,120,.35); }
+.gcard-dodge:hover,.gcard-dodge:active { box-shadow:0 16px 40px rgba(255,45,120,.3); border-color:var(--pink); }
+.gcard-dodge .gc-title { color:var(--pink); }
+.gcard-quiz { border-color:rgba(255,230,0,.35); }
+.gcard-quiz:hover,.gcard-quiz:active { box-shadow:0 16px 40px rgba(255,230,0,.3); border-color:var(--yellow); }
+.gcard-quiz .gc-title { color:var(--yellow); }
+.gcard-runner { border-color:rgba(0,212,255,.35); }
+.gcard-runner:hover,.gcard-runner:active { box-shadow:0 16px 40px rgba(0,212,255,.3); border-color:var(--blue); }
+.gcard-runner .gc-title { color:var(--blue); }
+.gcard-whack { border-color:rgba(57,255,20,.35); }
+.gcard-whack:hover,.gcard-whack:active { box-shadow:0 16px 40px rgba(57,255,20,.3); border-color:var(--green); }
+.gcard-whack .gc-title { color:var(--green); }
+.gcard-mining { border-color:rgba(191,95,255,.35); }
+.gcard-mining:hover,.gcard-mining:active { box-shadow:0 16px 40px rgba(191,95,255,.3); border-color:var(--purple); }
+.gcard-mining .gc-title { color:var(--purple); }
+.gcard-shooter { border-color:rgba(255,123,0,.35); }
+.gcard-shooter:hover,.gcard-shooter:active { box-shadow:0 16px 40px rgba(255,123,0,.3); border-color:var(--orange); }
+.gcard-shooter .gc-title { color:var(--orange); }
+
+/* ======================== GAME BASE ======================== */
+.game-screen { justify-content:flex-start; padding:16px; padding-top:56px; gap:12px; }
+.back-btn { position:fixed; top:12px; left:12px; z-index:200; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); color:var(--text); padding:10px 16px; border-radius:10px; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; font-size:.9rem; backdrop-filter:blur(8px); }
+.back-btn:active { background:rgba(255,255,255,.25); }
+.game-title { font-family:'Boogaloo',cursive; font-size:2rem; text-align:center; }
+canvas { display:block; border-radius:14px; max-width:100%; touch-action:none; }
+.overlay { position:absolute; inset:0; background:rgba(0,0,0,.85); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; z-index:20; padding:20px; text-align:center; }
+.overlay h2 { font-family:'Boogaloo',cursive; font-size:2rem; }
+.overlay p { color:var(--dim); font-size:.95rem; }
+.gbtn { padding:14px 28px; border:none; border-radius:12px; font-family:'Boogaloo',cursive; font-size:1.2rem; cursor:pointer; transition:transform .2s,box-shadow .2s; min-width:160px; }
+.gbtn:active { transform:scale(.95); }
+.gbtn-pink { background:var(--pink); color:#fff; }
+.gbtn-yellow { background:var(--yellow); color:#000; }
+.gbtn-blue { background:var(--blue); color:#000; }
+.gbtn-green { background:var(--green); color:#000; }
+.gbtn-purple { background:var(--purple); color:#fff; }
+.gbtn-orange { background:var(--orange); color:#000; }
+.name-prompt-input { padding:12px 16px; background:var(--bg2); border:2px solid rgba(255,255,255,.2); border-radius:10px; color:var(--text); font-family:'Nunito',sans-serif; font-weight:700; font-size:1rem; text-align:center; outline:none; width:200px; }
+.name-prompt-input:focus { border-color:var(--blue); }
+
+/* ======================== DODGE ======================== */
+#dodge-screen { background:radial-gradient(ellipse at center,#1a0015 0%,#0a0c14 70%); }
+.dodge-layout { display:flex; gap:16px; width:100%; max-width:760px; align-items:flex-start; }
+.dodge-canvas-wrap { position:relative; flex:0 0 auto; }
+.dodge-sidebar { flex:1; min-width:160px; background:var(--card); border:2px solid rgba(255,45,120,.3); border-radius:16px; padding:16px; }
+.dodge-hud { display:flex; gap:20px; font-family:'Boogaloo',cursive; font-size:1.1rem; flex-wrap:wrap; justify-content:center; }
+.hud-item { text-align:center; }
+.hud-label { color:var(--dim); font-size:.75rem; font-family:'Nunito',sans-serif; font-weight:700; display:block; }
+.hud-val { font-size:1.6rem; color:var(--pink); }
+.hud-val.green { color:var(--green); }
+.lb-title { font-family:'Boogaloo',cursive; font-size:1.1rem; color:var(--pink); margin-bottom:10px; }
+.lb-entry { display:flex; justify-content:space-between; align-items:center; padding:6px 8px; border-radius:8px; font-size:.85rem; font-weight:700; margin-bottom:4px; background:var(--bg2); }
+.lb-entry:first-child { background:rgba(255,230,0,.15); border:1px solid rgba(255,230,0,.3); }
+.lb-entry:first-child .lb-name { color:var(--yellow); }
+.lb-rank { color:var(--dim); font-size:.75rem; width:18px; }
+.lb-name { color:var(--text); flex:1; margin:0 6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.lb-score { color:var(--pink); }
+.lb-empty { color:var(--dim); font-size:.85rem; text-align:center; padding:8px; }
+
+/* ======================== QUIZ ======================== */
+#quiz-screen { background:radial-gradient(ellipse at center,#1a1500 0%,#0a0c14 70%); }
+.quiz-box { background:var(--card); border:2px solid var(--yellow); border-radius:20px; padding:28px; max-width:620px; width:100%; box-shadow:0 0 30px rgba(255,230,0,.12); }
+.quiz-top { display:flex; justify-content:space-between; margin-bottom:10px; font-size:.9rem; color:var(--dim); font-weight:700; }
+.prog-bar { height:6px; background:rgba(255,255,255,.1); border-radius:3px; margin-bottom:20px; }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--yellow),var(--orange)); border-radius:3px; transition:width .5s ease; }
+.quiz-q { font-family:'Boogaloo',cursive; font-size:1.4rem; margin-bottom:20px; color:var(--yellow); line-height:1.4; }
+.quiz-opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.quiz-opt { padding:14px 12px; background:var(--bg2); border:2px solid rgba(255,255,255,.1); border-radius:12px; color:var(--text); font-family:'Nunito',sans-serif; font-weight:700; font-size:.9rem; cursor:pointer; transition:all .2s; text-align:left; line-height:1.3; min-height:52px; }
+.quiz-opt:active:not(:disabled) { transform:scale(.97); }
+.quiz-opt:not(:disabled):hover { border-color:var(--yellow); background:rgba(255,230,0,.08); }
+.quiz-opt.correct { border-color:var(--green); background:rgba(57,255,20,.15); color:var(--green); }
+.quiz-opt.wrong { border-color:var(--pink); background:rgba(255,45,120,.15); color:var(--pink); }
+.quiz-opt:disabled { cursor:default; }
+.quiz-feedback { margin-top:14px; font-weight:700; font-size:.95rem; min-height:24px; text-align:center; }
+.quiz-next { margin-top:16px; width:100%; padding:14px; background:var(--yellow); color:#000; border:none; border-radius:12px; font-family:'Boogaloo',cursive; font-size:1.1rem; cursor:pointer; display:none; transition:transform .2s; }
+.quiz-next:active { transform:scale(.97); }
+.quiz-result { text-align:center; padding:10px; }
+.quiz-result h2 { font-family:'Boogaloo',cursive; font-size:2.2rem; color:var(--yellow); margin-bottom:8px; }
+.result-num { font-family:'Boogaloo',cursive; font-size:3.5rem; color:var(--green); }
+.quiz-result p { color:var(--dim); margin:8px 0 20px; font-size:1rem; }
+
+/* ======================== RUNNER ======================== */
+#runner-screen { background:radial-gradient(ellipse at center,#001428 0%,#0a0c14 70%); }
+
+/* ======================== WHACK ======================== */
+#whack-screen { background:radial-gradient(ellipse at center,#001a08 0%,#0a0c14 70%); }
+.whack-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; max-width:360px; width:100%; }
+.hole { background:var(--card); border:2px solid rgba(57,255,20,.2); border-radius:16px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:2.8rem; cursor:pointer; transition:transform .1s,background .15s; position:relative; overflow:hidden; user-select:none; }
+.hole:active { transform:scale(.9); }
+.hole.active { background:rgba(57,255,20,.12); border-color:var(--green); animation:pop .15s ease; }
+.hole.missed { background:rgba(255,45,120,.12); border-color:var(--pink); }
+@keyframes pop { 0%{transform:scale(1.2)} 100%{transform:scale(1)} }
+.whack-hud { display:flex; gap:24px; font-family:'Boogaloo',cursive; font-size:1.2rem; }
+.whack-hud .hud-val { color:var(--green); }
+.whack-timer-bar { width:100%; max-width:360px; height:10px; background:rgba(255,255,255,.1); border-radius:5px; overflow:hidden; }
+.whack-timer-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--blue)); transition:width .1s linear; }
+
+/* ======================== MINING ======================== */
+#mining-screen { background:radial-gradient(ellipse at center,#100a1a 0%,#0a0c14 70%); }
+.mining-layout { display:flex; gap:16px; max-width:700px; width:100%; align-items:flex-start; flex-wrap:wrap; justify-content:center; }
+.mine-block-wrap { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+.mine-block { background:var(--card2); border:2px solid rgba(191,95,255,.2); border-radius:10px; aspect-ratio:1; width:58px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; cursor:pointer; transition:transform .1s,background .15s; user-select:none; position:relative; }
+.mine-block:active { transform:scale(.88); }
+.mine-block.cracked-1 { border-color:rgba(191,95,255,.5); }
+.mine-block.cracked-2 { border-color:var(--purple); background:rgba(191,95,255,.12); }
+.mine-block.cracked-3 { border-color:var(--purple); background:rgba(191,95,255,.22); animation:shake .15s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+.mine-panel { flex:1; min-width:200px; display:flex; flex-direction:column; gap:12px; }
+.mine-stat-box { background:var(--card); border:1px solid rgba(191,95,255,.3); border-radius:14px; padding:16px; }
+.mine-stat-box h3 { font-family:'Boogaloo',cursive; font-size:1rem; color:var(--purple); margin-bottom:10px; }
+.ore-list { display:flex; flex-direction:column; gap:6px; }
+.ore-row { display:flex; justify-content:space-between; align-items:center; font-size:.9rem; font-weight:700; }
+.ore-row span:first-child { color:var(--dim); }
+.ore-row span:last-child { color:var(--text); }
+.upgrade-list { display:flex; flex-direction:column; gap:8px; }
+.upgrade-btn { padding:10px 14px; background:var(--bg2); border:2px solid rgba(191,95,255,.3); border-radius:10px; color:var(--text); font-family:'Nunito',sans-serif; font-weight:700; font-size:.85rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:all .2s; }
+.upgrade-btn:active:not(:disabled) { transform:scale(.97); }
+.upgrade-btn:not(:disabled):hover { border-color:var(--purple); background:rgba(191,95,255,.1); }
+.upgrade-btn:disabled { opacity:.45; cursor:default; }
+.upgrade-cost { color:var(--purple); font-size:.8rem; }
+.mine-picks { font-family:'Boogaloo',cursive; font-size:1rem; color:var(--dim); }
+.mine-total { font-family:'Boogaloo',cursive; font-size:2rem; color:var(--purple); }
+
+/* ======================== SHOOTER ======================== */
+#shooter-screen { background:radial-gradient(ellipse at center,#1a0a00 0%,#0a0c14 70%); }
+
+/* ======================== ANIMATIONS ======================== */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+.fade-in { animation:fadeUp .5s ease both; }
+.fade-in-1 { animation-delay:.1s; }
+.fade-in-2 { animation-delay:.2s; }
+.fade-in-3 { animation-delay:.3s; }
+.fade-in-4 { animation-delay:.4s; }
+.fade-in-5 { animation-delay:.5s; }
+.fade-in-6 { animation-delay:.6s; }
+
+@media (max-width:600px) {
+  .dodge-layout { flex-direction:column; align-items:center; }
+  .dodge-sidebar { width:100%; }
+  .quiz-opts { grid-template-columns:1fr; }
+  .mine-block { width:52px; }
+  .mining-layout { flex-direction:column; align-items:center; }
+}
 </style>
 </head>
 <body>
 
-<!-- PASSWORD SCREEN -->
-<div id="password-screen" class="screen active">
-  <div class="pw-box">
-    <div class="pw-icon">🔐</div>
+<div id="stars"></div>
+
+<!-- PASSWORD -->
+<div id="pw-screen" class="screen active">
+  <div class="pw-wrap">
+    <span class="pw-icon">🔐</span>
     <div class="pw-title">TATUM'S ZONE</div>
-    <div class="pw-subtitle">Top secret access only 👀</div>
-    <input type="password" class="pw-input" id="pw-input" placeholder="Enter password..." autocomplete="off">
-    <button class="pw-btn" onclick="checkPassword()">LET ME IN 🚀</button>
-    <div class="pw-error" id="pw-error">❌ Wrong password! Try again...</div>
+    <div class="pw-sub">Top secret — only legends get in 👀</div>
+    <input type="password" class="pw-input" id="pw-input" placeholder="password..." autocomplete="off">
+    <button class="pw-btn" onclick="checkPw()">LET ME IN 🚀</button>
+    <div class="pw-err" id="pw-err">❌ Nope! Try again...</div>
   </div>
 </div>
 
-<!-- HOME SCREEN -->
+<!-- HOME -->
 <div id="home-screen" class="screen">
-  <div class="home-header">
-    <div class="home-title">
-      <span class="title-tatum">TATUM'S</span> <span class="title-zone">ZONE 🎮</span>
+  <div class="home-inner">
+    <div class="home-header fade-in">
+      <div class="home-title"><span class="ht-tatum">TATUM'S</span> <span class="ht-zone">ZONE 🎮</span></div>
+      <div class="greeting" id="greeting"><span style="color:var(--dim);font-weight:400">Loading your greeting... ⚡</span></div>
     </div>
-    <div class="greeting-box" id="greeting-box">
-      <span class="greeting-loading">Loading your greeting... ⚡</span>
-    </div>
-  </div>
-  <div class="games-grid">
-    <div class="game-card card-dodge card-enter" onclick="showScreen('dodge-screen'); startDodgeGame()">
-      <span class="card-emoji">💥</span>
-      <div class="card-title">DODGE OR DIE</div>
-      <div class="card-desc">Dodge the falling creepers and TNT! How long can you survive?</div>
-    </div>
-    <div class="game-card card-trivia card-enter" onclick="showScreen('trivia-screen'); startTrivia()">
-      <span class="card-emoji">🧠</span>
-      <div class="card-title">BIG BRAIN QUIZ</div>
-      <div class="card-desc">Roblox & Minecraft trivia. Can you get a perfect score?</div>
-    </div>
-    <div class="game-card card-builder card-enter" onclick="showScreen('builder-screen')">
-      <span class="card-emoji">🧑‍🎤</span>
-      <div class="card-title">CHARACTER BUILDER</div>
-      <div class="card-desc">Build your own Roblox-style character. Mix and match everything!</div>
+    <div class="games-grid">
+      <div class="gcard gcard-dodge fade-in fade-in-1" onclick="goGame('dodge-screen',initDodge)">
+        <span class="gc-emoji">💥</span>
+        <div class="gc-title">DODGE OR DIE</div>
+        <div class="gc-desc">Dodge enemies, catch diamonds. How long can you survive?</div>
+      </div>
+      <div class="gcard gcard-quiz fade-in fade-in-2" onclick="goGame('quiz-screen',initQuiz)">
+        <span class="gc-emoji">🧠</span>
+        <div class="gc-title">BIG BRAIN QUIZ</div>
+        <div class="gc-desc">300 Roblox & Minecraft questions. Can you get them all?</div>
+      </div>
+      <div class="gcard gcard-runner fade-in fade-in-3" onclick="goGame('runner-screen',initRunner)">
+        <span class="gc-emoji">🏃</span>
+        <div class="gc-title">ENDLESS RUNNER</div>
+        <div class="gc-desc">Tap to jump over enemies! Run as far as you can!</div>
+      </div>
+      <div class="gcard gcard-whack fade-in fade-in-4" onclick="goGame('whack-screen',initWhack)">
+        <span class="gc-emoji">🔨</span>
+        <div class="gc-title">WHACK-A-CREEPER</div>
+        <div class="gc-desc">Smash the brainrot creepers before they escape!</div>
+      </div>
+      <div class="gcard gcard-mining fade-in fade-in-5" onclick="goGame('mining-screen',initMining)">
+        <span class="gc-emoji">⛏️</span>
+        <div class="gc-title">MINING CLICKER</div>
+        <div class="gc-desc">Tap to mine! Collect ores and upgrade your pickaxe!</div>
+      </div>
+      <div class="gcard gcard-shooter fade-in fade-in-6" onclick="goGame('shooter-screen',initShooter)">
+        <span class="gc-emoji">🎯</span>
+        <div class="gc-title">TARGET SHOOTER</div>
+        <div class="gc-desc">Blast the brainrot enemies flying across the screen!</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- DODGE GAME SCREEN -->
+<!-- DODGE -->
 <div id="dodge-screen" class="screen game-screen">
-  <button class="back-btn" onclick="showScreen('home-screen'); stopDodge()">← Back</button>
-  <div class="game-title" style="color: var(--neon-pink)">💥 DODGE OR DIE</div>
-  <div class="dodge-info">
-    <div><span class="dodge-score-label">SCORE</span><span class="score-val" id="dodge-score">0</span></div>
-    <div><span class="dodge-score-label">BEST</span><span class="score-val" id="dodge-best">0</span></div>
-    <div><span class="dodge-score-label">LIVES</span><span class="score-val" id="dodge-lives">❤️❤️❤️</span></div>
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--pink)">💥 DODGE OR DIE</div>
+  <div class="dodge-hud" id="dodge-hud">
+    <div class="hud-item"><span class="hud-label">SCORE</span><span class="hud-val" id="d-score">0</span></div>
+    <div class="hud-item"><span class="hud-label">DIAMONDS</span><span class="hud-val green" id="d-diamonds">0</span></div>
+    <div class="hud-item"><span class="hud-label">LIVES</span><span class="hud-val" id="d-lives">❤️❤️❤️</span></div>
   </div>
-  <div class="dodge-wrap">
-    <canvas id="dodge-canvas" width="480" height="400"></canvas>
-    <div id="dodge-overlay">
-      <h2>💥 DODGE OR DIE</h2>
-      <p>Move left & right to dodge! (mouse, touch, or arrow keys)</p>
-      <button class="start-btn btn-pink" id="dodge-start-btn" onclick="beginDodge()">START GAME 🚀</button>
+  <div class="dodge-layout">
+    <div class="dodge-canvas-wrap">
+      <canvas id="dodge-canvas" width="340" height="440"></canvas>
+      <div class="overlay" id="dodge-overlay">
+        <h2 style="color:var(--pink)">💥 DODGE OR DIE</h2>
+        <p>Dodge falling enemies! Catch 💎 for bonus points!<br>Use mouse, touch, or arrow keys.</p>
+        <button class="gbtn gbtn-pink" onclick="startDodge()">START 🚀</button>
+      </div>
+    </div>
+    <div class="dodge-sidebar">
+      <div class="lb-title">🏆 LEADERBOARD</div>
+      <div id="dodge-lb"></div>
     </div>
   </div>
 </div>
 
-<!-- TRIVIA SCREEN -->
-<div id="trivia-screen" class="screen game-screen">
-  <button class="back-btn" onclick="showScreen('home-screen')">← Back</button>
-  <div class="game-title" style="color: var(--neon-yellow)">🧠 BIG BRAIN QUIZ</div>
-  <div class="trivia-box" id="trivia-box">
-    <!-- filled by JS -->
+<!-- QUIZ -->
+<div id="quiz-screen" class="screen game-screen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--yellow)">🧠 BIG BRAIN QUIZ</div>
+  <div class="quiz-box" id="quiz-box"></div>
+</div>
+
+<!-- RUNNER -->
+<div id="runner-screen" class="screen game-screen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--blue)">🏃 ENDLESS RUNNER</div>
+  <div class="dodge-hud">
+    <div class="hud-item"><span class="hud-label">SCORE</span><span class="hud-val" style="color:var(--blue)" id="r-score">0</span></div>
+    <div class="hud-item"><span class="hud-label">BEST</span><span class="hud-val green" id="r-best">0</span></div>
+  </div>
+  <div style="position:relative">
+    <canvas id="runner-canvas" width="480" height="220"></canvas>
+    <div class="overlay" id="runner-overlay">
+      <h2 style="color:var(--blue)">🏃 ENDLESS RUNNER</h2>
+      <p>Tap / click / space to JUMP over enemies!</p>
+      <button class="gbtn gbtn-blue" onclick="startRunner()">START 🚀</button>
+    </div>
   </div>
 </div>
 
-<!-- CHARACTER BUILDER SCREEN -->
-<div id="builder-screen" class="screen game-screen">
-  <button class="back-btn" onclick="showScreen('home-screen')">← Back</button>
-  <div class="game-title" style="color: var(--neon-green)">🧑‍🎤 CHARACTER BUILDER</div>
-  <div class="builder-wrap">
-    <div class="builder-preview">
-      <div class="character-display" id="char-display">
-        <span id="char-hat">🎩</span>
-        <span id="char-face">😎</span>
-        <span id="char-body">👕</span>
-        <span id="char-legs">👖</span>
-        <span id="char-shoes">👟</span>
-        <span id="char-weapon">⚔️</span>
-      </div>
-      <div class="char-name" id="char-name-display">Hero</div>
+<!-- WHACK -->
+<div id="whack-screen" class="screen game-screen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--green)">🔨 WHACK-A-CREEPER</div>
+  <div class="whack-hud">
+    <div class="hud-item"><span class="hud-label">SCORE</span><span class="hud-val" id="w-score">0</span></div>
+    <div class="hud-item"><span class="hud-label">MISSES</span><span class="hud-val" style="color:var(--pink)" id="w-misses">0</span></div>
+    <div class="hud-item"><span class="hud-label">BEST</span><span class="hud-val" id="w-best">0</span></div>
+  </div>
+  <div class="whack-timer-bar"><div class="whack-timer-fill" id="w-timer-fill"></div></div>
+  <div class="whack-grid" id="whack-grid"></div>
+  <div class="overlay" id="whack-overlay" style="position:fixed;border-radius:0">
+    <h2 style="color:var(--green)">🔨 WHACK-A-CREEPER</h2>
+    <p>Tap the brainrot creepers before they disappear!<br>Don't miss — 5 misses and it's over!</p>
+    <button class="gbtn gbtn-green" onclick="startWhack()">START 🚀</button>
+  </div>
+</div>
+
+<!-- MINING -->
+<div id="mining-screen" class="screen game-screen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--purple)">⛏️ MINING CLICKER</div>
+  <div class="hud-item" style="text-align:center"><span class="hud-label">TOTAL GEMS</span><div class="mine-total" id="m-total">0</div></div>
+  <div class="mining-layout">
+    <div>
+      <div class="mine-block-wrap" id="mine-grid"></div>
+      <div class="mine-picks" id="mine-pick-info" style="text-align:center;margin-top:10px">⛏️ Wooden Pickaxe (1 dmg)</div>
     </div>
-    <div class="builder-controls">
-      <div class="builder-section">
-        <h3>🎩 Hat / Head</h3>
-        <div class="option-grid" id="opts-hat"></div>
+    <div class="mine-panel">
+      <div class="mine-stat-box">
+        <h3>💎 Inventory</h3>
+        <div class="ore-list" id="ore-list"></div>
       </div>
-      <div class="builder-section">
-        <h3>😎 Face</h3>
-        <div class="option-grid" id="opts-face"></div>
+      <div class="mine-stat-box">
+        <h3>⬆️ Upgrades</h3>
+        <div class="upgrade-list" id="upgrade-list"></div>
       </div>
-      <div class="builder-section">
-        <h3>👕 Body</h3>
-        <div class="option-grid" id="opts-body"></div>
-      </div>
-      <div class="builder-section">
-        <h3>👖 Legs</h3>
-        <div class="option-grid" id="opts-legs"></div>
-      </div>
-      <div class="builder-section">
-        <h3>👟 Shoes</h3>
-        <div class="option-grid" id="opts-shoes"></div>
-      </div>
-      <div class="builder-section">
-        <h3>⚔️ Weapon / Item</h3>
-        <div class="option-grid" id="opts-weapon"></div>
-      </div>
-      <div class="builder-section">
-        <h3>✏️ Name Your Character</h3>
-        <div class="name-input-wrap">
-          <input type="text" class="char-name-input" id="char-name-input" placeholder="Enter a name..." maxlength="20">
-          <button class="save-btn" onclick="saveCharacter()">SAVE ⭐</button>
-        </div>
-        <div class="saved-chars" id="saved-chars"></div>
-      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHOOTER -->
+<div id="shooter-screen" class="screen game-screen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--orange)">🎯 TARGET SHOOTER</div>
+  <div class="dodge-hud">
+    <div class="hud-item"><span class="hud-label">SCORE</span><span class="hud-val" style="color:var(--orange)" id="sh-score">0</span></div>
+    <div class="hud-item"><span class="hud-label">LIVES</span><span class="hud-val" id="sh-lives">❤️❤️❤️</span></div>
+    <div class="hud-item"><span class="hud-label">BEST</span><span class="hud-val green" id="sh-best">0</span></div>
+  </div>
+  <div style="position:relative">
+    <canvas id="shooter-canvas" width="480" height="340"></canvas>
+    <div class="overlay" id="shooter-overlay">
+      <h2 style="color:var(--orange)">🎯 TARGET SHOOTER</h2>
+      <p>Tap/click the brainrot enemies flying across!<br>Don't let them escape — you only have 3 lives!</p>
+      <button class="gbtn gbtn-orange" onclick="startShooter()">START 🚀</button>
     </div>
   </div>
 </div>
 
 <script>
-// ===========================
-// NAVIGATION
-// ===========================
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+// ============================================================
+// STARS
+// ============================================================
+(function(){
+  const c = document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()*2+1}px;height:${s.style.width};--d:${(Math.random()*4+2).toFixed(1)}s;--o:${(Math.random()*.7+.2).toFixed(2)};animation-delay:${(Math.random()*4).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+})();
+
+// ============================================================
+// NAV
+// ============================================================
+let activeCleanup = null;
+function goGame(id, initFn) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  if(initFn) initFn();
+}
+function goHome() {
+  if(activeCleanup){ activeCleanup(); activeCleanup=null; }
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('home-screen').classList.add('active');
 }
 
-// ===========================
+// ============================================================
 // PASSWORD
-// ===========================
-document.getElementById('pw-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') checkPassword();
-});
-
-function checkPassword() {
-  const val = document.getElementById('pw-input').value.toLowerCase().trim();
-  if (val === 'tatumtatum') {
-    showScreen('home-screen');
+// ============================================================
+document.getElementById('pw-input').addEventListener('keydown',e=>{ if(e.key==='Enter') checkPw(); });
+function checkPw(){
+  const v=document.getElementById('pw-input').value.toLowerCase().trim();
+  if(v==='tatumtatum'){
+    goGame('home-screen',null);
     fetchGreeting();
-    initBuilder();
   } else {
-    const err = document.getElementById('pw-error');
-    err.style.display = 'block';
-    err.style.animation = 'none';
-    setTimeout(() => err.style.animation = 'shake 0.4s ease', 10);
-    document.getElementById('pw-input').value = '';
+    const el=document.getElementById('pw-err');
+    el.style.display='block';
+    document.getElementById('pw-input').value='';
   }
 }
 
-// ===========================
+// ============================================================
 // GREETING
-// ===========================
-async function fetchGreeting() {
-  const box = document.getElementById('greeting-box');
-  try {
-    const res = await fetch('/api/greeting', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
-    const data = await res.json();
-    box.innerHTML = data.greeting;
-    box.style.animation = 'fadeInUp 0.5s ease';
+// ============================================================
+async function fetchGreeting(){
+  const box=document.getElementById('greeting');
+  const fallbacks=["YO TATUM, the legend returns! 🔥","TATUM IS IN THE CHAT! 🎮","Welcome back king Tatum! 👑","TATUM DETECTED 🚨 Let's gooo! 💪","The brainrot king has arrived! 🦈","Tralalero Tralala bows down to TATUM 👑"];
+  try{
+    const r=await fetch('/api/greeting',{method:'POST',headers:{'Content-Type':'application/json'}});
+    const d=await r.json();
+    box.textContent=d.greeting||fallbacks[0];
   } catch {
-    const fallbacks = [
-      "YO TATUM, the legend has returned! 🔥",
-      "TATUM IS IN THE CHAT! Let's gooo 🎮",
-      "Welcome back king Tatum! The games await 👑",
-      "TATUM DETECTED 🚨 Roblox fears you 💪"
-    ];
-    box.innerHTML = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    box.textContent=fallbacks[Math.floor(Math.random()*fallbacks.length)];
   }
 }
 
-// ===========================
-// TRIVIA
-// ===========================
-const triviaQuestions = [
-  { q: "What is a Creeper's favorite thing to do in Minecraft?", opts: ["Say hi 👋", "Blow up BOOM 💥", "Mine diamonds 💎", "Make cookies 🍪"], ans: 1 },
-  { q: "In Roblox, what do you use to buy items in the catalog?", opts: ["Gold Coins", "Gems", "Robux", "Diamonds"], ans: 2 },
-  { q: "What material is the strongest tool in Minecraft?", opts: ["Iron", "Gold", "Diamond", "Netherite"], ans: 3 },
-  { q: "What year was Roblox first released?", opts: ["2004", "2006", "2010", "2012"], ans: 1 },
-  { q: "What mob drops Ender Pearls in Minecraft?", opts: ["Skeleton", "Enderman", "Creeper", "Witch"], ans: 1 },
-  { q: "What game on Roblox has you defending your base with towers?", opts: ["Adopt Me", "Tower of Hell", "Tower Defense Simulator", "Blox Fruits"], ans: 2 },
-  { q: "What is the rarest ore you can find in Minecraft 1.16+?", opts: ["Diamond", "Emerald", "Ancient Debris", "Lapis"], ans: 2 },
-  { q: "In Minecraft, what do you use to tame a wolf?", opts: ["Fish", "Bone", "Meat", "Apple"], ans: 1 },
-  { q: "What does TNT stand for in Minecraft?", opts: ["Totally Neat Thing", "The New Tool", "Trinitrotoluene", "Timed Nether Trap"], ans: 2 },
-  { q: "On Roblox, what game lets you be a fruit with powers?", opts: ["Adopt Me", "Blox Fruits", "Murder Mystery", "Jailbreak"], ans: 1 },
-  { q: "What is the name of the main world dimension in Minecraft?", opts: ["The End", "Nether", "Overworld", "Sky World"], ans: 2 },
-  { q: "Which Roblox game involves roleplaying as a family and adopting pets?", opts: ["MeepCity", "Blox Fruits", "Adopt Me", "Work at a Pizza Place"], ans: 2 },
-];
-
-let triviaState = { current: 0, score: 0, questions: [] };
-
-function startTrivia() {
-  triviaState.questions = [...triviaQuestions].sort(() => Math.random() - 0.5).slice(0, 8);
-  triviaState.current = 0;
-  triviaState.score = 0;
-  renderTrivia();
+// ============================================================
+// LEADERBOARD UTIL
+// ============================================================
+function getLB(key){ try{ return JSON.parse(localStorage.getItem(key)||'[]'); } catch{ return []; } }
+function saveLB(key,entries){ localStorage.setItem(key,JSON.stringify(entries.slice(0,10))); }
+function addToLB(key,name,score){
+  const lb=getLB(key);
+  lb.push({name,score});
+  lb.sort((a,b)=>b.score-a.score);
+  saveLB(key,lb);
+  return lb;
+}
+function renderLB(containerId,key,color){
+  const lb=getLB(key);
+  const el=document.getElementById(containerId);
+  if(!lb.length){ el.innerHTML='<div class="lb-empty">No scores yet!</div>'; return; }
+  el.innerHTML=lb.slice(0,8).map((e,i)=>`<div class="lb-entry"><span class="lb-rank">${i+1}.</span><span class="lb-name">${e.name}</span><span class="lb-score" style="color:${color||'var(--pink)'}">${e.score}</span></div>`).join('');
 }
 
-function renderTrivia() {
-  const box = document.getElementById('trivia-box');
-  if (triviaState.current >= triviaState.questions.length) {
-    const pct = Math.round((triviaState.score / triviaState.questions.length) * 100);
-    const emoji = pct === 100 ? '🏆' : pct >= 75 ? '🔥' : pct >= 50 ? '😎' : '💪';
-    box.innerHTML = `
-      <div class="trivia-result">
-        <h2>${emoji} Game Over!</h2>
-        <div class="result-score">${triviaState.score}/${triviaState.questions.length}</div>
-        <p>${pct === 100 ? 'PERFECT SCORE! You\'re a legend!' : pct >= 75 ? 'Big brain Tatum! 🧠' : pct >= 50 ? 'Not bad! Play again!' : 'Keep practicing!'}</p>
-        <button class="start-btn btn-yellow" onclick="startTrivia()">PLAY AGAIN 🔄</button>
-      </div>`;
-    return;
-  }
-  const q = triviaState.questions[triviaState.current];
-  const prog = ((triviaState.current / triviaState.questions.length) * 100).toFixed(0);
-  box.innerHTML = `
-    <div class="trivia-progress">
-      <span>Question ${triviaState.current + 1} of ${triviaState.questions.length}</span>
-      <span>⭐ ${triviaState.score} pts</span>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
-    <div class="trivia-q">${q.q}</div>
-    <div class="trivia-options">
-      ${q.opts.map((o, i) => `<button class="trivia-opt" onclick="answerTrivia(${i})">${o}</button>`).join('')}
-    </div>
-    <div class="trivia-feedback" id="trivia-feedback"></div>
-    <button class="trivia-next" id="trivia-next" onclick="nextTrivia()">Next Question ➡️</button>
-  `;
+// ============================================================
+// NAME PROMPT UTIL
+// ============================================================
+function promptName(defaultName,cb){
+  // inline prompt in overlay - pass callback with name
+  cb(defaultName||'Tatum');
 }
 
-function answerTrivia(idx) {
-  const q = triviaState.questions[triviaState.current];
-  const opts = document.querySelectorAll('.trivia-opt');
-  const fb = document.getElementById('trivia-feedback');
-  opts.forEach(o => o.disabled = true);
-  opts[q.ans].classList.add('correct');
-  if (idx === q.ans) {
-    triviaState.score++;
-    fb.innerHTML = '<span style="color:var(--neon-green)">✅ CORRECT! You\'re a genius! 🧠</span>';
-  } else {
-    opts[idx].classList.add('wrong');
-    fb.innerHTML = `<span style="color:var(--neon-pink)">❌ Nope! The answer was: ${q.opts[q.ans]}</span>`;
-  }
-  document.getElementById('trivia-next').style.display = 'block';
+// ============================================================
+// DODGE OR DIE
+// ============================================================
+let dodgeRAF=null, dodgeRunning=false;
+
+function initDodge(){
+  renderLB('dodge-lb','dodge-lb','var(--pink)');
+  document.getElementById('dodge-overlay').style.display='flex';
+  document.getElementById('d-score').textContent='0';
+  document.getElementById('d-diamonds').textContent='0';
+  document.getElementById('d-lives').textContent='❤️❤️❤️';
 }
 
-function nextTrivia() {
-  triviaState.current++;
-  renderTrivia();
+function startDodge(){
+  const overlay=document.getElementById('dodge-overlay');
+  // Name prompt
+  overlay.innerHTML=`
+    <h2 style="color:var(--pink)">Enter Your Name</h2>
+    <input class="name-prompt-input" id="dodge-name-input" placeholder="Your name..." maxlength="16" value="Tatum">
+    <button class="gbtn gbtn-pink" onclick="launchDodge()">GO! 🚀</button>`;
+  document.getElementById('dodge-name-input').focus();
+  document.getElementById('dodge-name-input').select();
 }
 
-// ===========================
-// CHARACTER BUILDER
-// ===========================
-const builderOptions = {
-  hat:    ['🎩','⛑️','🪖','👑','🎓','🧢','🤠','🎅','🦸','🪄','⚡','🌟'],
-  face:   ['😎','😤','😈','🤩','😤','🧐','🤑','😤','👽','🤖','😼','🦊'],
-  body:   ['👕','🧥','🦺','👔','🧣','🥻','👘','🦸','⚔️','🧙','🤺','🥷'],
-  legs:   ['👖','🩳','🥋','👗','🩱','🎽'],
-  shoes:  ['👟','👞','👢','🥾','🩴','🧤'],
-  weapon: ['⚔️','🪄','🏹','🗡️','🔱','🛡️','💣','🔮','🪃','🪓','⛏️','🧨'],
-};
+function launchDodge(){
+  const name=(document.getElementById('dodge-name-input').value.trim()||'Tatum');
+  document.getElementById('dodge-overlay').style.display='none';
+  if(dodgeRAF){ cancelAnimationFrame(dodgeRAF); }
+  dodgeRunning=true;
 
-const charState = {
-  hat: '🎩', face: '😎', body: '👕', legs: '👖', shoes: '👟', weapon: '⚔️'
-};
+  const canvas=document.getElementById('dodge-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
 
-function initBuilder() {
-  Object.keys(builderOptions).forEach(part => {
-    const container = document.getElementById(`opts-${part}`);
-    if (!container) return;
-    builderOptions[part].forEach(emoji => {
-      const btn = document.createElement('button');
-      btn.className = 'opt-btn' + (charState[part] === emoji ? ' selected' : '');
-      btn.textContent = emoji;
-      btn.onclick = () => selectPart(part, emoji, btn, container);
-      container.appendChild(btn);
-    });
-  });
-  loadSavedChars();
-}
+  let score=0, diamonds=0, lives=3, frame=0, invincible=0;
+  let playerX=W/2-20;
+  const pW=40,pH=40,pSpeed=8;
+  let mouseX=W/2;
+  const keys={};
+  const enemies=[], gems=[];
 
-function selectPart(part, emoji, btn, container) {
-  container.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  charState[part] = emoji;
-  document.getElementById(`char-${part}`).textContent = emoji;
-}
+  const ENEMIES=['💣','👾','💥','🕷️','💀','🪲'];
+  const enemy_weights=[3,2,2,1,1,1];
 
-function saveCharacter() {
-  const name = document.getElementById('char-name-input').value.trim() || 'Hero';
-  document.getElementById('char-name-display').textContent = name;
-  const saved = JSON.parse(localStorage.getItem('tatum-chars') || '[]');
-  const newChar = { name, ...charState };
-  if (!saved.find(c => c.name === name)) {
-    saved.push(newChar);
-    localStorage.setItem('tatum-chars', JSON.stringify(saved.slice(-10)));
-  }
-  loadSavedChars();
-}
-
-function loadSavedChars() {
-  const saved = JSON.parse(localStorage.getItem('tatum-chars') || '[]');
-  const container = document.getElementById('saved-chars');
-  container.innerHTML = saved.map(c =>
-    `<div class="saved-chip" onclick="loadChar('${c.name}')" title="Load ${c.name}">${c.face} ${c.name}</div>`
-  ).join('');
-}
-
-function loadChar(name) {
-  const saved = JSON.parse(localStorage.getItem('tatum-chars') || '[]');
-  const c = saved.find(x => x.name === name);
-  if (!c) return;
-  Object.keys(builderOptions).forEach(part => {
-    if (!c[part]) return;
-    charState[part] = c[part];
-    document.getElementById(`char-${part}`).textContent = c[part];
-    const container = document.getElementById(`opts-${part}`);
-    container.querySelectorAll('.opt-btn').forEach(b => {
-      b.classList.toggle('selected', b.textContent === c[part]);
-    });
-  });
-  document.getElementById('char-name-display').textContent = c.name;
-  document.getElementById('char-name-input').value = c.name;
-}
-
-// ===========================
-// DODGE GAME
-// ===========================
-let dodgeState = null;
-let dodgeRAF = null;
-
-function startDodgeGame() {
-  // just shows screen, overlay visible
-}
-
-function stopDodge() {
-  if (dodgeRAF) { cancelAnimationFrame(dodgeRAF); dodgeRAF = null; }
-  if (dodgeState) dodgeState.running = false;
-}
-
-function beginDodge() {
-  document.getElementById('dodge-overlay').style.display = 'none';
-  const canvas = document.getElementById('dodge-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  const best = parseInt(localStorage.getItem('tatum-dodge-best') || '0');
-  document.getElementById('dodge-best').textContent = best;
-
-  dodgeState = {
-    running: true,
-    player: { x: W / 2, y: H - 60, w: 40, h: 40, speed: 7 },
-    obstacles: [],
-    score: 0,
-    lives: 3,
-    frame: 0,
-    spawnRate: 60,
-    maxSpeed: 4,
-    keys: {},
-    mouseX: W / 2,
-    invincible: 0,
-  };
-
-  const s = dodgeState;
-
-  // Input handlers
-  const onKey = e => { s.keys[e.code] = e.type === 'keydown'; };
-  const onMouse = e => {
-    const rect = canvas.getBoundingClientRect();
-    s.mouseX = (e.clientX - rect.left) * (W / rect.width);
-  };
-  const onTouch = e => {
-    e.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    s.mouseX = (e.touches[0].clientX - rect.left) * (W / rect.width);
-  };
-  window.addEventListener('keydown', onKey);
-  window.addEventListener('keyup', onKey);
-  canvas.addEventListener('mousemove', onMouse);
-  canvas.addEventListener('touchmove', onTouch, { passive: false });
-
-  const EMOJIS = ['💣','👾','💥','🪲','🕷️','💀'];
-
-  function spawnObstacle() {
-    const size = 28 + Math.random() * 18;
-    s.obstacles.push({
-      x: Math.random() * (W - size),
-      y: -size,
-      w: size,
-      h: size,
-      speed: 1.5 + Math.random() * s.maxSpeed,
-      emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
-    });
+  function randEnemy(){
+    const total=enemy_weights.reduce((a,b)=>a+b,0);
+    let r=Math.random()*total;
+    for(let i=0;i<ENEMIES.length;i++){ r-=enemy_weights[i]; if(r<=0) return ENEMIES[i]; }
+    return ENEMIES[0];
   }
 
-  function livesStr() {
-    return '❤️'.repeat(Math.max(0, s.lives)) + '🖤'.repeat(Math.max(0, 3 - s.lives));
-  }
+  const onKey=e=>{ keys[e.code]=e.type==='keydown'; };
+  const onMouse=e=>{ const rect=canvas.getBoundingClientRect(); mouseX=(e.clientX-rect.left)*(W/rect.width); };
+  const onTouch=e=>{ e.preventDefault(); const rect=canvas.getBoundingClientRect(); mouseX=(e.touches[0].clientX-rect.left)*(W/rect.width); };
+  window.addEventListener('keydown',onKey);
+  window.addEventListener('keyup',onKey);
+  canvas.addEventListener('mousemove',onMouse);
+  canvas.addEventListener('touchmove',onTouch,{passive:false});
 
-  function loop() {
-    if (!s.running) return;
-    dodgeRAF = requestAnimationFrame(loop);
-    s.frame++;
+  function livesStr(){ return '❤️'.repeat(Math.max(0,lives))+'🖤'.repeat(Math.max(0,3-lives)); }
 
-    // Move player
-    const useKeys = s.keys['ArrowLeft'] || s.keys['ArrowRight'];
-    if (useKeys) {
-      if (s.keys['ArrowLeft']) s.player.x -= s.player.speed;
-      if (s.keys['ArrowRight']) s.player.x += s.player.speed;
+  activeCleanup=()=>{ dodgeRunning=false; cancelAnimationFrame(dodgeRAF); window.removeEventListener('keydown',onKey); window.removeEventListener('keyup',onKey); };
+
+  function loop(){
+    if(!dodgeRunning) return;
+    dodgeRAF=requestAnimationFrame(loop);
+    frame++;
+
+    // player move
+    const useKeys=keys['ArrowLeft']||keys['ArrowRight'];
+    if(useKeys){
+      if(keys['ArrowLeft']) playerX-=pSpeed;
+      if(keys['ArrowRight']) playerX+=pSpeed;
     } else {
-      const dx = s.mouseX - (s.player.x + s.player.w / 2);
-      s.player.x += dx * 0.15;
+      playerX+=(mouseX-playerX-pW/2)*0.18;
     }
-    s.player.x = Math.max(0, Math.min(W - s.player.w, s.player.x));
+    playerX=Math.max(0,Math.min(W-pW,playerX));
 
-    // Spawn
-    const sr = Math.max(20, s.spawnRate - Math.floor(s.score / 200));
-    if (s.frame % sr === 0) spawnObstacle();
-    s.maxSpeed = Math.min(8, 4 + s.score / 500);
+    // spawn enemies
+    const spawnRate=Math.max(22,55-Math.floor(score/300));
+    if(frame%spawnRate===0){
+      enemies.push({x:Math.random()*(W-32),y:-32,w:32,h:32,speed:2+Math.random()*(2+score/600),emoji:randEnemy()});
+    }
+    // spawn diamonds every ~4s
+    if(frame%240===0){
+      gems.push({x:Math.random()*(W-28),y:-28,w:28,h:28,speed:1.2+Math.random()*.8});
+    }
 
-    // Move obstacles
-    s.obstacles = s.obstacles.filter(o => {
-      o.y += o.speed;
-      return o.y < H + o.h;
-    });
-
-    // Collision
-    if (s.invincible <= 0) {
-      for (const o of s.obstacles) {
-        const px = s.player.x, py = s.player.y, pw = s.player.w, ph = s.player.h;
-        if (o.x < px + pw && o.x + o.w > px && o.y < py + ph && o.y + o.h > py) {
-          s.lives--;
-          s.invincible = 90;
-          s.obstacles = s.obstacles.filter(x => x !== o);
-          document.getElementById('dodge-lives').textContent = livesStr();
-          if (s.lives <= 0) { gameOver(); return; }
-          break;
+    // move enemies
+    for(let i=enemies.length-1;i>=0;i--){
+      enemies[i].y+=enemies[i].speed;
+      if(enemies[i].y>H){ enemies.splice(i,1); continue; }
+      // collision
+      if(invincible<=0){
+        const e=enemies[i];
+        if(e.x<playerX+pW&&e.x+e.w>playerX&&e.y<H-20&&e.y+e.h>H-20-pH){
+          lives--; invincible=90; enemies.splice(i,1);
+          document.getElementById('d-lives').textContent=livesStr();
+          if(lives<=0){ gameOver(); return; }
         }
       }
-    } else { s.invincible--; }
-
-    s.score++;
-    document.getElementById('dodge-score').textContent = s.score;
-
-    // Draw
-    ctx.clearRect(0, 0, W, H);
-
-    // BG grid
-    ctx.strokeStyle = 'rgba(255,45,120,0.05)';
-    ctx.lineWidth = 1;
-    for (let gx = 0; gx < W; gx += 40) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke(); }
-    for (let gy = 0; gy < H; gy += 40) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
-
-    // Player
-    ctx.save();
-    if (s.invincible > 0 && Math.floor(s.invincible / 8) % 2 === 0) {
-      ctx.globalAlpha = 0.3;
     }
-    ctx.font = `${s.player.w}px serif`;
-    ctx.textBaseline = 'top';
-    ctx.fillText('🧍', s.player.x, s.player.y);
+    if(invincible>0) invincible--;
+
+    // move gems
+    for(let i=gems.length-1;i>=0;i--){
+      gems[i].y+=gems[i].speed;
+      if(gems[i].y>H){ gems.splice(i,1); continue; }
+      const g=gems[i];
+      if(g.x<playerX+pW&&g.x+g.w>playerX&&g.y<H-20&&g.y+g.h>H-20-pH){
+        diamonds++; score+=50; gems.splice(i,1);
+        document.getElementById('d-diamonds').textContent=diamonds;
+      }
+    }
+
+    score++;
+    document.getElementById('d-score').textContent=score;
+
+    // draw
+    ctx.clearRect(0,0,W,H);
+    // bg grid
+    ctx.strokeStyle='rgba(255,45,120,0.04)';
+    ctx.lineWidth=1;
+    for(let gx=0;gx<W;gx+=40){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
+    for(let gy=0;gy<H;gy+=40){ ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke(); }
+
+    // player
+    ctx.save();
+    if(invincible>0&&Math.floor(invincible/8)%2===0) ctx.globalAlpha=0.3;
+    ctx.font=`${pW}px serif`; ctx.textBaseline='top';
+    ctx.fillText('🧍',playerX,H-20-pH);
     ctx.restore();
 
-    // Obstacles
-    ctx.textBaseline = 'top';
-    s.obstacles.forEach(o => {
-      ctx.font = `${o.w}px serif`;
-      ctx.fillText(o.emoji, o.x, o.y);
+    // enemies
+    ctx.textBaseline='top';
+    enemies.forEach(e=>{ ctx.font=`${e.w}px serif`; ctx.fillText(e.emoji,e.x,e.y); });
+    // gems
+    gems.forEach(g=>{ ctx.font=`${g.w}px serif`; ctx.fillText('💎',g.x,g.y); });
+  }
+
+  function gameOver(){
+    dodgeRunning=false;
+    cancelAnimationFrame(dodgeRAF);
+    window.removeEventListener('keydown',onKey);
+    window.removeEventListener('keyup',onKey);
+    const finalScore=score;
+    addToLB('dodge-lb',name,finalScore);
+    renderLB('dodge-lb','dodge-lb','var(--pink)');
+    const overlay=document.getElementById('dodge-overlay');
+    overlay.style.display='flex';
+    overlay.innerHTML=`
+      <h2 style="color:var(--pink)">💀 GAME OVER</h2>
+      <p>Score: <strong style="color:var(--pink)">${finalScore}</strong> &nbsp;|&nbsp; 💎 ${diamonds}</p>
+      <button class="gbtn gbtn-pink" onclick="startDodge()">PLAY AGAIN 🔄</button>
+      <button class="gbtn" style="background:rgba(255,255,255,.1);color:var(--text)" onclick="goHome()">Home</button>`;
+  }
+
+  loop();
+}
+
+// ============================================================
+// BIG BRAIN QUIZ — 300 Questions
+// ============================================================
+const ALL_QUESTIONS = [
+  // MINECRAFT - blocks & items
+  {q:"What is the hardest block in Minecraft?",o:["Obsidian","Bedrock","Crying Obsidian","Ancient Debris"],a:1},
+  {q:"What do you use to make a Crafting Table?",o:["2 wood planks","4 wood planks","8 wood planks","1 log"],a:1},
+  {q:"What does a Furnace need to cook food?",o:["Water","Coal or wood","Redstone","Lava bucket"],a:1},
+  {q:"What ore glows in the dark in Minecraft?",o:["Redstone","Lapis Lazuli","Glowstone","Nether Quartz"],a:2},
+  {q:"How many hearts does a player start with?",o:["5","8","10","12"],a:2},
+  {q:"What is Minecraft's main currency for trading?",o:["Gold","Diamonds","Emeralds","Iron"],a:2},
+  {q:"What tool is best for mining stone?",o:["Axe","Shovel","Pickaxe","Sword"],a:2},
+  {q:"What drops from a skeleton?",o:["Gunpowder","Bones & arrows","String","Leather"],a:1},
+  {q:"What do you need to enter The Nether?",o:["Diamond key","Obsidian portal","Iron door","Ender pearl"],a:1},
+  {q:"What is the name of Minecraft's final boss?",o:["Wither","Elder Guardian","Ender Dragon","Shulker"],a:2},
+  {q:"What animal gives you wool in Minecraft?",o:["Pig","Cow","Sheep","Chicken"],a:2},
+  {q:"What plant do you need to make a bed?",o:["Oak planks + grass","Wool + wood planks","Cotton + logs","Feathers + sticks"],a:1},
+  {q:"What does TNT stand for?",o:["Timed Nether Trap","Totally Neat Thing","Trinitrotoluene","The Nether Trick"],a:2},
+  {q:"What is the rarest biome in Minecraft?",o:["Desert","Modified Jungle Edge","Ice Plains","Mushroom Island"],a:1},
+  {q:"What mob drops Ender Pearls?",o:["Endermite","Enderman","Silverfish","Shulker"],a:1},
+  {q:"What is Steve's default skin color shirt?",o:["Red","Green","Blue","Brown"],a:2},
+  {q:"Which Minecraft mob explodes?",o:["Zombie","Skeleton","Creeper","Spider"],a:2},
+  {q:"What is the maximum level for enchantments using a table?",o:["10","20","30","50"],a:2},
+  {q:"What food restores the most hunger in Minecraft?",o:["Apple","Bread","Golden Carrot","Cooked Porkchop"],a:2},
+  {q:"What material do you need to make a compass?",o:["4 iron + redstone","4 gold + lapis","4 iron + coal","Netherite + glowstone"],a:0},
+  {q:"What structure spawns in the ocean in Minecraft?",o:["Ocean Temple","Ocean Monument","Water Castle","Deep Ruin"],a:1},
+  {q:"What item lets you breathe underwater?",o:["Helmet","Turtle Shell","Trident","Water Breathing Potion"],a:1},
+  {q:"What does Silk Touch do?",o:["Makes blocks sparkle","Lets you mine blocks without breaking","Makes tools sharper","Gives extra drops"],a:1},
+  {q:"What is the name of the Minecraft hunger bar?",o:["Food Bar","Hunger Bar","Saturation Bar","Meat Bar"],a:1},
+  {q:"Which animal can you ride in Minecraft?",o:["Cow","Wolf","Horse","Parrot"],a:2},
+  {q:"What do you feed turtles to breed them?",o:["Kelp","Seagrass","Fish","Coral"],a:1},
+  {q:"What biome does the Wither Skeleton spawn in?",o:["The End","The Nether fortresses","Underground caves","Ocean"],a:1},
+  {q:"What is the name of the village leader in Minecraft?",o:["Mayor","Elder","Villager chief","Iron Golem"],a:1},
+  {q:"What ore is needed to make a Beacon?",o:["Gold","Iron","All three: gold, iron, diamond","Emerald"],a:2},
+  {q:"What does Fortune enchantment do?",o:["Gives you luck","Increases drops from blocks","Makes you run faster","Increases durability"],a:1},
+  // MINECRAFT - mobs
+  {q:"Which mob can teleport in Minecraft?",o:["Blaze","Zombie","Enderman","Spider"],a:2},
+  {q:"What mob attacks you if you look at it?",o:["Creeper","Enderman","Zombie","Witch"],a:1},
+  {q:"How do you tame a cat in Minecraft?",o:["Bones","Raw fish","Cooked chicken","String"],a:1},
+  {q:"What does a Witch throw at you?",o:["Fire charges","Splash potions","Arrows","TNT"],a:1},
+  {q:"What mob guards the End City?",o:["Enderman","Endermite","Shulker","Phantom"],a:2},
+  {q:"What is the baby version of a zombie called?",o:["Mini Zombie","Baby Zombie","Zombie Pig","Runt"],a:1},
+  {q:"Which mob drops glowstone dust?",o:["Magma Cube","Witch","Phantom","Blaze"],a:1},
+  {q:"What mob can pick up your items?",o:["Creeper","Zombie","Enderman","Spider"],a:1},
+  {q:"Which mob do you get string from?",o:["Slime","Spider","Bat","Cave Spider"],a:1},
+  {q:"What does a Blaze drop when defeated?",o:["Blaze powder","Fire charge","Nether wart","Coal"],a:0},
+  // MINECRAFT - crafting
+  {q:"How many planks do you need to make a door?",o:["4","6","8","2"],a:1},
+  {q:"What do you need to make a bow?",o:["3 sticks + 3 string","2 sticks + 2 string","3 sticks + 2 string","4 string"],a:0},
+  {q:"What is needed to make a shield?",o:["6 wood + 1 iron","6 iron + 1 wood","4 wood + 2 iron","8 iron"],a:0},
+  {q:"How do you make a book in Minecraft?",o:["3 paper","3 paper + 1 leather","2 paper + 1 leather","4 paper"],a:1},
+  {q:"What is needed to craft an Ender Chest?",o:["8 obsidian + 1 eye of ender","4 glass + 4 obsidian","8 iron + 1 glowstone","6 obsidian + 2 blaze rod"],a:0},
+  // ROBLOX - general
+  {q:"What is Roblox's in-game currency called?",o:["Gems","Coins","Robux","Credits"],a:2},
+  {q:"What year was Roblox launched to the public?",o:["2004","2006","2008","2010"],a:1},
+  {q:"Who created Roblox?",o:["Mojang","David Baszucki and Erik Cassel","Microsoft","Notch"],a:1},
+  {q:"What is the name of the default Roblox character?",o:["Bob","Steve","Noob","Default"],a:2},
+  {q:"What color is the classic Roblox noob?",o:["Red and blue","Yellow and green","Blue and yellow","Green and white"],a:2},
+  {q:"What does 'R15' mean in Roblox?",o:["15 robux","A character rig with 15 body parts","15 players max","Rated 15+"],a:1},
+  {q:"What building tool do Roblox developers use?",o:["Roblox Builder","Roblox Studio","Dev Console","Lua Editor"],a:1},
+  {q:"What language do Roblox games use?",o:["JavaScript","Python","Lua","C++"],a:2},
+  {q:"What is the Roblox avatar marketplace called?",o:["Avatar Shop","Catalog","Roblox Store","Item World"],a:1},
+  {q:"What is the Roblox social hub called?",o:["Home Base","The Plaza","Roblox Town","Avatar World"],a:1},
+  // ROBLOX - popular games
+  {q:"In 'Adopt Me', what is the rarest pet type?",o:["Legendary","Mythic","Ultra Rare","Ancient"],a:0},
+  {q:"What game on Roblox lets you be a fruit devil?",o:["Blox Fruits","Fruit Wars","Devil Fruits","Roblox One Piece"],a:0},
+  {q:"In 'Tower of Hell', what is the main goal?",o:["Defeat the boss","Reach the top of an obby","Kill enemies","Collect stars"],a:1},
+  {q:"What is the goal in 'Murder Mystery 2'?",o:["Find treasure","Survive or eliminate players","Build the biggest house","Race to the finish"],a:1},
+  {q:"In 'Jailbreak', which team tries to escape?",o:["Police","Criminals","Guards","Bounty Hunters"],a:1},
+  {q:"What game involves natural disasters you must survive?",o:["Disaster Island","Natural Disaster Survival","Tornado Escape","Flood Escape"],a:1},
+  {q:"What popular Roblox game involves raising pets and trading?",o:["Pet World","Adopt Me","Animal Kingdom","Pet Simulator"],a:1},
+  {q:"In 'Brookhaven', what type of game is it?",o:["Shooter","Roleplay","Battle Royale","Racing"],a:1},
+  {q:"What does 'obby' stand for in Roblox?",o:["Object obstacle","Obstacle course","Open building","Official battle"],a:1},
+  {q:"In 'Piggy', what is the main threat?",o:["A giant pig chasing you","A zombie","A ghost","A robot"],a:0},
+  {q:"What Roblox game involves simulating a pizza restaurant?",o:["Pizza Tycoon","Work at a Pizza Place","Pizza World","Roblox Pizza"],a:1},
+  {q:"In 'Flee the Facility', what must survivors do?",o:["Kill the beast","Hack computers and escape","Collect gems","Build a fort"],a:1},
+  {q:"In 'Royale High', what is the main theme?",o:["Fantasy school","Zombie survival","Space exploration","Racing"],a:0},
+  {q:"What Roblox game involves collecting and hatching eggs?",o:["Pet Simulator X","Egg Hunt","Adopt Me","Hatch World"],a:0},
+  {q:"What popular battle royale style game is on Roblox?",o:["Island Royale","Roblox Battle","Fortnite Roblox","War Zone"],a:0},
+  // 99 NIGHTS IN ROBLOX
+  {q:"What type of game is '99 Nights' in Roblox?",o:["Survival horror","Racing","Tycoon","Obby"],a:0},
+  {q:"In '99 Nights', how many nights must you survive?",o:["9","50","99","999"],a:2},
+  {q:"What is a common threat in survival Roblox games like 99 Nights?",o:["Friendly mobs","Monsters and enemies","Other players only","Weather"],a:1},
+  {q:"In Roblox survival games, what resource is most important early on?",o:["Gold","Wood and food","Diamonds","Robux"],a:1},
+  // BRAINROT
+  {q:"Which brainrot character is a shark?",o:["Bombardiro Crocodilo","Tralalero Tralala","Tung Tung Tung Sahur","Brrr Brrr Patapim"],a:1},
+  {q:"Which brainrot character is a crocodile?",o:["Tralalero Tralala","Bombardiro Crocodilo","Tung Tung Tung Sahur","Lirili Larila"],a:1},
+  {q:"What is 'brainrot' content known for?",o:["Being very educational","Being random, weird and funny","Being scary","Being sports-related"],a:1},
+  {q:"Which platform is brainrot content most popular on?",o:["Facebook","TikTok","Twitter","Email"],a:1},
+  {q:"What does 'sigma' mean in internet/brainrot slang?",o:["Someone who is weak","A confident, independent person","Someone very funny","A gamer"],a:1},
+  {q:"What does 'rizz' mean in internet slang?",o:["Being fast","Charm or ability to attract people","Being rich","A type of dance"],a:1},
+  {q:"What does 'no cap' mean in slang?",o:["Don't wear a hat","No lie / for real","Not allowed","Never stop"],a:1},
+  {q:"What does 'bussin' mean?",o:["Driving a bus","Really good / delicious","Being busy","Busting a move"],a:1},
+  {q:"What does 'lowkey' mean?",o:["Speaking quietly","Secretly or kind of","Being below","A low score"],a:1},
+  {q:"What does 'slay' mean as internet slang?",o:["To defeat an enemy","To do something amazingly well","To sleep","To run fast"],a:1},
+  {q:"What does 'it's giving' mean in internet slang?",o:["Donating something","It reminds you of / has the vibe of","Giving up","Being generous"],a:1},
+  {q:"What does 'bet' mean in modern slang?",o:["A gambling term","Okay / sounds good / agreed","Better than","A type of bet"],a:1},
+  {q:"What does 'W' mean in gaming slang?",o:["Wrong","Win / good outcome","Wait","Wow"],a:1},
+  {q:"What does 'L' mean in gaming slang?",o:["Level up","Late","Loss / bad outcome","Legendary"],a:2},
+  {q:"What does 'goated' mean in slang?",o:["Being a goat farmer","Being the greatest of all time","Being scared","Being hungry"],a:1},
+  // GAMING GENERAL
+  {q:"What does 'HP' stand for in video games?",o:["High Power","Hero Points","Hit Points / Health Points","Hyper Play"],a:2},
+  {q:"What does 'respawn' mean in games?",o:["A special attack","Coming back to life after dying","Spawning new enemies","A type of save point"],a:1},
+  {q:"What is a 'boss' in a video game?",o:["The game developer","A very powerful enemy","The final level","A cheat code"],a:1},
+  {q:"What does 'lag' mean in online games?",o:["A type of weapon","Slow performance or delay","A secret level","Logging off"],a:1},
+  {q:"What is an 'NPC' in a game?",o:["New Player Character","Non-Playable Character","Night Player Controller","New Power Cell"],a:1},
+  {q:"What does 'grinding' mean in gaming?",o:["Making a loud noise","Repeating actions to earn XP or items","Destroying items","A special move"],a:1},
+  {q:"What is a 'loot box'?",o:["A treasure chest in real life","A random reward container in games","A box for storing controllers","A game mode"],a:1},
+  {q:"What does 'AFK' stand for?",o:["Always Fighting Kings","Away From Keyboard","Another Free Kill","Advanced Fighter Kick"],a:1},
+  {q:"What does 'GG' mean in games?",o:["Get Going","Good Game","Great Gear","Gigantic Grab"],a:1},
+  {q:"What is a 'speedrun'?",o:["A running minigame","Completing a game as fast as possible","A type of racing game","Running from enemies"],a:1},
+  {q:"What does 'PvP' stand for?",o:["Player vs. Player","Power vs. Power","Play vs. Play","Person vs. Person"],a:0},
+  {q:"What does 'meta' mean in gaming?",o:["A secret level","The most effective strategy or best items","Metadata","A game developer"],a:1},
+  {q:"What is a 'noob'?",o:["A type of weapon","A new or inexperienced player","An experienced player","A game cheat"],a:1},
+  {q:"What does 'XP' stand for in games?",o:["Extra Power","Experience Points","Extreme Play","X-ray Power"],a:1},
+  {q:"What is a 'hitbox' in a game?",o:["A box that hits enemies","The invisible area around a character that detects hits","A special weapon","A game mode"],a:1},
+  // MORE MINECRAFT
+  {q:"What is Notch's real name?",o:["Marcus Persson","Erik Cassel","Jens Bergensten","Pete Hines"],a:0},
+  {q:"What company owns Minecraft now?",o:["Sony","Nintendo","Microsoft","Activision"],a:2},
+  {q:"What year was Minecraft officially released?",o:["2009","2011","2013","2015"],a:1},
+  {q:"What is the name of Minecraft's Nether boss?",o:["Ender Dragon","Elder Guardian","Wither","Blaze King"],a:2},
+  {q:"What is needed to summon the Wither?",o:["3 wither skulls + 4 soul sand","3 wither skulls + soul soil","2 wither skulls + obsidian","4 blaze rods + soul sand"],a:0},
+  {q:"What biome has the best chance of finding diamonds?",o:["Desert","Badlands","Ocean","Any biome below Y=16"],a:3},
+  {q:"What is the Minecraft world height limit?",o:["128","256","320","512"],a:2},
+  {q:"What is 'Herobrine' in Minecraft?",o:["A real mob","A legendary creepypasta character","The Ender Dragon's name","A secret dimension"],a:1},
+  {q:"What do dolphins do in Minecraft?",o:["Attack players","Guide you to treasure","Sell items","Fly"],a:1},
+  {q:"What is the name of the Minecraft Education Edition?",o:["Minecraft: Education","Minecraft: School","Minecraft: Learning","Minecraft: Edu"],a:0},
+  {q:"What block emits the most light in Minecraft?",o:["Torch","Lantern","Glowstone","Sea Lantern"],a:2},
+  {q:"What is the name of the deep dark biome's guardian?",o:["Warden","Deep Guardian","Cave Spider","Shrieker"],a:0},
+  {q:"How do you activate a sculk shrieker?",o:["Jump on it","Walk near it","Throw an item at it","Hit it with a sword"],a:1},
+  {q:"What do axolotls eat?",o:["Fish","Tropical fish","Squid","Seagrass"],a:1},
+  {q:"What is the Minecraft cave update called?",o:["Caves & Cliffs","Cave Update 1.0","The Deep Update","Underground Rework"],a:0},
+  // MORE ROBLOX
+  {q:"What is a 'Limited' item in Roblox?",o:["An item with limited stats","A rare item with a set quantity","An item only for members","A seasonal item"],a:1},
+  {q:"What does 'BC' stand for in old Roblox?",o:["Battle Commander","Builders Club","Best Character","Basic Creator"],a:1},
+  {q:"What replaced Builders Club in Roblox?",o:["Roblox Plus","Premium","Pro Account","Creator Pass"],a:1},
+  {q:"What is 'Roblox Studio' used for?",o:["Playing games","Creating and building Roblox games","Chatting with friends","Buying Robux"],a:1},
+  {q:"What does the 'Badge' do in Roblox?",o:["Gives Robux","Shows achievements in a game","Unlocks items","Increases speed"],a:1},
+  {q:"What is the name of Roblox's music platform?",o:["Roblox Radio","Roblox Music","Audio Library","Boom Box"],a:2},
+  {q:"What is a 'Place' in Roblox?",o:["A location in the real world","A game or world created in Roblox","A player's home","A game server"],a:1},
+  {q:"What is 'Roblox UGC'?",o:["User Generated Content","Ultra Game Creator","Universal Game Controller","Unified Game Code"],a:0},
+  {q:"What was the name of Roblox before it was called Roblox?",o:["DynaBlocks","BlockWorld","Lego Online","VoxelGame"],a:0},
+  {q:"What social feature lets you follow friends on Roblox?",o:["Add Friend","Follow","Subscribe","Join"],a:1},
+  {q:"What is a 'Gamepass' in Roblox?",o:["A pass to enter a game","A purchasable perk or ability in a specific game","A monthly subscription","A free gift"],a:1},
+  {q:"What is the Roblox group system used for?",o:["Playing multiplayer","Organizing players with shared interests","Buying items","Creating avatar looks"],a:1},
+  {q:"What is the Roblox 'Catalog' now officially called?",o:["Item Store","Marketplace","Avatar Shop","Roblox Mall"],a:1},
+  // FUN TATUM THEMED
+  {q:"What is the name of Tatum's gaming zone?",o:["Tatum's World","Tatum's Zone","Tatum's Arcade","Tatum's Hub"],a:1},
+  {q:"Which brainrot character goes 'Tung Tung Tung'?",o:["Tralalero Tralala","Bombardiro Crocodilo","Tung Tung Tung Sahur","Brrr Brrr Patapim"],a:2},
+  {q:"What is a common chant in Roblox games when you win?",o:["EZ EZ","GG EZ","Let's Go!","W rizz"],a:1},
+  {q:"What does 'clutch' mean in gaming?",o:["A type of bag","Pulling off something impressive at the last second","Grabbing an item","A hidden area"],a:1},
+  {q:"What does 'sweaty' mean as a gaming insult?",o:["Someone who literally sweats","Someone who tries too hard to win","Someone new","Someone who hacks"],a:1},
+  {q:"What is 'camping' in a game?",o:["Going outside","Staying in one spot to ambush players","Setting up a tent","Playing at night"],a:1},
+  {q:"What does 'clutch up' mean?",o:["Grab tightly","Perform when it matters most","Level up quickly","Connect to the server"],a:1},
+  {q:"What does 'toxic' mean in gaming?",o:["Poisonous items","Rude or unsportsmanlike behavior","A difficult level","A special weapon"],a:1},
+  {q:"In Roblox, what does it mean to be 'carried'?",o:["Lifting something heavy","Winning because of a better teammate","Moving to a new server","Holding an item"],a:1},
+  {q:"What does 'op' mean in gaming slang?",o:["Original Post","Overpowered","Open Player","One Player"],a:1},
+  // MORE GENERAL GAMING
+  {q:"What is a 'save point' in a game?",o:["A point worth saving","A location where progress is saved","A secret area","A checkpoint"],a:1},
+  {q:"What does 'DLC' stand for?",o:["Digital Level Content","Downloadable Content","Direct Level Code","Daily Level Challenge"],a:1},
+  {q:"What does 'FPS' stand for in gaming?",o:["First Player Shooter","Frames Per Second","Fast Player Speed","Final Power Score"],a:1},
+  {q:"What is a 'combo' in fighting games?",o:["A special item","A series of consecutive attacks","A two-player move","A level bonus"],a:1},
+  {q:"What does it mean to 'farm' in a game?",o:["Play on a farm map","Repeatedly do an action to collect resources","Grow crops","Feed animals"],a:1},
+  {q:"What is 'RNG' in games?",o:["Really Nice Graphics","Random Number Generator (luck-based outcomes)","Ranked New Game","Replay Next Game"],a:1},
+  {q:"What does 'burst damage' mean?",o:["Damage over time","A large amount of damage in a short time","Explosion damage only","A special move type"],a:1},
+  {q:"What is a 'side quest'?",o:["A quest on the side of the screen","An optional mission separate from the main story","A hard quest","A quest with a friend"],a:1},
+  {q:"What is 'fast travel' in games?",o:["Running very fast","Teleporting to a previously visited location","A speed power-up","Skipping cutscenes"],a:1},
+  {q:"What does 'permadeath' mean?",o:["A permanent death move","When you die, your save is deleted permanently","A special death animation","Killing the final boss"],a:1},
+  // MINECRAFT ADVANCED
+  {q:"What is the max enchantment level for Sharpness?",o:["3","4","5","6"],a:2},
+  {q:"What is needed to make a conduit?",o:["8 nautilus shells + heart of the sea","8 prismarine + heart","4 coral + sponge","8 sea lanterns + crystal"],a:0},
+  {q:"What Y level are diamonds most common at in 1.18+?",o:["Y=16","Y=12","Y=-58","Y=0"],a:2},
+  {q:"What is the name of the dimension above the Nether?",o:["Sky Dimension","The End","Heaven","Aether"],a:1},
+  {q:"What is a 'grindstone' used for in Minecraft?",o:["Sharpening swords","Removing enchantments to get XP back","Crafting weapons","Mining faster"],a:1},
+  {q:"What biome does sugarcane grow naturally in?",o:["Desert only","Near water in most biomes","Jungle only","Swamp only"],a:1},
+  {q:"What do you need to ride a pig in Minecraft?",o:["A saddle","A saddle + carrot on a stick","Just a carrot","A lead"],a:1},
+  {q:"What is the purpose of a Lodestone?",o:["Makes a compass point to it","Attracts metal items","Powers redstone","Summons iron golems"],a:0},
+  {q:"What hostile mob can pick up and throw blocks?",o:["Enderman","Creeper","Ravager","Giant"],a:0},
+  {q:"What are Phantoms, and when do they appear?",o:["Sky monsters that appear when you haven't slept","Cave monsters at night","Ocean monsters during day","Boss mobs in the End"],a:0},
+  {q:"What does a Totem of Undying do?",o:["Spawns undead mobs","Saves you from death once","Summons a zombie army","Makes you invisible"],a:1},
+  {q:"How do you make Netherite?",o:["Mine it directly","Combine ancient debris with gold in a smithing table","Find it in chests","Smelt netherack"],a:1},
+  // EXTRA ROBLOX TRIVIA
+  {q:"What does 'banning' a player mean in Roblox?",o:["Giving them a hat","Blocking them from a game","Promoting them","Gifting them Robux"],a:1},
+  {q:"What is the maximum number of friends on Roblox?",o:["100","200","300","500"],a:1},
+  {q:"What are Roblox 'emotes'?",o:["Emoticons in chat","Animated actions your avatar performs","Game power-ups","Robux discounts"],a:1},
+  {q:"What is the Roblox 'Egg Hunt' event?",o:["An Easter event where players find hidden eggs","A farming minigame","A cooking game","A battle royale"],a:0},
+  {q:"In Roblox, what does 'developer exchange' (DevEx) do?",o:["Lets players trade games","Lets developers convert Robux to real money","An item trading system","A code-sharing platform"],a:1},
+  {q:"What Roblox game involves fighting with swords called 'Linked Sword'?",o:["Sword Fighters","Classic: Sword Fight on the Heights","Blade Battle","Melee Masters"],a:1},
+  {q:"What is a 'VIP server' in Roblox?",o:["A private server for you and friends","A server for top players only","A premium game","A server with no rules"],a:0},
+  {q:"What is 'Roblox Radio' used for?",o:["Listening to Roblox news","Playing music in games using audio IDs","Chatting with voice","A radio-themed game"],a:1},
+  // INTERNET SLANG
+  {q:"What does 'POV' mean?",o:["Point of View","Power of Voice","Play on Vibe","Power over Victory"],a:0},
+  {q:"What does 'IRL' mean?",o:["In Roblox Land","In Real Life","I Really Laugh","Inside Roblox Lobby"],a:1},
+  {q:"What does 'NPC behavior' mean as an insult?",o:["Playing like a computer character / no personality","Being very good at games","Playing a lot","Being a developer"],a:0},
+  {q:"What does 'ratio' mean on social media?",o:["A math term","When replies outnumber likes — usually means a bad post","Sharing equally","Getting a lot of followers"],a:1},
+  {q:"What does 'main character' mean in internet culture?",o:["The hero of a story","Acting like everything revolves around you","Being the best gamer","The protagonist in a video"],a:1},
+  {q:"What does 'OP' mean in a Reddit post?",o:["Overpowered","Original Poster","Open Poll","Outstanding Person"],a:1},
+  {q:"What does 'based' mean in internet slang?",o:["Something foundational","Confidently doing your own thing without caring what others think","Being basic","A type of music"],a:1},
+  {q:"What does 'cringe' mean in internet slang?",o:["Something painful","Something embarrassing or awkward","Something scary","Something boring"],a:1},
+  // MORE FUN QUESTIONS
+  {q:"What is 'Minecraft Hardcore' mode?",o:["A harder difficulty","A mode where death is permanent","A PvP mode","A speedrun mode"],a:1},
+  {q:"In Minecraft, what spawns from a spawner block?",o:["Random mobs","The mob type set inside it","Creepers only","Zombies only"],a:1},
+  {q:"What does a Daylight Sensor do in Minecraft?",o:["Shows you the time","Produces redstone signal based on sunlight","Prevents mobs from spawning","Changes day to night"],a:1},
+  {q:"What is the 'Void' in Minecraft?",o:["A dark biome","The empty space below Y=0 that kills you","A boss arena","An ocean trench"],a:1},
+  {q:"What do Striders eat in Minecraft?",o:["Fire","Warped fungus","Nether wart","Magma cream"],a:1},
+  {q:"In Roblox's 'Doors', what entity chases and kills you if you don't hide?",o:["Figure","Rush","Seek","Glitch"],a:1},
+  {q:"What Roblox game has you clicking to hatch pets and sell them?",o:["Pet World","Pet Simulator X","Hatch Universe","Adopt Me"],a:1},
+  {q:"In 'Blox Fruits', what are the three fruit types?",o:["Fire, Water, Wind","Paramecia, Zoan, Logia","Attack, Defense, Speed","Red, Blue, Yellow"],a:1},
+  {q:"What is the first thing you should do in any survival game?",o:["Find diamonds","Build a shelter / collect resources","Fight a boss","Make a sword"],a:1},
+  {q:"What does 'two-shot' mean in gaming?",o:["Taking two screenshots","Defeating an enemy in exactly two hits","A two-player mode","A double jump"],a:1},
+  {q:"In most Roblox games, what button opens your inventory or backpack?",o:["Tab","Backslash","Tilde (~)","Backpack key varies by game"],a:3},
+  {q:"What does 'frame rate' mean in gaming?",o:["The picture frame","How many images are shown per second","The size of the game screen","How fast you run"],a:1},
+  {q:"What Minecraft block is used to store music discs?",o:["Chest","Jukebox","Note Block","Music Box"],a:1},
+  {q:"What is the Nether made of mostly?",o:["Lava and ice","Netherrack","Obsidian","Bedrock"],a:1},
+  {q:"What is the strongest sword enchantment in Minecraft?",o:["Smite","Bane of Arthropods","Sharpness","Fire Aspect"],a:2},
+  {q:"In what Roblox game do you tycoon-build to earn money?",o:["Build a Boat","Theme Park Tycoon","Restaurant Tycoon","All of these"],a:3},
+  {q:"What famous Minecraft YouTuber is known for 'Dream SMP'?",o:["PewDiePie","Dream","Technoblade","Markiplier"],a:1},
+  {q:"What is a 'creeper farm' in Minecraft?",o:["A farm with creepers as pets","A structure that spawns and kills creepers for gunpowder","A green vegetable farm","A dangerous area"],a:1},
+  {q:"What is the main use of Redstone in Minecraft?",o:["Making red dye","Creating circuits and machines","Powering torches","Healing players"],a:1},
+  {q:"In Roblox's 'Rainbow Friends', what must players do?",o:["Collect colored blocks","Hide from colored monsters","Paint the world","Race to the finish"],a:1},
+  {q:"What does 'clutch or kick' mean in team games?",o:["A move in sports","Perform well or risk being removed from the team","A type of attack","A Roblox game"],a:1},
+  {q:"In gaming, what is 'one-tapping' someone?",o:["Tapping once on screen","Defeating an enemy with a single shot","A hacking term","A dance move"],a:1},
+];
+
+let quizState={current:0,score:0,questions:[]};
+
+function initQuiz(){
+  quizState.questions=[...ALL_QUESTIONS].sort(()=>Math.random()-.5).slice(0,10);
+  quizState.current=0; quizState.score=0;
+  renderQuiz();
+}
+
+function renderQuiz(){
+  const box=document.getElementById('quiz-box');
+  if(quizState.current>=quizState.questions.length){
+    const pct=Math.round((quizState.score/quizState.questions.length)*100);
+    const emoji=pct===100?'🏆':pct>=80?'🔥':pct>=60?'😎':'💪';
+    box.innerHTML=`<div class="quiz-result">
+      <h2>${emoji} Done!</h2>
+      <div class="result-num">${quizState.score}/${quizState.questions.length}</div>
+      <p>${pct===100?'PERFECT! You are built different! 🧠':pct>=80?'Big brain Tatum! 🧠':pct>=60?'Not bad! Play again!':'Keep grinding!'}</p>
+      <button class="gbtn gbtn-yellow" onclick="initQuiz()">PLAY AGAIN 🔄</button>
+    </div>`;
+    return;
+  }
+  const q=quizState.questions[quizState.current];
+  const prog=((quizState.current/quizState.questions.length)*100).toFixed(0);
+  box.innerHTML=`
+    <div class="quiz-top"><span>Q${quizState.current+1} of ${quizState.questions.length}</span><span>⭐ ${quizState.score}</span></div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${prog}%"></div></div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.o.map((opt,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${opt}</button>`).join('')}</div>
+    <div class="quiz-feedback" id="quiz-fb"></div>
+    <button class="quiz-next" id="quiz-next" onclick="nextQuiz()">Next ➡️</button>`;
+}
+
+function answerQuiz(idx){
+  const q=quizState.questions[quizState.current];
+  const opts=document.querySelectorAll('.quiz-opt');
+  const fb=document.getElementById('quiz-fb');
+  opts.forEach(o=>o.disabled=true);
+  opts[q.a].classList.add('correct');
+  if(idx===q.a){ quizState.score++; fb.innerHTML='<span style="color:var(--green)">✅ CORRECT! Sheesh! 🧠</span>'; }
+  else { opts[idx].classList.add('wrong'); fb.innerHTML=`<span style="color:var(--pink)">❌ Nope! It was: ${q.o[q.a]}</span>`; }
+  document.getElementById('quiz-next').style.display='block';
+}
+
+function nextQuiz(){ quizState.current++; renderQuiz(); }
+
+// ============================================================
+// ENDLESS RUNNER
+// ============================================================
+let runnerRAF=null, runnerRunning=false;
+
+function initRunner(){
+  document.getElementById('runner-overlay').style.display='flex';
+  document.getElementById('r-score').textContent='0';
+  document.getElementById('r-best').textContent=localStorage.getItem('tatum-runner-best')||'0';
+}
+
+function startRunner(){
+  document.getElementById('runner-overlay').style.display='none';
+  if(runnerRAF) cancelAnimationFrame(runnerRAF);
+  runnerRunning=true;
+
+  const canvas=document.getElementById('runner-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  const GROUND=H-40;
+
+  const CHARS=['👾','💣','🕷️','🦎','💀','🪲'];
+  const BROT=['🦈','🐊','🦛','🐘'];
+
+  let score=0,frame=0,speed=4,jumping=false,jumpVel=0;
+  const player={x:60,y:GROUND-40,w:36,h:40};
+  const obstacles=[];
+  let bgOffset=0;
+
+  const jump=()=>{ if(!jumping&&runnerRunning){ jumping=true; jumpVel=-14; } };
+  const onKey=e=>{ if((e.code==='Space'||e.code==='ArrowUp')) jump(); };
+  window.addEventListener('keydown',onKey);
+  canvas.addEventListener('click',jump);
+  canvas.addEventListener('touchstart',e=>{e.preventDefault();jump();},{passive:false});
+
+  activeCleanup=()=>{ runnerRunning=false; cancelAnimationFrame(runnerRAF); window.removeEventListener('keydown',onKey); canvas.removeEventListener('click',jump); };
+
+  function loop(){
+    if(!runnerRunning) return;
+    runnerRAF=requestAnimationFrame(loop);
+    frame++;
+    score++;
+    speed=4+score/400;
+    bgOffset=(bgOffset+speed*.3)%40;
+
+    // jump physics
+    if(jumping){
+      player.y+=jumpVel;
+      jumpVel+=0.8;
+      if(player.y>=GROUND-40){ player.y=GROUND-40; jumping=false; jumpVel=0; }
+    }
+
+    // spawn
+    const sr=Math.max(55,90-Math.floor(score/300));
+    if(frame%sr===0){
+      const isBrot=Math.random()<0.3;
+      obstacles.push({x:W+10,y:GROUND-36,w:36,h:36,emoji:isBrot?BROT[Math.floor(Math.random()*BROT.length)]:CHARS[Math.floor(Math.random()*CHARS.length)],speed:speed+(Math.random()*1.5)});
+    }
+
+    // move obs
+    for(let i=obstacles.length-1;i>=0;i--){
+      obstacles[i].x-=obstacles[i].speed;
+      if(obstacles[i].x<-40){ obstacles.splice(i,1); continue; }
+      const o=obstacles[i];
+      if(o.x<player.x+player.w-8&&o.x+o.w-8>player.x&&o.y<player.y+player.h-8&&o.y+o.h-8>player.y){
+        gameOverRunner(); return;
+      }
+    }
+
+    document.getElementById('r-score').textContent=score;
+
+    // draw
+    ctx.clearRect(0,0,W,H);
+    // sky
+    const grad=ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,'#001428'); grad.addColorStop(1,'#0a1a28');
+    ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
+
+    // bg grid
+    ctx.strokeStyle='rgba(0,212,255,0.05)'; ctx.lineWidth=1;
+    for(let gx=-bgOffset;gx<W;gx+=40){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
+
+    // ground
+    ctx.fillStyle='#1a3a4a'; ctx.fillRect(0,GROUND,W,H-GROUND);
+    ctx.fillStyle='var(--blue)'; ctx.fillRect(0,GROUND,W,2);
+
+    // player
+    ctx.font='36px serif'; ctx.textBaseline='top';
+    ctx.fillText('🏃',player.x,player.y);
+
+    // obstacles
+    obstacles.forEach(o=>{ ctx.font=`${o.w}px serif`; ctx.fillText(o.emoji,o.x,o.y); });
+
+    // score
+    ctx.fillStyle='rgba(0,212,255,0.6)'; ctx.font='bold 14px Nunito'; ctx.textBaseline='top';
+    ctx.fillText(`SCORE: ${score}`,8,8);
+  }
+
+  function gameOverRunner(){
+    runnerRunning=false;
+    cancelAnimationFrame(runnerRAF);
+    window.removeEventListener('keydown',onKey);
+    const best=Math.max(parseInt(localStorage.getItem('tatum-runner-best')||'0'),score);
+    localStorage.setItem('tatum-runner-best',best);
+    document.getElementById('r-best').textContent=best;
+    const ov=document.getElementById('runner-overlay');
+    ov.style.display='flex';
+    ov.innerHTML=`<h2 style="color:var(--blue)">💀 GAME OVER</h2>
+      <p>Score: <strong style="color:var(--blue)">${score}</strong> | Best: <strong style="color:var(--green)">${best}</strong></p>
+      <button class="gbtn gbtn-blue" onclick="startRunner()">TRY AGAIN 🔄</button>`;
+  }
+
+  loop();
+}
+
+// ============================================================
+// WHACK-A-CREEPER
+// ============================================================
+const WHACK_CHARS=['🐊','🦈','🦛','🐘','💣','👾','🪲','💀','🕷️','😈'];
+let whackState=null, whackInterval=null, whackTimerInterval=null;
+
+function initWhack(){
+  const grid=document.getElementById('whack-grid');
+  grid.innerHTML='';
+  for(let i=0;i<9;i++){
+    const hole=document.createElement('div');
+    hole.className='hole';
+    hole.dataset.idx=i;
+    hole.textContent='🕳️';
+    hole.addEventListener('click',()=>whackHole(i));
+    hole.addEventListener('touchstart',e=>{e.preventDefault();whackHole(i);},{passive:false});
+    grid.appendChild(hole);
+  }
+  document.getElementById('whack-overlay').style.display='flex';
+  document.getElementById('w-best').textContent=localStorage.getItem('tatum-whack-best')||'0';
+}
+
+function startWhack(){
+  document.getElementById('whack-overlay').style.display='none';
+  whackState={score:0,misses:0,active:[],timeLeft:45,speed:900};
+  document.getElementById('w-score').textContent='0';
+  document.getElementById('w-misses').textContent='0';
+
+  activeCleanup=()=>{ clearInterval(whackInterval); clearInterval(whackTimerInterval); };
+
+  const TOTAL=45;
+  whackTimerInterval=setInterval(()=>{
+    whackState.timeLeft--;
+    document.getElementById('w-timer-fill').style.width=(whackState.timeLeft/TOTAL*100)+'%';
+    if(whackState.timeLeft<=0){ clearInterval(whackTimerInterval); clearInterval(whackInterval); endWhack(); }
+  },1000);
+
+  function spawnMole(){
+    if(!whackState) return;
+    const holes=document.querySelectorAll('.hole');
+    const available=[...Array(9).keys()].filter(i=>!whackState.active.includes(i));
+    if(!available.length) return;
+    const idx=available[Math.floor(Math.random()*available.length)];
+    whackState.active.push(idx);
+    const hole=holes[idx];
+    hole.className='hole active';
+    hole.textContent=WHACK_CHARS[Math.floor(Math.random()*WHACK_CHARS.length)];
+    const timeout=setTimeout(()=>{
+      if(hole.className.includes('active')){
+        hole.className='hole missed';
+        hole.textContent='🕳️';
+        whackState.active=whackState.active.filter(a=>a!==idx);
+        whackState.misses++;
+        document.getElementById('w-misses').textContent=whackState.misses;
+        if(whackState.misses>=5){ clearInterval(whackInterval); clearInterval(whackTimerInterval); endWhack(); }
+        setTimeout(()=>{ if(hole.className.includes('missed')){ hole.className='hole'; hole.textContent='🕳️'; } },300);
+      }
+    },Math.max(500,whackState.speed-whackState.score*3));
+    hole._timeout=timeout;
+  }
+
+  whackInterval=setInterval(spawnMole,600);
+}
+
+function whackHole(idx){
+  if(!whackState) return;
+  const hole=document.querySelectorAll('.hole')[idx];
+  if(!hole.className.includes('active')) return;
+  clearTimeout(hole._timeout);
+  whackState.score+=10;
+  whackState.active=whackState.active.filter(a=>a!==idx);
+  document.getElementById('w-score').textContent=whackState.score;
+  hole.className='hole';
+  hole.textContent='🕳️';
+}
+
+function endWhack(){
+  const score=whackState?whackState.score:0;
+  const best=Math.max(parseInt(localStorage.getItem('tatum-whack-best')||'0'),score);
+  localStorage.setItem('tatum-whack-best',best);
+  document.getElementById('w-best').textContent=best;
+  const ov=document.getElementById('whack-overlay');
+  ov.style.display='flex';
+  ov.innerHTML=`<h2 style="color:var(--green)">⏰ TIMES UP!</h2>
+    <p>Score: <strong style="color:var(--green)">${score}</strong> | Best: <strong style="color:var(--yellow)">${best}</strong></p>
+    <button class="gbtn gbtn-green" onclick="startWhack()">PLAY AGAIN 🔄</button>`;
+  whackState=null;
+}
+
+// ============================================================
+// MINING CLICKER
+// ============================================================
+const ORES=[
+  {name:'Coal',emoji:'🪨',chance:0.45,value:1,color:'#aaa'},
+  {name:'Iron',emoji:'⚙️',chance:0.25,value:3,color:'#c0956f'},
+  {name:'Gold',emoji:'🥇',chance:0.15,value:8,color:'#ffe600'},
+  {name:'Diamond',emoji:'💎',chance:0.08,value:25,color:'#00d4ff'},
+  {name:'Emerald',emoji:'💚',chance:0.04,value:60,color:'#39ff14'},
+  {name:'Netherite',emoji:'🔥',chance:0.02,value:200,color:'#bf5fff'},
+  {name:'Ancient',emoji:'⭐',chance:0.01,value:500,color:'#ff7b00'},
+];
+const PICKAXES=[
+  {name:'Wooden',emoji:'🪵',dmg:1,cost:0},
+  {name:'Stone',emoji:'🪨',dmg:3,cost:50},
+  {name:'Iron',emoji:'⚙️',dmg:8,cost:200},
+  {name:'Gold',emoji:'🥇',dmg:15,cost:600},
+  {name:'Diamond',emoji:'💎',dmg:30,cost:2000},
+  {name:'Netherite',emoji:'🔥',dmg:75,cost:8000},
+];
+
+let mineState={
+  gems:0, pickIdx:0, inventory:{}, blocks:[]
+};
+
+function initMining(){
+  // load saved state
+  try{ const s=JSON.parse(localStorage.getItem('tatum-mine')||'null'); if(s){ mineState=s; } } catch{}
+  // init inventory keys
+  ORES.forEach(o=>{ if(!mineState.inventory[o.name]) mineState.inventory[o.name]=0; });
+  if(!mineState.blocks||!mineState.blocks.length) generateBlocks();
+  renderMining();
+}
+
+function generateBlocks(){
+  mineState.blocks=[];
+  for(let i=0;i<20;i++){
+    mineState.blocks.push({hp:3+Math.floor(mineState.pickIdx*.5),maxHp:3+Math.floor(mineState.pickIdx*.5),ore:pickOre()});
+  }
+}
+
+function pickOre(){
+  const r=Math.random();
+  let cum=0;
+  for(const ore of ORES){ cum+=ore.chance; if(r<cum) return ore.name; }
+  return 'Coal';
+}
+
+function renderMining(){
+  document.getElementById('m-total').textContent=mineState.gems;
+  // blocks
+  const grid=document.getElementById('mine-grid');
+  grid.innerHTML='';
+  mineState.blocks.forEach((b,i)=>{
+    const ore=ORES.find(o=>o.name===b.ore);
+    const cracks=b.hp<=0?3:b.hp<=b.maxHp*.33?3:b.hp<=b.maxHp*.66?2:b.hp<=b.maxHp*.9?1:0;
+    const div=document.createElement('div');
+    div.className=`mine-block${cracks>0?' cracked-'+cracks:''}`;
+    div.textContent=ore.emoji;
+    div.title=ore.name;
+    div.onclick=()=>mineBlock(i);
+    grid.appendChild(div);
+  });
+  // pickaxe
+  const pk=PICKAXES[mineState.pickIdx];
+  document.getElementById('mine-pick-info').textContent=`${pk.emoji} ${pk.name} Pickaxe (${pk.dmg} dmg)`;
+  // inventory
+  const invEl=document.getElementById('ore-list');
+  invEl.innerHTML=ORES.map(o=>`<div class="ore-row"><span>${o.emoji} ${o.name}</span><span style="color:${o.color}">${mineState.inventory[o.name]||0}</span></div>`).join('');
+  // upgrades
+  const upEl=document.getElementById('upgrade-list');
+  upEl.innerHTML=PICKAXES.slice(1).map((pk,i)=>{
+    const realIdx=i+1;
+    const owned=mineState.pickIdx>=realIdx;
+    const canBuy=mineState.pickIdx===realIdx-1&&mineState.gems>=pk.cost;
+    if(owned) return `<div class="upgrade-btn" disabled style="opacity:.4;cursor:default">${pk.emoji} ${pk.name} Pickaxe <span style="color:var(--green)">✅ Owned</span></div>`;
+    return `<button class="upgrade-btn" ${!canBuy?'disabled':''} onclick="buyPickaxe(${realIdx})">${pk.emoji} ${pk.name} Pickaxe <span class="upgrade-cost">${pk.cost} 💎</span></button>`;
+  }).join('');
+  saveMine();
+}
+
+function mineBlock(i){
+  const b=mineState.blocks[i];
+  if(!b||b.hp<=0) return;
+  const pk=PICKAXES[mineState.pickIdx];
+  b.hp-=pk.dmg;
+  if(b.hp<=0){
+    const ore=ORES.find(o=>o.name===b.ore);
+    mineState.inventory[ore.name]=(mineState.inventory[ore.name]||0)+1;
+    mineState.gems+=ore.value;
+    // replace block
+    mineState.blocks[i]={hp:3+Math.floor(mineState.pickIdx*.5),maxHp:3+Math.floor(mineState.pickIdx*.5),ore:pickOre()};
+  }
+  renderMining();
+}
+
+function buyPickaxe(idx){
+  const pk=PICKAXES[idx];
+  if(mineState.gems>=pk.cost&&mineState.pickIdx===idx-1){
+    mineState.gems-=pk.cost;
+    mineState.pickIdx=idx;
+    generateBlocks();
+    renderMining();
+  }
+}
+
+function saveMine(){ localStorage.setItem('tatum-mine',JSON.stringify(mineState)); }
+
+// ============================================================
+// TARGET SHOOTER
+// ============================================================
+let shooterRAF=null, shooterRunning=false;
+
+function initShooter(){
+  document.getElementById('shooter-overlay').style.display='flex';
+  document.getElementById('sh-score').textContent='0';
+  document.getElementById('sh-lives').textContent='❤️❤️❤️';
+  document.getElementById('sh-best').textContent=localStorage.getItem('tatum-shooter-best')||'0';
+}
+
+function startShooter(){
+  document.getElementById('shooter-overlay').style.display='none';
+  if(shooterRAF) cancelAnimationFrame(shooterRAF);
+  shooterRunning=true;
+
+  const canvas=document.getElementById('shooter-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+
+  let score=0,lives=3,frame=0;
+  const enemies=[];
+  const TARGETS=['🦈','🐊','🦛','🐘','👾','💀','💣','🕷️','🪲'];
+
+  function spawnEnemy(){
+    const fromLeft=Math.random()<0.5;
+    const size=36+Math.floor(score/200)*2;
+    const clampedSize=Math.min(size,56);
+    enemies.push({
+      x:fromLeft?-clampedSize:W+clampedSize,
+      y:20+Math.random()*(H-80),
+      w:clampedSize,h:clampedSize,
+      speed:(fromLeft?1:-1)*(2.5+Math.random()*1.5+score/600),
+      emoji:TARGETS[Math.floor(Math.random()*TARGETS.length)],
+      hit:false,
     });
   }
 
-  function gameOver() {
-    s.running = false;
-    cancelAnimationFrame(dodgeRAF);
-    window.removeEventListener('keydown', onKey);
-    window.removeEventListener('keyup', onKey);
-    const curBest = parseInt(localStorage.getItem('tatum-dodge-best') || '0');
-    const newBest = Math.max(curBest, s.score);
-    localStorage.setItem('tatum-dodge-best', newBest);
-    document.getElementById('dodge-best').textContent = newBest;
+  function livesStr(){ return '❤️'.repeat(Math.max(0,lives))+'🖤'.repeat(Math.max(0,3-lives)); }
 
-    const overlay = document.getElementById('dodge-overlay');
-    overlay.style.display = 'flex';
-    overlay.innerHTML = `
-      <h2>💀 GAME OVER</h2>
-      <p>Score: <strong style="color:var(--neon-pink)">${s.score}</strong> &nbsp;|&nbsp; Best: <strong style="color:var(--neon-green)">${newBest}</strong></p>
-      <button class="start-btn btn-pink" onclick="beginDodge()">TRY AGAIN 🔄</button>
-    `;
+  const onTap=e=>{
+    if(!shooterRunning) return;
+    const rect=canvas.getBoundingClientRect();
+    const scaleX=W/rect.width, scaleY=H/rect.height;
+    const cx=(e.clientX||e.touches[0].clientX)-rect.left;
+    const cy=(e.clientY||e.touches[0].clientY)-rect.top;
+    const mx=cx*scaleX, my=cy*scaleY;
+    for(let i=enemies.length-1;i>=0;i--){
+      const e2=enemies[i];
+      if(mx>e2.x&&mx<e2.x+e2.w&&my>e2.y&&my<e2.y+e2.h&&!e2.hit){
+        e2.hit=true; score+=10;
+        document.getElementById('sh-score').textContent=score;
+        setTimeout(()=>enemies.splice(enemies.indexOf(e2),1),200);
+        break;
+      }
+    }
+  };
+  canvas.addEventListener('click',onTap);
+  canvas.addEventListener('touchstart',e=>{e.preventDefault();onTap(e);},{passive:false});
+
+  activeCleanup=()=>{ shooterRunning=false; cancelAnimationFrame(shooterRAF); canvas.removeEventListener('click',onTap); };
+
+  function loop(){
+    if(!shooterRunning) return;
+    shooterRAF=requestAnimationFrame(loop);
+    frame++;
+
+    const sr=Math.max(35,80-Math.floor(score/100)*2);
+    if(frame%sr===0) spawnEnemy();
+
+    for(let i=enemies.length-1;i>=0;i--){
+      const e=enemies[i];
+      e.x+=e.speed;
+      if((e.speed>0&&e.x>W+e.w)||(e.speed<0&&e.x<-e.w)){
+        if(!e.hit){
+          lives--;
+          document.getElementById('sh-lives').textContent=livesStr();
+          if(lives<=0){ gameOverShooter(); return; }
+        }
+        enemies.splice(i,1);
+      }
+    }
+
+    // draw
+    ctx.clearRect(0,0,W,H);
+    const grad=ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,'#1a0a00'); grad.addColorStop(1,'#0a0c14');
+    ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
+
+    // grid
+    ctx.strokeStyle='rgba(255,123,0,0.04)'; ctx.lineWidth=1;
+    for(let gx=0;gx<W;gx+=40){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
+    for(let gy=0;gy<H;gy+=40){ ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke(); }
+
+    // crosshair lines
+    ctx.strokeStyle='rgba(255,123,0,0.15)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(W/2,0); ctx.lineTo(W/2,H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+
+    ctx.textBaseline='top';
+    enemies.forEach(e=>{
+      ctx.save();
+      if(e.hit){ ctx.globalAlpha=0.3; }
+      ctx.font=`${e.w}px serif`;
+      ctx.fillText(e.emoji,e.x,e.y);
+      ctx.restore();
+    });
+  }
+
+  function gameOverShooter(){
+    shooterRunning=false;
+    cancelAnimationFrame(shooterRAF);
+    const best=Math.max(parseInt(localStorage.getItem('tatum-shooter-best')||'0'),score);
+    localStorage.setItem('tatum-shooter-best',best);
+    document.getElementById('sh-best').textContent=best;
+    const ov=document.getElementById('shooter-overlay');
+    ov.style.display='flex';
+    ov.innerHTML=`<h2 style="color:var(--orange)">💀 GAME OVER</h2>
+      <p>Score: <strong style="color:var(--orange)">${score}</strong> | Best: <strong style="color:var(--green)">${best}</strong></p>
+      <button class="gbtn gbtn-orange" onclick="startShooter()">TRY AGAIN 🔄</button>`;
   }
 
   loop();

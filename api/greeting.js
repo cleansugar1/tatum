@@ -16,15 +16,12 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 100,
-        messages: [
-          {
-            role: 'user',
-            content: `Generate a short, hype welcome message for a 7-year-old boy named Tatum who loves Roblox, Minecraft, and brainrot memes. Make it feel exciting and personal, like he just logged into his own special gaming world. 1-2 sentences max. Use emojis. Be playful and fun. No offensive content. Examples of tone: "YO TATUM, the Roblox gods have been waiting for you! 🔥", "TATUM IS IN THE CHAT, Minecraft will never be the same 💎⛏️". Generate something NEW and different each time.`
-          }
-        ]
+        messages: [{
+          role: 'user',
+          content: `Generate a short hype welcome message for a 7-year-old boy named Tatum who loves Roblox, Minecraft, brainrot memes (Tralalero Tralala, Bombardiro Crocodilo, Tung Tung Tung Sahur), and gaming. Make it exciting and personal. 1-2 sentences max. Use emojis. Be super playful. Generate something completely NEW and different each time — never repeat the same message. Examples of tone: "YO TATUM, Tralalero Tralala bows down to you! 🦈🔥", "TATUM ALERT 🚨 Minecraft just got 10x better!"`
+        }]
       })
     });
-
     const data = await response.json();
     const greeting = data.content?.[0]?.text || "YO TATUM, welcome to your zone! 🔥";
     res.status(200).json({ greeting });
