@@ -846,7 +846,7 @@ function bossSnackLoop(){
   bossSnackTimeout=setTimeout(()=>{
     if(!bossState||!bossState.running)return;
     bossState.snacks++;updateSnackDisplay();bossLog('🍎 A snack dropped! (+1)');renderStore();bossSnackLoop();
-  },5000+Math.random()*3000);
+  },2500+Math.random()*1500);
 }
 function updateSnackDisplay(){
   if(!bossState)return;
