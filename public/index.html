@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TATUM'S ZONE 🎮</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --bg2: #141728;
+    --card: #1a1f35;
+    --neon-green: #39ff14;
+    --neon-blue: #00d4ff;
+    --neon-yellow: #ffe600;
+    --neon-pink: #ff2d78;
+    --neon-orange: #ff7b00;
+    --minecraft-brown: #8B5E3C;
+    --minecraft-green: #5a8a36;
+    --text: #e8eaf6;
+    --text-dim: #8892b0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== STARS BG ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 45%, rgba(255,255,255,0.6) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  /* ===== PASSWORD SCREEN ===== */
+  #password-screen {
+    background: radial-gradient(ellipse at center, #1a0a2e 0%, #0d0f1a 70%);
+  }
+
+  .pw-box {
+    background: var(--card);
+    border: 2px solid var(--neon-blue);
+    border-radius: 24px;
+    padding: 48px 56px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.2), 0 0 80px rgba(0, 212, 255, 0.05);
+    max-width: 420px;
+    width: 90%;
+    animation: fadeInUp 0.6s ease;
+  }
+
+  .pw-title {
+    font-family: 'Boogaloo', cursive;
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .pw-subtitle { color: var(--text-dim); margin-bottom: 32px; font-size: 1rem; }
+
+  .pw-icon { font-size: 4rem; margin-bottom: 16px; animation: bounce 2s infinite; }
+
+  .pw-input {
+    width: 100%;
+    padding: 14px 20px;
+    background: var(--bg2);
+    border: 2px solid rgba(0,212,255,0.3);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 1.1rem;
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+    letter-spacing: 3px;
+    outline: none;
+    transition: border-color 0.3s;
+    margin-bottom: 16px;
+  }
+
+  .pw-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0,212,255,0.3); }
+
+  .pw-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-size: 1.1rem;
+    font-weight: 900;
+    font-family: 'Boogaloo', cursive;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .pw-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,255,0.4); }
+  .pw-btn:active { transform: translateY(0); }
+
+  .pw-error {
+    color: var(--neon-pink);
+    font-size: 0.9rem;
+    margin-top: 12px;
+    display: none;
+    animation: shake 0.4s ease;
+  }
+
+  /* ===== HOME SCREEN ===== */
+  #home-screen {
+    background: radial-gradient(ellipse at 20% 20%, #0a1a2e 0%, #0d0f1a 60%);
+    padding: 40px 20px;
+    gap: 0;
+    justify-content: flex-start;
+    padding-top: 60px;
+  }
+
+  .home-header { text-align: center; margin-bottom: 48px; }
+
+  .home-title {
+    font-family: 'Boogaloo', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .title-tatum {
+    background: linear-gradient(135deg, var(--neon-yellow), var(--neon-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(255,230,0,0.4));
+  }
+
+  .title-zone {
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .greeting-box {
+    background: linear-gradient(135deg, rgba(57,255,20,0.1), rgba(0,212,255,0.1));
+    border: 1px solid rgba(57,255,20,0.3);
+    border-radius: 16px;
+    padding: 16px 24px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    margin-top: 16px;
+    max-width: 600px;
+    text-align: center;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .greeting-loading { color: var(--text-dim); font-weight: 400; }
+
+  /* ===== GAME CARDS ===== */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 960px;
+    width: 100%;
+  }
+
+  .game-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 32px 28px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+    text-align: center;
+  }
+
+  .game-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 18px;
+  }
+
+  .game-card:hover { transform: translateY(-8px); }
+  .game-card:hover::before { opacity: 1; }
+
+  .card-dodge { border-color: rgba(255,45,120,0.4); }
+  .card-dodge:hover { box-shadow: 0 20px 50px rgba(255,45,120,0.3); border-color: var(--neon-pink); }
+  .card-dodge::before { background: radial-gradient(ellipse at top, rgba(255,45,120,0.08) 0%, transparent 70%); }
+
+  .card-trivia { border-color: rgba(255,230,0,0.4); }
+  .card-trivia:hover { box-shadow: 0 20px 50px rgba(255,230,0,0.3); border-color: var(--neon-yellow); }
+  .card-trivia::before { background: radial-gradient(ellipse at top, rgba(255,230,0,0.08) 0%, transparent 70%); }
+
+  .card-builder { border-color: rgba(57,255,20,0.4); }
+  .card-builder:hover { box-shadow: 0 20px 50px rgba(57,255,20,0.3); border-color: var(--neon-green); }
+  .card-builder::before { background: radial-gradient(ellipse at top, rgba(57,255,20,0.08) 0%, transparent 70%); }
+
+  .card-emoji { font-size: 4rem; margin-bottom: 16px; display: block; }
+  .card-title { font-family: 'Boogaloo', cursive; font-size: 1.8rem; margin-bottom: 8px; }
+  .card-desc { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
+
+  .card-dodge .card-title { color: var(--neon-pink); }
+  .card-trivia .card-title { color: var(--neon-yellow); }
+  .card-builder .card-title { color: var(--neon-green); }
+
+  /* ===== GAME SCREENS ===== */
+  .game-screen {
+    padding: 20px;
+    gap: 20px;
+    justify-content: flex-start;
+    padding-top: 30px;
+  }
+
+  .back-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    z-index: 100;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .game-title {
+    font-family: 'Boogaloo', cursive;
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  /* ===== DODGE GAME ===== */
+  #dodge-screen { background: radial-gradient(ellipse at center, #1a0015 0%, #0d0f1a 70%); }
+
+  #dodge-canvas {
+    border: 3px solid var(--neon-pink);
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(255,45,120,0.3);
+    touch-action: none;
+    cursor: none;
+    display: block;
+    max-width: 100%;
+  }
+
+  .dodge-info {
+    display: flex;
+    gap: 32px;
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.3rem;
+  }
+
+  .dodge-score-label { color: var(--text-dim); font-size: 0.85rem; font-family: 'Nunito', sans-serif; font-weight: 700; display: block; }
+  .score-val { color: var(--neon-pink); font-size: 2rem; }
+
+  #dodge-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.85);
+    border-radius: 12px;
+    z-index: 10;
+    gap: 16px;
+  }
+
+  #dodge-overlay h2 { font-family: 'Boogaloo', cursive; font-size: 2.5rem; color: var(--neon-pink); }
+  #dodge-overlay p { color: var(--text-dim); font-size: 1rem; }
+  .start-btn {
+    padding: 14px 32px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .start-btn:hover { transform: translateY(-3px); }
+  .btn-pink { background: var(--neon-pink); color: #fff; }
+  .btn-pink:hover { box-shadow: 0 8px 24px rgba(255,45,120,0.5); }
+  .btn-yellow { background: var(--neon-yellow); color: #000; }
+  .btn-yellow:hover { box-shadow: 0 8px 24px rgba(255,230,0,0.5); }
+  .btn-green { background: var(--neon-green); color: #000; }
+  .btn-green:hover { box-shadow: 0 8px 24px rgba(57,255,20,0.5); }
+
+  .dodge-wrap { position: relative; }
+
+  /* ===== TRIVIA ===== */
+  #trivia-screen { background: radial-gradient(ellipse at center, #1a1500 0%, #0d0f1a 70%); }
+
+  .trivia-box {
+    background: var(--card);
+    border: 2px solid var(--neon-yellow);
+    border-radius: 20px;
+    padding: 36px;
+    max-width: 640px;
+    width: 100%;
+    box-shadow: 0 0 30px rgba(255,230,0,0.15);
+  }
+
+  .trivia-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    margin-bottom: 24px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--neon-yellow), var(--neon-orange));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .trivia-q {
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    line-height: 1.4;
+    color: var(--neon-yellow);
+  }
+
+  .trivia-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .trivia-opt {
+    padding: 14px 16px;
+    background: var(--bg2);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+
+  .trivia-opt:hover:not(:disabled) { border-color: var(--neon-yellow); background: rgba(255,230,0,0.08); }
+  .trivia-opt.correct { border-color: var(--neon-green); background: rgba(57,255,20,0.15); color: var(--neon-green); }
+  .trivia-opt.wrong { border-color: var(--neon-pink); background: rgba(255,45,120,0.15); color: var(--neon-pink); }
+  .trivia-opt:disabled { cursor: default; }
+
+  .trivia-feedback {
+    margin-top: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    min-height: 28px;
+    text-align: center;
+  }
+
+  .trivia-next {
+    margin-top: 20px;
+    width: 100%;
+    padding: 14px;
+    background: var(--neon-yellow);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: none;
+    transition: transform 0.2s;
+  }
+  .trivia-next:hover { transform: translateY(-2px); }
+
+  .trivia-result {
+    text-align: center;
+    padding: 20px;
+  }
+  .trivia-result h2 { font-family: 'Boogaloo', cursive; font-size: 2.5rem; color: var(--neon-yellow); margin-bottom: 12px; }
+  .trivia-result p { color: var(--text-dim); margin-bottom: 24px; font-size: 1.1rem; }
+  .result-score { font-family: 'Boogaloo', cursive; font-size: 4rem; color: var(--neon-green); }
+
+  /* ===== CHARACTER BUILDER ===== */
+  #builder-screen { background: radial-gradient(ellipse at center, #001a10 0%, #0d0f1a 70%); }
+
+  .builder-wrap {
+    display: flex;
+    gap: 32px;
+    max-width: 900px;
+    width: 100%;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .builder-preview {
+    background: var(--card);
+    border: 2px solid var(--neon-green);
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    flex: 0 0 240px;
+    box-shadow: 0 0 30px rgba(57,255,20,0.15);
+  }
+
+  .character-display {
+    font-size: 1.8rem;
+    line-height: 1.4;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    background: var(--bg2);
+    border-radius: 12px;
+    padding: 16px;
+    gap: 4px;
+  }
+
+  .char-name {
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.1rem;
+    color: var(--neon-green);
+    margin-top: 8px;
+  }
+
+  .builder-controls {
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .builder-section {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(57,255,20,0.2);
+  }
+
+  .builder-section h3 {
+    font-family: 'Boogaloo', cursive;
+    font-size: 1.1rem;
+    color: var(--neon-green);
+    margin-bottom: 12px;
+  }
+
+  .option-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .opt-btn {
+    padding: 8px 14px;
+    background: var(--bg2);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1.4rem;
+    transition: all 0.2s;
+  }
+  .opt-btn:hover { border-color: var(--neon-green); transform: scale(1.1); }
+  .opt-btn.selected { border-color: var(--neon-green); background: rgba(57,255,20,0.15); box-shadow: 0 0 12px rgba(57,255,20,0.2); }
+
+  .name-input-wrap { display: flex; gap: 10px; }
+  .char-name-input {
+    flex: 1;
+    padding: 10px 14px;
+    background: var(--bg2);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .char-name-input:focus { border-color: var(--neon-green); }
+  .char-name-input::placeholder { color: var(--text-dim); }
+
+  .save-btn {
+    padding: 10px 16px;
+    background: var(--neon-green);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Boogaloo', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.2s;
+  }
+  .save-btn:hover { transform: scale(1.05); }
+
+  .saved-chars {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .saved-chip {
+    background: var(--bg2);
+    border: 1px solid rgba(57,255,20,0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-dim);
+  }
+  .saved-chip:hover { border-color: var(--neon-green); color: var(--text); }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .card-enter {
+    animation: fadeInUp 0.5s ease both;
+  }
+  .card-enter:nth-child(1) { animation-delay: 0.1s; }
+  .card-enter:nth-child(2) { animation-delay: 0.2s; }
+  .card-enter:nth-child(3) { animation-delay: 0.3s; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .pw-box { padding: 36px 24px; }
+    .trivia-options { grid-template-columns: 1fr; }
+    .builder-preview { flex: 0 0 100%; }
+    .dodge-info { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD SCREEN -->
+<div id="password-screen" class="screen active">
+  <div class="pw-box">
+    <div class="pw-icon">🔐</div>
+    <div class="pw-title">TATUM'S ZONE</div>
+    <div class="pw-subtitle">Top secret access only 👀</div>
+    <input type="password" class="pw-input" id="pw-input" placeholder="Enter password..." autocomplete="off">
+    <button class="pw-btn" onclick="checkPassword()">LET ME IN 🚀</button>
+    <div class="pw-error" id="pw-error">❌ Wrong password! Try again...</div>
+  </div>
+</div>
+
+<!-- HOME SCREEN -->
+<div id="home-screen" class="screen">
+  <div class="home-header">
+    <div class="home-title">
+      <span class="title-tatum">TATUM'S</span> <span class="title-zone">ZONE 🎮</span>
+    </div>
+    <div class="greeting-box" id="greeting-box">
+      <span class="greeting-loading">Loading your greeting... ⚡</span>
+    </div>
+  </div>
+  <div class="games-grid">
+    <div class="game-card card-dodge card-enter" onclick="showScreen('dodge-screen'); startDodgeGame()">
+      <span class="card-emoji">💥</span>
+      <div class="card-title">DODGE OR DIE</div>
+      <div class="card-desc">Dodge the falling creepers and TNT! How long can you survive?</div>
+    </div>
+    <div class="game-card card-trivia card-enter" onclick="showScreen('trivia-screen'); startTrivia()">
+      <span class="card-emoji">🧠</span>
+      <div class="card-title">BIG BRAIN QUIZ</div>
+      <div class="card-desc">Roblox & Minecraft trivia. Can you get a perfect score?</div>
+    </div>
+    <div class="game-card card-builder card-enter" onclick="showScreen('builder-screen')">
+      <span class="card-emoji">🧑‍🎤</span>
+      <div class="card-title">CHARACTER BUILDER</div>
+      <div class="card-desc">Build your own Roblox-style character. Mix and match everything!</div>
+    </div>
+  </div>
+</div>
+
+<!-- DODGE GAME SCREEN -->
+<div id="dodge-screen" class="screen game-screen">
+  <button class="back-btn" onclick="showScreen('home-screen'); stopDodge()">← Back</button>
+  <div class="game-title" style="color: var(--neon-pink)">💥 DODGE OR DIE</div>
+  <div class="dodge-info">
+    <div><span class="dodge-score-label">SCORE</span><span class="score-val" id="dodge-score">0</span></div>
+    <div><span class="dodge-score-label">BEST</span><span class="score-val" id="dodge-best">0</span></div>
+    <div><span class="dodge-score-label">LIVES</span><span class="score-val" id="dodge-lives">❤️❤️❤️</span></div>
+  </div>
+  <div class="dodge-wrap">
+    <canvas id="dodge-canvas" width="480" height="400"></canvas>
+    <div id="dodge-overlay">
+      <h2>💥 DODGE OR DIE</h2>
+      <p>Move left & right to dodge! (mouse, touch, or arrow keys)</p>
+      <button class="start-btn btn-pink" id="dodge-start-btn" onclick="beginDodge()">START GAME 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRIVIA SCREEN -->
+<div id="trivia-screen" class="screen game-screen">
+  <button class="back-btn" onclick="showScreen('home-screen')">← Back</button>
+  <div class="game-title" style="color: var(--neon-yellow)">🧠 BIG BRAIN QUIZ</div>
+  <div class="trivia-box" id="trivia-box">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- CHARACTER BUILDER SCREEN -->
+<div id="builder-screen" class="screen game-screen">
+  <button class="back-btn" onclick="showScreen('home-screen')">← Back</button>
+  <div class="game-title" style="color: var(--neon-green)">🧑‍🎤 CHARACTER BUILDER</div>
+  <div class="builder-wrap">
+    <div class="builder-preview">
+      <div class="character-display" id="char-display">
+        <span id="char-hat">🎩</span>
+        <span id="char-face">😎</span>
+        <span id="char-body">👕</span>
+        <span id="char-legs">👖</span>
+        <span id="char-shoes">👟</span>
+        <span id="char-weapon">⚔️</span>
+      </div>
+      <div class="char-name" id="char-name-display">Hero</div>
+    </div>
+    <div class="builder-controls">
+      <div class="builder-section">
+        <h3>🎩 Hat / Head</h3>
+        <div class="option-grid" id="opts-hat"></div>
+      </div>
+      <div class="builder-section">
+        <h3>😎 Face</h3>
+        <div class="option-grid" id="opts-face"></div>
+      </div>
+      <div class="builder-section">
+        <h3>👕 Body</h3>
+        <div class="option-grid" id="opts-body"></div>
+      </div>
+      <div class="builder-section">
+        <h3>👖 Legs</h3>
+        <div class="option-grid" id="opts-legs"></div>
+      </div>
+      <div class="builder-section">
+        <h3>👟 Shoes</h3>
+        <div class="option-grid" id="opts-shoes"></div>
+      </div>
+      <div class="builder-section">
+        <h3>⚔️ Weapon / Item</h3>
+        <div class="option-grid" id="opts-weapon"></div>
+      </div>
+      <div class="builder-section">
+        <h3>✏️ Name Your Character</h3>
+        <div class="name-input-wrap">
+          <input type="text" class="char-name-input" id="char-name-input" placeholder="Enter a name..." maxlength="20">
+          <button class="save-btn" onclick="saveCharacter()">SAVE ⭐</button>
+        </div>
+        <div class="saved-chars" id="saved-chars"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===========================
+// NAVIGATION
+// ===========================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ===========================
+// PASSWORD
+// ===========================
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function checkPassword() {
+  const val = document.getElementById('pw-input').value.toLowerCase().trim();
+  if (val === 'tatumtatum') {
+    showScreen('home-screen');
+    fetchGreeting();
+    initBuilder();
+  } else {
+    const err = document.getElementById('pw-error');
+    err.style.display = 'block';
+    err.style.animation = 'none';
+    setTimeout(() => err.style.animation = 'shake 0.4s ease', 10);
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+// ===========================
+// GREETING
+// ===========================
+async function fetchGreeting() {
+  const box = document.getElementById('greeting-box');
+  try {
+    const res = await fetch('/api/greeting', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+    const data = await res.json();
+    box.innerHTML = data.greeting;
+    box.style.animation = 'fadeInUp 0.5s ease';
+  } catch {
+    const fallbacks = [
+      "YO TATUM, the legend has returned! 🔥",
+      "TATUM IS IN THE CHAT! Let's gooo 🎮",
+      "Welcome back king Tatum! The games await 👑",
+      "TATUM DETECTED 🚨 Roblox fears you 💪"
+    ];
+    box.innerHTML = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  }
+}
+
+// ===========================
+// TRIVIA
+// ===========================
+const triviaQuestions = [
+  { q: "What is a Creeper's favorite thing to do in Minecraft?", opts: ["Say hi 👋", "Blow up BOOM 💥", "Mine diamonds 💎", "Make cookies 🍪"], ans: 1 },
+  { q: "In Roblox, what do you use to buy items in the catalog?", opts: ["Gold Coins", "Gems", "Robux", "Diamonds"], ans: 2 },
+  { q: "What material is the strongest tool in Minecraft?", opts: ["Iron", "Gold", "Diamond", "Netherite"], ans: 3 },
+  { q: "What year was Roblox first released?", opts: ["2004", "2006", "2010", "2012"], ans: 1 },
+  { q: "What mob drops Ender Pearls in Minecraft?", opts: ["Skeleton", "Enderman", "Creeper", "Witch"], ans: 1 },
+  { q: "What game on Roblox has you defending your base with towers?", opts: ["Adopt Me", "Tower of Hell", "Tower Defense Simulator", "Blox Fruits"], ans: 2 },
+  { q: "What is the rarest ore you can find in Minecraft 1.16+?", opts: ["Diamond", "Emerald", "Ancient Debris", "Lapis"], ans: 2 },
+  { q: "In Minecraft, what do you use to tame a wolf?", opts: ["Fish", "Bone", "Meat", "Apple"], ans: 1 },
+  { q: "What does TNT stand for in Minecraft?", opts: ["Totally Neat Thing", "The New Tool", "Trinitrotoluene", "Timed Nether Trap"], ans: 2 },
+  { q: "On Roblox, what game lets you be a fruit with powers?", opts: ["Adopt Me", "Blox Fruits", "Murder Mystery", "Jailbreak"], ans: 1 },
+  { q: "What is the name of the main world dimension in Minecraft?", opts: ["The End", "Nether", "Overworld", "Sky World"], ans: 2 },
+  { q: "Which Roblox game involves roleplaying as a family and adopting pets?", opts: ["MeepCity", "Blox Fruits", "Adopt Me", "Work at a Pizza Place"], ans: 2 },
+];
+
+let triviaState = { current: 0, score: 0, questions: [] };
+
+function startTrivia() {
+  triviaState.questions = [...triviaQuestions].sort(() => Math.random() - 0.5).slice(0, 8);
+  triviaState.current = 0;
+  triviaState.score = 0;
+  renderTrivia();
+}
+
+function renderTrivia() {
+  const box = document.getElementById('trivia-box');
+  if (triviaState.current >= triviaState.questions.length) {
+    const pct = Math.round((triviaState.score / triviaState.questions.length) * 100);
+    const emoji = pct === 100 ? '🏆' : pct >= 75 ? '🔥' : pct >= 50 ? '😎' : '💪';
+    box.innerHTML = `
+      <div class="trivia-result">
+        <h2>${emoji} Game Over!</h2>
+        <div class="result-score">${triviaState.score}/${triviaState.questions.length}</div>
+        <p>${pct === 100 ? 'PERFECT SCORE! You\'re a legend!' : pct >= 75 ? 'Big brain Tatum! 🧠' : pct >= 50 ? 'Not bad! Play again!' : 'Keep practicing!'}</p>
+        <button class="start-btn btn-yellow" onclick="startTrivia()">PLAY AGAIN 🔄</button>
+      </div>`;
+    return;
+  }
+  const q = triviaState.questions[triviaState.current];
+  const prog = ((triviaState.current / triviaState.questions.length) * 100).toFixed(0);
+  box.innerHTML = `
+    <div class="trivia-progress">
+      <span>Question ${triviaState.current + 1} of ${triviaState.questions.length}</span>
+      <span>⭐ ${triviaState.score} pts</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
+    <div class="trivia-q">${q.q}</div>
+    <div class="trivia-options">
+      ${q.opts.map((o, i) => `<button class="trivia-opt" onclick="answerTrivia(${i})">${o}</button>`).join('')}
+    </div>
+    <div class="trivia-feedback" id="trivia-feedback"></div>
+    <button class="trivia-next" id="trivia-next" onclick="nextTrivia()">Next Question ➡️</button>
+  `;
+}
+
+function answerTrivia(idx) {
+  const q = triviaState.questions[triviaState.current];
+  const opts = document.querySelectorAll('.trivia-opt');
+  const fb = document.getElementById('trivia-feedback');
+  opts.forEach(o => o.disabled = true);
+  opts[q.ans].classList.add('correct');
+  if (idx === q.ans) {
+    triviaState.score++;
+    fb.innerHTML = '<span style="color:var(--neon-green)">✅ CORRECT! You\'re a genius! 🧠</span>';
+  } else {
+    opts[idx].classList.add('wrong');
+    fb.innerHTML = `<span style="color:var(--neon-pink)">❌ Nope! The answer was: ${q.opts[q.ans]}</span>`;
+  }
+  document.getElementById('trivia-next').style.display = 'block';
+}
+
+function nextTrivia() {
+  triviaState.current++;
+  renderTrivia();
+}
+
+// ===========================
+// CHARACTER BUILDER
+// ===========================
+const builderOptions = {
+  hat:    ['🎩','⛑️','🪖','👑','🎓','🧢','🤠','🎅','🦸','🪄','⚡','🌟'],
+  face:   ['😎','😤','😈','🤩','😤','🧐','🤑','😤','👽','🤖','😼','🦊'],
+  body:   ['👕','🧥','🦺','👔','🧣','🥻','👘','🦸','⚔️','🧙','🤺','🥷'],
+  legs:   ['👖','🩳','🥋','👗','🩱','🎽'],
+  shoes:  ['👟','👞','👢','🥾','🩴','🧤'],
+  weapon: ['⚔️','🪄','🏹','🗡️','🔱','🛡️','💣','🔮','🪃','🪓','⛏️','🧨'],
+};
+
+const charState = {
+  hat: '🎩', face: '😎', body: '👕', legs: '👖', shoes: '👟', weapon: '⚔️'
+};
+
+function initBuilder() {
+  Object.keys(builderOptions).forEach(part => {
+    const container = document.getElementById(`opts-${part}`);
+    if (!container) return;
+    builderOptions[part].forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn' + (charState[part] === emoji ? ' selected' : '');
+      btn.textContent = emoji;
+      btn.onclick = () => selectPart(part, emoji, btn, container);
+      container.appendChild(btn);
+    });
+  });
+  loadSavedChars();
+}
+
+function selectPart(part, emoji, btn, container) {
+  container.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  charState[part] = emoji;
+  document.getElementById(`char-${part}`).textContent = emoji;
+}
+
+function saveCharacter() {
+  const name = document.getElementById('char-name-input').value.trim() || 'Hero';
+  document.getElementById('char-name-display').textContent = name;
+  const saved = JSON.parse(localStorage.getItem('tatum-chars') || '[]');
+  const newChar = { name, ...charState };
+  if (!saved.find(c => c.name === name)) {
+    saved.push(newChar);
+    localStorage.setItem('tatum-chars', JSON.stringify(saved.slice(-10)));
+  }
+  loadSavedChars();
+}
+
+function loadSavedChars() {
+  const saved = JSON.parse(localStorage.getItem('tatum-chars') || '[]');
+  const container = document.getElementById('saved-chars');
+  container.innerHTML = saved.map(c =>
+    `<div class="saved-chip" onclick="loadChar('${c.name}')" title="Load ${c.name}">${c.face} ${c.name}</div>`
+  ).join('');
+}
+
+function loadChar(name) {
+  const saved = JSON.parse(localStorage.getItem('tatum-chars') || '[]');
+  const c = saved.find(x => x.name === name);
+  if (!c) return;
+  Object.keys(builderOptions).forEach(part => {
+    if (!c[part]) return;
+    charState[part] = c[part];
+    document.getElementById(`char-${part}`).textContent = c[part];
+    const container = document.getElementById(`opts-${part}`);
+    container.querySelectorAll('.opt-btn').forEach(b => {
+      b.classList.toggle('selected', b.textContent === c[part]);
+    });
+  });
+  document.getElementById('char-name-display').textContent = c.name;
+  document.getElementById('char-name-input').value = c.name;
+}
+
+// ===========================
+// DODGE GAME
+// ===========================
+let dodgeState = null;
+let dodgeRAF = null;
+
+function startDodgeGame() {
+  // just shows screen, overlay visible
+}
+
+function stopDodge() {
+  if (dodgeRAF) { cancelAnimationFrame(dodgeRAF); dodgeRAF = null; }
+  if (dodgeState) dodgeState.running = false;
+}
+
+function beginDodge() {
+  document.getElementById('dodge-overlay').style.display = 'none';
+  const canvas = document.getElementById('dodge-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const best = parseInt(localStorage.getItem('tatum-dodge-best') || '0');
+  document.getElementById('dodge-best').textContent = best;
+
+  dodgeState = {
+    running: true,
+    player: { x: W / 2, y: H - 60, w: 40, h: 40, speed: 7 },
+    obstacles: [],
+    score: 0,
+    lives: 3,
+    frame: 0,
+    spawnRate: 60,
+    maxSpeed: 4,
+    keys: {},
+    mouseX: W / 2,
+    invincible: 0,
+  };
+
+  const s = dodgeState;
+
+  // Input handlers
+  const onKey = e => { s.keys[e.code] = e.type === 'keydown'; };
+  const onMouse = e => {
+    const rect = canvas.getBoundingClientRect();
+    s.mouseX = (e.clientX - rect.left) * (W / rect.width);
+  };
+  const onTouch = e => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    s.mouseX = (e.touches[0].clientX - rect.left) * (W / rect.width);
+  };
+  window.addEventListener('keydown', onKey);
+  window.addEventListener('keyup', onKey);
+  canvas.addEventListener('mousemove', onMouse);
+  canvas.addEventListener('touchmove', onTouch, { passive: false });
+
+  const EMOJIS = ['💣','👾','💥','🪲','🕷️','💀'];
+
+  function spawnObstacle() {
+    const size = 28 + Math.random() * 18;
+    s.obstacles.push({
+      x: Math.random() * (W - size),
+      y: -size,
+      w: size,
+      h: size,
+      speed: 1.5 + Math.random() * s.maxSpeed,
+      emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
+    });
+  }
+
+  function livesStr() {
+    return '❤️'.repeat(Math.max(0, s.lives)) + '🖤'.repeat(Math.max(0, 3 - s.lives));
+  }
+
+  function loop() {
+    if (!s.running) return;
+    dodgeRAF = requestAnimationFrame(loop);
+    s.frame++;
+
+    // Move player
+    const useKeys = s.keys['ArrowLeft'] || s.keys['ArrowRight'];
+    if (useKeys) {
+      if (s.keys['ArrowLeft']) s.player.x -= s.player.speed;
+      if (s.keys['ArrowRight']) s.player.x += s.player.speed;
+    } else {
+      const dx = s.mouseX - (s.player.x + s.player.w / 2);
+      s.player.x += dx * 0.15;
+    }
+    s.player.x = Math.max(0, Math.min(W - s.player.w, s.player.x));
+
+    // Spawn
+    const sr = Math.max(20, s.spawnRate - Math.floor(s.score / 200));
+    if (s.frame % sr === 0) spawnObstacle();
+    s.maxSpeed = Math.min(8, 4 + s.score / 500);
+
+    // Move obstacles
+    s.obstacles = s.obstacles.filter(o => {
+      o.y += o.speed;
+      return o.y < H + o.h;
+    });
+
+    // Collision
+    if (s.invincible <= 0) {
+      for (const o of s.obstacles) {
+        const px = s.player.x, py = s.player.y, pw = s.player.w, ph = s.player.h;
+        if (o.x < px + pw && o.x + o.w > px && o.y < py + ph && o.y + o.h > py) {
+          s.lives--;
+          s.invincible = 90;
+          s.obstacles = s.obstacles.filter(x => x !== o);
+          document.getElementById('dodge-lives').textContent = livesStr();
+          if (s.lives <= 0) { gameOver(); return; }
+          break;
+        }
+      }
+    } else { s.invincible--; }
+
+    s.score++;
+    document.getElementById('dodge-score').textContent = s.score;
+
+    // Draw
+    ctx.clearRect(0, 0, W, H);
+
+    // BG grid
+    ctx.strokeStyle = 'rgba(255,45,120,0.05)';
+    ctx.lineWidth = 1;
+    for (let gx = 0; gx < W; gx += 40) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke(); }
+    for (let gy = 0; gy < H; gy += 40) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
+
+    // Player
+    ctx.save();
+    if (s.invincible > 0 && Math.floor(s.invincible / 8) % 2 === 0) {
+      ctx.globalAlpha = 0.3;
+    }
+    ctx.font = `${s.player.w}px serif`;
+    ctx.textBaseline = 'top';
+    ctx.fillText('🧍', s.player.x, s.player.y);
+    ctx.restore();
+
+    // Obstacles
+    ctx.textBaseline = 'top';
+    s.obstacles.forEach(o => {
+      ctx.font = `${o.w}px serif`;
+      ctx.fillText(o.emoji, o.x, o.y);
+    });
+  }
+
+  function gameOver() {
+    s.running = false;
+    cancelAnimationFrame(dodgeRAF);
+    window.removeEventListener('keydown', onKey);
+    window.removeEventListener('keyup', onKey);
+    const curBest = parseInt(localStorage.getItem('tatum-dodge-best') || '0');
+    const newBest = Math.max(curBest, s.score);
+    localStorage.setItem('tatum-dodge-best', newBest);
+    document.getElementById('dodge-best').textContent = newBest;
+
+    const overlay = document.getElementById('dodge-overlay');
+    overlay.style.display = 'flex';
+    overlay.innerHTML = `
+      <h2>💀 GAME OVER</h2>
+      <p>Score: <strong style="color:var(--neon-pink)">${s.score}</strong> &nbsp;|&nbsp; Best: <strong style="color:var(--neon-green)">${newBest}</strong></p>
+      <button class="start-btn btn-pink" onclick="beginDodge()">TRY AGAIN 🔄</button>
+    `;
+  }
+
+  loop();
+}
+</script>
+</body>
+</html>
