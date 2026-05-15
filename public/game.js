@@ -366,10 +366,17 @@ function launchDodge(){
   document.getElementById('dodge-overlay').style.display='none';
   if(dodgeRAF)cancelAnimationFrame(dodgeRAF);
   dodgeRunning=true;
-  const canvas=document.getElementById('dodge-canvas');const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height;
+  const canvas=document.getElementById('dodge-canvas');
+  const dpr=window.devicePixelRatio||1;
+  const wrap=canvas.parentElement;
+  const availW=Math.min(wrap.clientWidth||420,520);
+  const availH=Math.min(window.innerHeight*0.72,680);
+  canvas.width=availW*dpr;canvas.height=availH*dpr;
+  canvas.style.width=availW+'px';canvas.style.height=availH+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  const W=availW,H=availH;
   let score=0,diamonds=0,lives=3,frame=0,invincible=0,playerX=W/2-20;
-  const pW=40,pH=40,pSpeed=8;let mouseX=W/2;const keys={};const enemies=[],gems=[];
+  const pW=40,pH=40,pSpeed=10;let mouseX=W/2;const keys={};const enemies=[],gems=[];
   const ENEMIES=['💣','👾','💥','🕷️','💀','🪲'];
   const onKey=e=>{keys[e.code]=e.type==='keydown';};
   const onMouse=e=>{const r=canvas.getBoundingClientRect();mouseX=(e.clientX-r.left)*(W/r.width);};
@@ -385,7 +392,7 @@ function launchDodge(){
     else{playerX+=(mouseX-playerX-pW/2)*0.18;}
     playerX=Math.max(0,Math.min(W-pW,playerX));
     const sr=Math.max(22,55-Math.floor(score/300));
-    if(frame%sr===0)enemies.push({x:Math.random()*(W-32),y:-32,w:32,h:32,speed:2+Math.random()*(2+score/600),emoji:ENEMIES[Math.floor(Math.random()*ENEMIES.length)]});
+    if(frame%sr===0)enemies.push({x:Math.random()*(W-32),y:-32,w:32,h:32,speed:3.5+Math.random()*(2.5+score/500),emoji:ENEMIES[Math.floor(Math.random()*ENEMIES.length)]});
     if(frame%240===0)gems.push({x:Math.random()*(W-28),y:-28,w:28,h:28,speed:1.2+Math.random()*.8});
     for(let i=enemies.length-1;i>=0;i--){
       enemies[i].y+=enemies[i].speed;
@@ -532,14 +539,15 @@ function startRunner(){
   document.getElementById('runner-overlay').style.display='none';
   if(runnerRAF)cancelAnimationFrame(runnerRAF);runnerRunning=true;
   const canvas=document.getElementById('runner-canvas');
-  // Fix retina blur
   const dpr=window.devicePixelRatio||1;
-  const W=700,H=260;
+  const availW=Math.min((canvas.parentElement?.clientWidth||700),900);
+  const availH=Math.min(Math.round(availW*0.38),320);
+  const W=availW,H=availH;
   canvas.width=W*dpr;canvas.height=H*dpr;
   canvas.style.width=W+'px';canvas.style.height=H+'px';
   const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
   const GROUND=H-38,PLAYER_X=80;
-  let score=0,frame=0,speed=3.5,jumping=false,jumpVel=0,playerY=GROUND-46,jumpHeld=false;
+  let score=0,frame=0,speed=5.5,jumping=false,jumpVel=0,playerY=GROUND-46,jumpHeld=false;
   const obstacles=[],floaters=[];let groundOff=0,nextSpawn=90;
   const CHARS=['👾','💣','🕷️','💀','🪲','🦈','🐊','🦛'];
   const FLOAT=['🦅','👻','🦇','💥'];
@@ -552,7 +560,7 @@ function startRunner(){
   activeCleanup=()=>{runnerRunning=false;cancelAnimationFrame(runnerRAF);window.removeEventListener('keydown',onKey);window.removeEventListener('keyup',onKey);};
   function loop(){
     if(!runnerRunning)return;runnerRAF=requestAnimationFrame(loop);frame++;
-    if(frame%6===0)score++;speed=Math.min(9,3.5+score*0.007);groundOff=(groundOff+speed)%(W*2);
+    if(frame%6===0)score++;speed=Math.min(14,5.5+score*0.012);groundOff=(groundOff+speed)%(W*2);
     if(jumping){playerY+=jumpVel;const g=jumpHeld&&jumpVel<0?0.55:0.85;jumpVel+=g;if(playerY>=GROUND-46){playerY=GROUND-46;jumping=false;jumpVel=0;}}
     nextSpawn--;
     if(nextSpawn<=0){
@@ -655,11 +663,19 @@ const MINE_TOOLS=[
   {name:'Diamond Pickaxe',emoji:'💎⛏️',dmg:18,recipe:{Diamond:3,Wood:2}},
   {name:'Netherite Pickaxe',emoji:'🔥⛏️',dmg:40,recipe:{Netherite:2,Diamond:1}},
 ];
-const MINE_COLS=4,MINE_ROWS=4,BLOCK_SIZE=56;
+const MINE_COLS=4,MINE_ROWS=4;
+function getMineBlockSize(){const wrap=document.getElementById('mine-canvas')?.parentElement;const avail=wrap?Math.min(wrap.clientWidth||300,420):300;return Math.floor(avail/MINE_COLS);}
+let BLOCK_SIZE=getMineBlockSize();
 let mineS={running:false,layerIdx:0,toolIdx:0,inventory:{},blocks:[],timerLeft:90,timerTotal:90,gameOver:false,won:false,startTime:0};
 let mineTimerInterval=null;
 function initMining(){renderMineLB();document.getElementById('mine-overlay').style.display='flex';}
 function startMining(){
+  BLOCK_SIZE=getMineBlockSize();
+  const mineCanvas=document.getElementById('mine-canvas');
+  const mineSize=BLOCK_SIZE*MINE_COLS;
+  mineCanvas.width=mineSize;mineCanvas.height=mineSize;
+  mineCanvas.style.width=mineSize+'px';mineCanvas.style.height=mineSize+'px';
+  document.getElementById('m-timer-bar-wrap')&&(document.getElementById('m-timer-bar-wrap').style.width=mineSize+'px');
   document.getElementById('mine-overlay').style.display='none';clearInterval(mineTimerInterval);
   mineS={running:true,layerIdx:0,toolIdx:0,inventory:{},blocks:[],timerLeft:90,timerTotal:90,gameOver:false,won:false,startTime:Date.now()};
   MINE_LAYERS.forEach(l=>{mineS.inventory[l.drop]=0;});mineS.inventory.Wood=0;
@@ -725,7 +741,9 @@ function initShooter(){document.getElementById('shooter-overlay').style.display=
 function startShooter(){
   document.getElementById('shooter-overlay').style.display='none';if(shooterRAF)cancelAnimationFrame(shooterRAF);shooterRunning=true;
   const canvas=document.getElementById('shooter-canvas');
-  const dpr=window.devicePixelRatio||1;const CW=680,CH=360;
+  const dpr=window.devicePixelRatio||1;
+  const availW=Math.min((canvas.parentElement?.clientWidth||680),900);
+  const CW=availW,CH=Math.round(availW*0.52);
   canvas.width=CW*dpr;canvas.height=CH*dpr;canvas.style.width=CW+'px';canvas.style.height=CH+'px';
   const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
   const W=CW,H=CH;let score=0,lives=3,frame=0,combo=0;
@@ -811,6 +829,10 @@ let bossState=null,bossAtkTimeout=null,bossSnackTimeout=null,bossRAF=null;
 function initBoss(){document.getElementById('boss-overlay').style.display='flex';renderStore();}
 function startBoss(){
   document.getElementById('boss-overlay').style.display='none';
+  const bossCanvas=document.getElementById('boss-canvas');
+  const bossWrap=bossCanvas.parentElement;
+  const bossW=Math.min(bossWrap?bossWrap.clientWidth:460,560);const bossH=Math.round(bossW*1.08);
+  bossCanvas.width=bossW;bossCanvas.height=bossH;bossCanvas.style.width=bossW+'px';bossCanvas.style.height=bossH+'px';
   bossState={bossIdx:0,bossHp:BOSSES[0].maxHp,playerHp:100,playerMaxHp:100,snacks:0,shieldCharges:3,maxShield:3,shielded:false,weaponIdx:0,log:[],animFrame:0,running:true,bossAnim:0,hit:false,playerHit:false,projectiles:[],playerProjectiles:[],warnActive:false};
   updateBossUI();renderStore();bossAttackLoop();bossSnackLoop();drawBossCanvas();
   activeCleanup=()=>{bossState&&(bossState.running=false);clearTimeout(bossAtkTimeout);clearTimeout(bossSnackTimeout);cancelAnimationFrame(bossRAF);};

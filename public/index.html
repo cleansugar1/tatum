@@ -89,7 +89,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);touc
 .secret-feedback{margin-top:8px;font-size:.85rem;font-weight:700;min-height:20px;}
 
 /* ===== GAME BASE ===== */
-.game-screen{justify-content:flex-start;padding:14px;padding-top:52px;gap:10px;}
+.game-screen{justify-content:flex-start;padding:10px;padding-top:52px;gap:10px;}
 .back-btn{position:fixed;top:10px;left:10px;z-index:200;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--text);padding:10px 16px;border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:.9rem;backdrop-filter:blur(8px);}
 .back-btn:active{background:rgba(255,255,255,.25);}
 .game-title{font-family:'Boogaloo',cursive;font-size:1.8rem;text-align:center;}
@@ -120,7 +120,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 
 /* ===== DODGE ===== */
 #dodge-screen{background:radial-gradient(ellipse at center,#1a0015 0%,#0a0c14 70%);}
-.dodge-layout{display:flex;gap:14px;width:100%;max-width:820px;align-items:flex-start;justify-content:center;}
+.dodge-layout{display:flex;gap:14px;width:100%;max-width:1000px;align-items:flex-start;justify-content:center;}
 .dodge-canvas-wrap{position:relative;flex:0 0 auto;}
 
 /* ===== QUIZ ===== */
@@ -149,18 +149,18 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 
 /* ===== WHACK ===== */
 #whack-screen{background:radial-gradient(ellipse at center,#001a08 0%,#0a0c14 70%);}
-.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:420px;width:100%;}
-.hole{background:var(--card);border:2px solid rgba(57,255,20,.2);border-radius:16px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:3rem;cursor:pointer;transition:transform .1s;user-select:none;}
+.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:600px;width:100%;}
+.hole{background:var(--card);border:2px solid rgba(57,255,20,.2);border-radius:16px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:4rem;cursor:pointer;transition:transform .1s;user-select:none;}
 .hole:active{transform:scale(.88);}
 .hole.active{background:rgba(57,255,20,.12);border-color:var(--green);animation:pop .15s ease;}
 .hole.missed{background:rgba(255,45,120,.12);border-color:var(--pink);}
-.whack-timer-bar{width:100%;max-width:420px;height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;}
+.whack-timer-bar{width:100%;max-width:600px;height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;}
 .whack-timer-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .1s linear;}
 
 /* ===== MINING ===== */
 #mining-screen{background:radial-gradient(ellipse at center,#100a1a 0%,#0a0c14 70%);}
 .mining-hud{display:flex;gap:20px;font-family:'Boogaloo',cursive;flex-wrap:wrap;justify-content:center;}
-.mining-layout2{display:flex;gap:12px;width:100%;max-width:820px;align-items:flex-start;flex-wrap:wrap;justify-content:center;}
+.mining-layout2{display:flex;gap:12px;width:100%;max-width:1000px;align-items:flex-start;flex-wrap:wrap;justify-content:center;}
 .mine-left-panel,.mine-right-panel{flex:0 0 155px;display:flex;flex-direction:column;gap:10px;}
 .mine-center{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;}
 .mine-layer-label{font-family:'Boogaloo',cursive;font-size:1rem;color:var(--purple);}
@@ -189,7 +189,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 
 /* ===== BOSS BATTLE ===== */
 #boss-screen{background:radial-gradient(ellipse at center,#1a0005 0%,#0a0c14 70%);}
-.boss-layout{display:flex;gap:12px;width:100%;max-width:900px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
+.boss-layout{display:flex;gap:12px;width:100%;max-width:1100px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
 .boss-canvas-wrap{position:relative;flex:0 0 auto;}
 .boss-side{width:165px;display:flex;flex-direction:column;gap:10px;}
 .boss-hp-section{background:var(--card);border-radius:14px;padding:12px;}
@@ -324,7 +324,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
   </div>
   <div class="dodge-layout">
     <div class="dodge-canvas-wrap">
-      <canvas id="dodge-canvas" width="400" height="520"></canvas>
+      <canvas id="dodge-canvas" style="display:block;max-width:100%"></canvas>
       <div class="overlay" id="dodge-overlay">
         <h2 style="color:var(--pink)">💥 DODGE OR DIE</h2>
         <p>Dodge falling enemies!<br>Catch 💎 for +50 bonus points!</p>
@@ -354,7 +354,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
     <div class="hud-item"><span class="hud-label">Best</span><span class="hud-val" style="color:var(--green)" id="r-best">0</span></div>
   </div>
   <div style="position:relative">
-    <canvas id="runner-canvas" width="700" height="260"></canvas>
+    <canvas id="runner-canvas" style="display:block;width:100%;max-width:100%"></canvas>
     <div class="overlay" id="runner-overlay">
       <h2 style="color:var(--blue)">🏃 ENDLESS RUNNER</h2>
       <p>TAP / HOLD to jump — hold longer = jump higher!<br>Stay LOW when you see ⬇️ enemies!</p>
@@ -398,8 +398,8 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
     </div>
     <div class="mine-center">
       <div class="mine-layer-label" id="m-layer-label">🌿 Layer 1: Dirt</div>
-      <div class="mine-timer-bar" style="width:240px"><div class="mine-timer-fill" id="m-timer-fill" style="width:100%"></div></div>
-      <canvas id="mine-canvas" width="240" height="240"></canvas>
+      <div class="mine-timer-bar" id="m-timer-bar-wrap" style="width:100%;max-width:420px"><div class="mine-timer-fill" id="m-timer-fill" style="width:100%"></div></div>
+      <canvas id="mine-canvas" style="display:block"></canvas>
       <div class="overlay" id="mine-overlay" style="position:absolute;border-radius:12px">
         <h2 style="color:var(--purple)">⛏️ MINING CLICKER</h2>
         <p>Mine 10 layers from Dirt to Nether!<br>Collect materials → craft better tools.<br>Race the timer! ⏱️</p>
@@ -425,7 +425,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
   </div>
   <div style="font-size:.78rem;color:var(--dim);text-align:center">🔴 Shoot brainrot enemies &nbsp;|&nbsp; 💚 DON'T shoot 💎⭐🌟</div>
   <div style="position:relative">
-    <canvas id="shooter-canvas" width="680" height="360"></canvas>
+    <canvas id="shooter-canvas" style="display:block;width:100%;max-width:100%"></canvas>
     <div class="overlay" id="shooter-overlay">
       <h2 style="color:var(--orange)">🎯 TARGET SHOOTER</h2>
       <p>Tap the brainrot enemies!<br>⚠️ Don't shoot 💎⭐🌟 — lose a life!<br>Build combos for bonus points!</p>
@@ -462,7 +462,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
       </div>
     </div>
     <div class="boss-canvas-wrap">
-      <canvas id="boss-canvas" width="460" height="500"></canvas>
+      <canvas id="boss-canvas" style="display:block;max-width:100%"></canvas>
       <div class="boss-phase-banner" id="boss-phase-banner"></div>
       <div class="boss-warning" id="boss-warning"></div>
       <div class="overlay" id="boss-overlay">
