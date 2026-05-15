@@ -159,29 +159,36 @@ canvas { display:block; border-radius:14px; max-width:100%; touch-action:none; }
 
 /* ======================== MINING ======================== */
 #mining-screen { background:radial-gradient(ellipse at center,#100a1a 0%,#0a0c14 70%); }
-.mining-layout { display:flex; gap:16px; max-width:700px; width:100%; align-items:flex-start; flex-wrap:wrap; justify-content:center; }
-.mine-block-wrap { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
-.mine-block { background:var(--card2); border:2px solid rgba(191,95,255,.2); border-radius:10px; aspect-ratio:1; width:58px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; cursor:pointer; transition:transform .1s,background .15s; user-select:none; position:relative; }
-.mine-block:active { transform:scale(.88); }
-.mine-block.cracked-1 { border-color:rgba(191,95,255,.5); }
-.mine-block.cracked-2 { border-color:var(--purple); background:rgba(191,95,255,.12); }
-.mine-block.cracked-3 { border-color:var(--purple); background:rgba(191,95,255,.22); animation:shake .15s ease; }
-@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
-.mine-panel { flex:1; min-width:200px; display:flex; flex-direction:column; gap:12px; }
-.mine-stat-box { background:var(--card); border:1px solid rgba(191,95,255,.3); border-radius:14px; padding:16px; }
-.mine-stat-box h3 { font-family:'Boogaloo',cursive; font-size:1rem; color:var(--purple); margin-bottom:10px; }
-.ore-list { display:flex; flex-direction:column; gap:6px; }
-.ore-row { display:flex; justify-content:space-between; align-items:center; font-size:.9rem; font-weight:700; }
-.ore-row span:first-child { color:var(--dim); }
-.ore-row span:last-child { color:var(--text); }
-.upgrade-list { display:flex; flex-direction:column; gap:8px; }
-.upgrade-btn { padding:10px 14px; background:var(--bg2); border:2px solid rgba(191,95,255,.3); border-radius:10px; color:var(--text); font-family:'Nunito',sans-serif; font-weight:700; font-size:.85rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:all .2s; }
-.upgrade-btn:active:not(:disabled) { transform:scale(.97); }
-.upgrade-btn:not(:disabled):hover { border-color:var(--purple); background:rgba(191,95,255,.1); }
-.upgrade-btn:disabled { opacity:.45; cursor:default; }
-.upgrade-cost { color:var(--purple); font-size:.8rem; }
-.mine-picks { font-family:'Boogaloo',cursive; font-size:1rem; color:var(--dim); }
-.mine-total { font-family:'Boogaloo',cursive; font-size:2rem; color:var(--purple); }
+.mining-hud { display:flex; gap:24px; font-family:'Boogaloo',cursive; flex-wrap:wrap; justify-content:center; }
+.mining-layout2 { display:flex; gap:14px; width:100%; max-width:780px; align-items:flex-start; flex-wrap:wrap; justify-content:center; }
+.mine-left-panel,.mine-right-panel { flex:0 0 160px; display:flex; flex-direction:column; gap:10px; }
+.mine-center { display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; }
+.mine-layer-label { font-family:'Boogaloo',cursive; font-size:1.1rem; color:var(--purple); }
+.mine-timer-bar { width:240px; height:8px; background:rgba(255,255,255,.1); border-radius:4px; overflow:hidden; }
+.mine-timer-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--yellow)); transition:width .25s linear; }
+#mine-canvas { border:3px solid rgba(191,95,255,.4); border-radius:12px; cursor:pointer; image-rendering:pixelated; box-shadow:0 0 20px rgba(191,95,255,.2); }
+.mine-tool-box { background:var(--card); border:2px solid rgba(191,95,255,.4); border-radius:14px; padding:14px; text-align:center; }
+.mine-tool-emoji { font-size:3rem; margin-bottom:4px; }
+.mine-tool-name { font-family:'Boogaloo',cursive; font-size:1rem; color:var(--purple); }
+.mine-tool-dmg { color:var(--dim); font-size:.8rem; margin-top:2px; }
+.mine-inv-box,.mine-craft-box,.mine-lb-box { background:var(--card); border:1px solid rgba(191,95,255,.25); border-radius:12px; padding:12px; }
+.mine-inv-title { font-family:'Boogaloo',cursive; font-size:.95rem; color:var(--purple); margin-bottom:8px; }
+.mine-inv-row { display:flex; justify-content:space-between; font-size:.82rem; font-weight:700; padding:3px 0; }
+.mine-inv-row span:first-child { color:var(--dim); }
+.mine-recipe-item { display:flex; justify-content:space-between; align-items:center; font-size:.85rem; font-weight:700; padding:4px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+.mine-recipe-item:last-child { border:none; }
+.recipe-need { color:var(--dim); }
+.recipe-have { font-weight:900; }
+.recipe-have.ok { color:var(--green); }
+.recipe-have.no { color:var(--pink); }
+.mine-craft-btn { width:100%; margin-top:10px; padding:10px; background:var(--purple); color:#fff; border:none; border-radius:10px; font-family:'Boogaloo',cursive; font-size:1rem; cursor:pointer; transition:all .2s; }
+.mine-craft-btn:disabled { opacity:.35; cursor:default; }
+.mine-craft-btn:not(:disabled):active { transform:scale(.97); }
+.mine-lb-row { display:flex; justify-content:space-between; font-size:.8rem; font-weight:700; padding:3px 0; }
+.mine-lb-row span:first-child { color:var(--dim); }
+.mine-lb-row span:last-child { color:var(--yellow); }
+/* pixel block styles */
+.mc-block { image-rendering:pixelated; display:inline-block; }
 
 /* ======================== SHOOTER ======================== */
 #shooter-screen { background:radial-gradient(ellipse at center,#1a0a00 0%,#0a0c14 70%); }
@@ -335,20 +342,45 @@ canvas { display:block; border-radius:14px; max-width:100%; touch-action:none; }
 <div id="mining-screen" class="screen game-screen">
   <button class="back-btn" onclick="goHome()">← Home</button>
   <div class="game-title" style="color:var(--purple)">⛏️ MINING CLICKER</div>
-  <div class="hud-item" style="text-align:center"><span class="hud-label">TOTAL GEMS</span><div class="mine-total" id="m-total">0</div></div>
-  <div class="mining-layout">
-    <div>
-      <div class="mine-block-wrap" id="mine-grid"></div>
-      <div class="mine-picks" id="mine-pick-info" style="text-align:center;margin-top:10px">⛏️ Wooden Pickaxe (1 dmg)</div>
-    </div>
-    <div class="mine-panel">
-      <div class="mine-stat-box">
-        <h3>💎 Inventory</h3>
-        <div class="ore-list" id="ore-list"></div>
+  <div class="mining-hud">
+    <div class="hud-item"><span class="hud-label">LAYER</span><span class="hud-val" style="color:var(--purple)" id="m-layer">1</span></div>
+    <div class="hud-item"><span class="hud-label">TIMER</span><span class="hud-val" style="color:var(--yellow)" id="m-timer">60</span></div>
+    <div class="hud-item"><span class="hud-label">BEST TIME</span><span class="hud-val green" id="m-best">--</span></div>
+  </div>
+  <div class="mining-layout2">
+    <!-- LEFT: tool display -->
+    <div class="mine-left-panel">
+      <div class="mine-tool-box">
+        <div class="mine-tool-emoji" id="m-tool-emoji">🪵</div>
+        <div class="mine-tool-name" id="m-tool-name">Wooden Pickaxe</div>
+        <div class="mine-tool-dmg" id="m-tool-dmg">1 damage</div>
       </div>
-      <div class="mine-stat-box">
-        <h3>⬆️ Upgrades</h3>
-        <div class="upgrade-list" id="upgrade-list"></div>
+      <div class="mine-inv-box">
+        <div class="mine-inv-title">🎒 Inventory</div>
+        <div id="m-inventory"></div>
+      </div>
+    </div>
+    <!-- CENTER: block wall -->
+    <div class="mine-center">
+      <div class="mine-layer-label" id="m-layer-label">🌿 Layer 1: Dirt</div>
+      <div class="mine-timer-bar"><div class="mine-timer-fill" id="m-timer-fill" style="width:100%"></div></div>
+      <canvas id="mine-canvas" width="240" height="240"></canvas>
+      <div class="overlay" id="mine-overlay" style="position:absolute;border-radius:12px">
+        <h2 style="color:var(--purple)">⛏️ MINING CLICKER</h2>
+        <p>Mine through layers by tapping blocks!<br>Collect materials to craft better tools.<br>Race to reach Netherite! ⏱️</p>
+        <button class="gbtn gbtn-purple" onclick="startMining()">START ⛏️</button>
+      </div>
+    </div>
+    <!-- RIGHT: crafting -->
+    <div class="mine-right-panel">
+      <div class="mine-craft-box" id="m-craft-box">
+        <div class="mine-inv-title">🔨 Craft Next Tool</div>
+        <div id="m-recipe"></div>
+        <button class="mine-craft-btn" id="m-craft-btn" onclick="craftTool()" disabled>CRAFT!</button>
+      </div>
+      <div class="mine-lb-box">
+        <div class="mine-inv-title">🏆 Best Times</div>
+        <div id="m-lb"></div>
       </div>
     </div>
   </div>
@@ -363,11 +395,12 @@ canvas { display:block; border-radius:14px; max-width:100%; touch-action:none; }
     <div class="hud-item"><span class="hud-label">LIVES</span><span class="hud-val" id="sh-lives">❤️❤️❤️</span></div>
     <div class="hud-item"><span class="hud-label">BEST</span><span class="hud-val green" id="sh-best">0</span></div>
   </div>
+  <div style="font-size:.8rem;color:var(--dim);text-align:center">🔴 Shoot brainrot enemies &nbsp;|&nbsp; 💚 DON'T shoot 💎⭐🌟 — lose a life!</div>
   <div style="position:relative">
-    <canvas id="shooter-canvas" width="480" height="340"></canvas>
+    <canvas id="shooter-canvas" width="480" height="320"></canvas>
     <div class="overlay" id="shooter-overlay">
       <h2 style="color:var(--orange)">🎯 TARGET SHOOTER</h2>
-      <p>Tap/click the brainrot enemies flying across!<br>Don't let them escape — you only have 3 lives!</p>
+      <p>Tap the brainrot enemies flying across!<br>⚠️ Don't shoot the 💎⭐🌟 — those are good!</p>
       <button class="gbtn gbtn-orange" onclick="startShooter()">START 🚀</button>
     </div>
   </div>
@@ -890,7 +923,7 @@ function answerQuiz(idx){
 function nextQuiz(){ quizState.current++; renderQuiz(); }
 
 // ============================================================
-// ENDLESS RUNNER
+// ENDLESS RUNNER — Chrome Dino style
 // ============================================================
 let runnerRAF=null, runnerRunning=false;
 
@@ -907,87 +940,114 @@ function startRunner(){
 
   const canvas=document.getElementById('runner-canvas');
   const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height;
-  const GROUND=H-40;
+  const W=canvas.width, H=canvas.height;
+  const GROUND=H-36;
+  const PLAYER_X=70;
 
-  const CHARS=['👾','💣','🕷️','🦎','💀','🪲'];
-  const BROT=['🦈','🐊','🦛','🐘'];
-
-  let score=0,frame=0,speed=4,jumping=false,jumpVel=0;
-  const player={x:60,y:GROUND-40,w:36,h:40};
+  let score=0, frame=0;
+  // Start slow like Chrome dino — speed increases gradually
+  let speed=3.5;
+  let jumping=false, jumpVel=0;
+  let playerY=GROUND-44;
   const obstacles=[];
-  let bgOffset=0;
+  let groundOffset=0;
+  let nextSpawn=90;
 
-  const jump=()=>{ if(!jumping&&runnerRunning){ jumping=true; jumpVel=-14; } };
-  const onKey=e=>{ if((e.code==='Space'||e.code==='ArrowUp')) jump(); };
+  const CHARS=['👾','💣','🕷️','💀','🪲','🦈','🐊','🦛'];
+
+  const jump=()=>{ if(!jumping&&runnerRunning){ jumping=true; jumpVel=-15; } };
+  const onKey=e=>{ if(e.code==='Space'||e.code==='ArrowUp') jump(); };
   window.addEventListener('keydown',onKey);
   canvas.addEventListener('click',jump);
   canvas.addEventListener('touchstart',e=>{e.preventDefault();jump();},{passive:false});
 
-  activeCleanup=()=>{ runnerRunning=false; cancelAnimationFrame(runnerRAF); window.removeEventListener('keydown',onKey); canvas.removeEventListener('click',jump); };
+  activeCleanup=()=>{
+    runnerRunning=false;
+    cancelAnimationFrame(runnerRAF);
+    window.removeEventListener('keydown',onKey);
+    canvas.removeEventListener('click',jump);
+  };
 
   function loop(){
     if(!runnerRunning) return;
     runnerRAF=requestAnimationFrame(loop);
     frame++;
-    score++;
-    speed=4+score/400;
-    bgOffset=(bgOffset+speed*.3)%40;
 
-    // jump physics
+    // Score increments every 6 frames so it feels earned
+    if(frame%6===0) score++;
+    // Gradual speed increase — starts at 3.5, caps at 9 (takes a long time)
+    speed=Math.min(9, 3.5 + score*0.008);
+    groundOffset=(groundOffset+speed)%(W*2);
+
+    // jump physics — tuned for a satisfying dino-style arc
     if(jumping){
-      player.y+=jumpVel;
-      jumpVel+=0.8;
-      if(player.y>=GROUND-40){ player.y=GROUND-40; jumping=false; jumpVel=0; }
+      playerY+=jumpVel;
+      jumpVel+=0.75;
+      if(playerY>=GROUND-44){ playerY=GROUND-44; jumping=false; jumpVel=0; }
     }
 
-    // spawn
-    const sr=Math.max(55,90-Math.floor(score/300));
-    if(frame%sr===0){
-      const isBrot=Math.random()<0.3;
-      obstacles.push({x:W+10,y:GROUND-36,w:36,h:36,emoji:isBrot?BROT[Math.floor(Math.random()*BROT.length)]:CHARS[Math.floor(Math.random()*CHARS.length)],speed:speed+(Math.random()*1.5)});
+    // Spawn obstacles — spacing based on speed so gaps feel fair
+    nextSpawn--;
+    if(nextSpawn<=0){
+      const h=36+Math.random()*16;
+      obstacles.push({x:W+20, w:36, h, y:GROUND-h, emoji:CHARS[Math.floor(Math.random()*CHARS.length)]});
+      // gap: further apart at start, closes slowly
+      nextSpawn=Math.floor((W*0.55)/speed) + Math.floor(Math.random()*(W*0.2)/speed);
     }
 
-    // move obs
+    // Move & collide
     for(let i=obstacles.length-1;i>=0;i--){
-      obstacles[i].x-=obstacles[i].speed;
-      if(obstacles[i].x<-40){ obstacles.splice(i,1); continue; }
+      obstacles[i].x-=speed;
+      if(obstacles[i].x<-50){ obstacles.splice(i,1); continue; }
       const o=obstacles[i];
-      if(o.x<player.x+player.w-8&&o.x+o.w-8>player.x&&o.y<player.y+player.h-8&&o.y+o.h-8>player.y){
-        gameOverRunner(); return;
+      // tight hitbox — forgive the edges
+      if(o.x+8<PLAYER_X+30 && o.x+o.w-8>PLAYER_X+6 && o.y+8<playerY+40 && o.y+o.h-4>playerY+8){
+        dieRunner(); return;
       }
     }
 
     document.getElementById('r-score').textContent=score;
 
-    // draw
+    // ---- DRAW ----
     ctx.clearRect(0,0,W,H);
-    // sky
-    const grad=ctx.createLinearGradient(0,0,0,H);
-    grad.addColorStop(0,'#001428'); grad.addColorStop(1,'#0a1a28');
-    ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
 
-    // bg grid
-    ctx.strokeStyle='rgba(0,212,255,0.05)'; ctx.lineWidth=1;
-    for(let gx=-bgOffset;gx<W;gx+=40){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
+    // Sky gradient
+    const sky=ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#001830'); sky.addColorStop(1,'#0a1e30');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
 
-    // ground
-    ctx.fillStyle='#1a3a4a'; ctx.fillRect(0,GROUND,W,H-GROUND);
-    ctx.fillStyle='var(--blue)'; ctx.fillRect(0,GROUND,W,2);
+    // Scrolling ground dots
+    ctx.fillStyle='rgba(0,212,255,0.12)';
+    for(let gx=(groundOffset%60)-60;gx<W;gx+=60){
+      ctx.beginPath(); ctx.arc(gx,GROUND+12,3,0,Math.PI*2); ctx.fill();
+    }
 
-    // player
-    ctx.font='36px serif'; ctx.textBaseline='top';
-    ctx.fillText('🏃',player.x,player.y);
+    // Ground line
+    ctx.strokeStyle='rgba(0,212,255,0.5)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(0,GROUND); ctx.lineTo(W,GROUND); ctx.stroke();
 
-    // obstacles
-    obstacles.forEach(o=>{ ctx.font=`${o.w}px serif`; ctx.fillText(o.emoji,o.x,o.y); });
+    // Player
+    ctx.font='40px serif'; ctx.textBaseline='top';
+    ctx.fillText('🏃', PLAYER_X-4, playerY);
 
-    // score
-    ctx.fillStyle='rgba(0,212,255,0.6)'; ctx.font='bold 14px Nunito'; ctx.textBaseline='top';
-    ctx.fillText(`SCORE: ${score}`,8,8);
+    // Obstacles
+    obstacles.forEach(o=>{
+      ctx.font=`${o.w}px serif`;
+      ctx.fillText(o.emoji, o.x, o.y);
+    });
+
+    // Score overlay
+    ctx.fillStyle='rgba(0,212,255,0.5)';
+    ctx.font='bold 13px Nunito'; ctx.textBaseline='top';
+    ctx.fillText(`SCORE: ${score}`, 8, 8);
+    if(score>0){
+      const spd=speed.toFixed(1);
+      ctx.fillStyle='rgba(255,255,255,0.2)';
+      ctx.fillText(`SPD: ${spd}`, W-70, 8);
+    }
   }
 
-  function gameOverRunner(){
+  function dieRunner(){
     runnerRunning=false;
     cancelAnimationFrame(runnerRAF);
     window.removeEventListener('keydown',onKey);
@@ -997,7 +1057,7 @@ function startRunner(){
     const ov=document.getElementById('runner-overlay');
     ov.style.display='flex';
     ov.innerHTML=`<h2 style="color:var(--blue)">💀 GAME OVER</h2>
-      <p>Score: <strong style="color:var(--blue)">${score}</strong> | Best: <strong style="color:var(--green)">${best}</strong></p>
+      <p>Score: <strong style="color:var(--blue)">${score}</strong> &nbsp;|&nbsp; Best: <strong style="color:var(--green)">${best}</strong></p>
       <button class="gbtn gbtn-blue" onclick="startRunner()">TRY AGAIN 🔄</button>`;
   }
 
@@ -1094,115 +1154,286 @@ function endWhack(){
 }
 
 // ============================================================
-// MINING CLICKER
+// MINING CLICKER — Layered with crafting & timer
 // ============================================================
-const ORES=[
-  {name:'Coal',emoji:'🪨',chance:0.45,value:1,color:'#aaa'},
-  {name:'Iron',emoji:'⚙️',chance:0.25,value:3,color:'#c0956f'},
-  {name:'Gold',emoji:'🥇',chance:0.15,value:8,color:'#ffe600'},
-  {name:'Diamond',emoji:'💎',chance:0.08,value:25,color:'#00d4ff'},
-  {name:'Emerald',emoji:'💚',chance:0.04,value:60,color:'#39ff14'},
-  {name:'Netherite',emoji:'🔥',chance:0.02,value:200,color:'#bf5fff'},
-  {name:'Ancient',emoji:'⭐',chance:0.01,value:500,color:'#ff7b00'},
-];
-const PICKAXES=[
-  {name:'Wooden',emoji:'🪵',dmg:1,cost:0},
-  {name:'Stone',emoji:'🪨',dmg:3,cost:50},
-  {name:'Iron',emoji:'⚙️',dmg:8,cost:200},
-  {name:'Gold',emoji:'🥇',dmg:15,cost:600},
-  {name:'Diamond',emoji:'💎',dmg:30,cost:2000},
-  {name:'Netherite',emoji:'🔥',dmg:75,cost:8000},
+const MINE_LAYERS=[
+  {name:'Dirt',color:'#8B5E3C',darkColor:'#6B4423',label:'🌿 Layer 1: Dirt',hp:2,drop:'Dirt',dropEmoji:'🟫'},
+  {name:'Gravel',color:'#888','darkColor':'#666',label:'🪨 Layer 2: Gravel',hp:3,drop:'Gravel',dropEmoji:'⬜'},
+  {name:'Wood',color:'#6B4423',darkColor:'#4a2e0f',label:'🌲 Layer 3: Wood',hp:3,drop:'Wood',dropEmoji:'🪵'},
+  {name:'Stone',color:'#777',darkColor:'#555',label:'🪨 Layer 4: Stone',hp:5,drop:'Stone',dropEmoji:'🪨'},
+  {name:'Coal Ore',color:'#555',darkColor:'#333',label:'🔲 Layer 5: Coal Ore',hp:6,drop:'Coal',dropEmoji:'⚫'},
+  {name:'Iron Ore',color:'#8a7060',darkColor:'#6a5040',label:'⚙️ Layer 6: Iron Ore',hp:8,drop:'Iron',dropEmoji:'🔩'},
+  {name:'Gold Ore',color:'#b8860b',darkColor:'#8a6400',label:'🥇 Layer 7: Gold Ore',hp:10,drop:'Gold',dropEmoji:'🟡'},
+  {name:'Diamond Ore',color:'#1a6b8a',darkColor:'#0f4a60',label:'💎 Layer 8: Diamond',hp:14,drop:'Diamond',dropEmoji:'💎'},
+  {name:'Obsidian',color:'#2a1a3a',darkColor:'#1a0a2a',label:'🌑 Layer 9: Obsidian',hp:20,drop:'Obsidian',dropEmoji:'🟣'},
+  {name:'Nether',color:'#8B0000',darkColor:'#5a0000',label:'🔥 Layer 10: Nether',hp:25,drop:'Netherite',dropEmoji:'🔥'},
 ];
 
-let mineState={
-  gems:0, pickIdx:0, inventory:{}, blocks:[]
+const MINE_TOOLS=[
+  {name:'Fists',emoji:'✊',dmg:1,recipe:null},
+  {name:'Wooden Pickaxe',emoji:'🪵⛏️',dmg:2,recipe:{Dirt:4,Wood:2}},
+  {name:'Stone Pickaxe',emoji:'🪨⛏️',dmg:4,recipe:{Stone:4,Wood:2}},
+  {name:'Iron Pickaxe',emoji:'🔩⛏️',dmg:8,recipe:{Iron:3,Wood:2}},
+  {name:'Golden Pickaxe',emoji:'🟡⛏️',dmg:6,recipe:{Gold:3,Wood:2}},
+  {name:'Diamond Pickaxe',emoji:'💎⛏️',dmg:18,recipe:{Diamond:3,Wood:2}},
+  {name:'Netherite Pickaxe',emoji:'🔥⛏️',dmg:40,recipe:{Netherite:2,Diamond:1}},
+];
+
+const MINE_COLS=4, MINE_ROWS=4, BLOCK_SIZE=56;
+let mineS={
+  running:false, layerIdx:0, toolIdx:0,
+  inventory:{}, blocks:[], timerLeft:90, timerTotal:90,
+  gameOver:false, won:false, startTime:0
 };
+let mineTimerInterval=null;
 
 function initMining(){
-  // load saved state
-  try{ const s=JSON.parse(localStorage.getItem('tatum-mine')||'null'); if(s){ mineState=s; } } catch{}
-  // init inventory keys
-  ORES.forEach(o=>{ if(!mineState.inventory[o.name]) mineState.inventory[o.name]=0; });
-  if(!mineState.blocks||!mineState.blocks.length) generateBlocks();
-  renderMining();
+  renderMineLB();
+  showMineOverlay();
 }
 
-function generateBlocks(){
-  mineState.blocks=[];
-  for(let i=0;i<20;i++){
-    mineState.blocks.push({hp:3+Math.floor(mineState.pickIdx*.5),maxHp:3+Math.floor(mineState.pickIdx*.5),ore:pickOre()});
+function showMineOverlay(){
+  document.getElementById('mine-overlay').style.display='flex';
+}
+
+function startMining(){
+  document.getElementById('mine-overlay').style.display='none';
+  clearInterval(mineTimerInterval);
+  // reset state
+  mineS={running:true,layerIdx:0,toolIdx:0,inventory:{},blocks:[],timerLeft:90,timerTotal:90,gameOver:false,won:false,startTime:Date.now()};
+  MINE_LAYERS.forEach(l=>{ mineS.inventory[l.drop]=0; });
+  mineS.inventory.Wood=0;
+  spawnMineLayer();
+  mineTimerInterval=setInterval(()=>{
+    if(!mineS.running) return;
+    mineS.timerLeft--;
+    document.getElementById('m-timer').textContent=mineS.timerLeft;
+    const pct=(mineS.timerLeft/mineS.timerTotal)*100;
+    document.getElementById('m-timer-fill').style.width=pct+'%';
+    if(mineS.timerLeft<=0){ mineGameOver(); }
+  },1000);
+  renderMining2();
+  activeCleanup=()=>{ clearInterval(mineTimerInterval); mineS.running=false; };
+}
+
+function spawnMineLayer(){
+  const layer=MINE_LAYERS[mineS.layerIdx];
+  mineS.blocks=[];
+  for(let i=0;i<MINE_COLS*MINE_ROWS;i++){
+    mineS.blocks.push({hp:layer.hp,maxHp:layer.hp,broken:false});
   }
 }
 
-function pickOre(){
-  const r=Math.random();
-  let cum=0;
-  for(const ore of ORES){ cum+=ore.chance; if(r<cum) return ore.name; }
-  return 'Coal';
-}
-
-function renderMining(){
-  document.getElementById('m-total').textContent=mineState.gems;
-  // blocks
-  const grid=document.getElementById('mine-grid');
-  grid.innerHTML='';
-  mineState.blocks.forEach((b,i)=>{
-    const ore=ORES.find(o=>o.name===b.ore);
-    const cracks=b.hp<=0?3:b.hp<=b.maxHp*.33?3:b.hp<=b.maxHp*.66?2:b.hp<=b.maxHp*.9?1:0;
-    const div=document.createElement('div');
-    div.className=`mine-block${cracks>0?' cracked-'+cracks:''}`;
-    div.textContent=ore.emoji;
-    div.title=ore.name;
-    div.onclick=()=>mineBlock(i);
-    grid.appendChild(div);
-  });
-  // pickaxe
-  const pk=PICKAXES[mineState.pickIdx];
-  document.getElementById('mine-pick-info').textContent=`${pk.emoji} ${pk.name} Pickaxe (${pk.dmg} dmg)`;
-  // inventory
-  const invEl=document.getElementById('ore-list');
-  invEl.innerHTML=ORES.map(o=>`<div class="ore-row"><span>${o.emoji} ${o.name}</span><span style="color:${o.color}">${mineState.inventory[o.name]||0}</span></div>`).join('');
-  // upgrades
-  const upEl=document.getElementById('upgrade-list');
-  upEl.innerHTML=PICKAXES.slice(1).map((pk,i)=>{
-    const realIdx=i+1;
-    const owned=mineState.pickIdx>=realIdx;
-    const canBuy=mineState.pickIdx===realIdx-1&&mineState.gems>=pk.cost;
-    if(owned) return `<div class="upgrade-btn" disabled style="opacity:.4;cursor:default">${pk.emoji} ${pk.name} Pickaxe <span style="color:var(--green)">✅ Owned</span></div>`;
-    return `<button class="upgrade-btn" ${!canBuy?'disabled':''} onclick="buyPickaxe(${realIdx})">${pk.emoji} ${pk.name} Pickaxe <span class="upgrade-cost">${pk.cost} 💎</span></button>`;
-  }).join('');
-  saveMine();
-}
-
-function mineBlock(i){
-  const b=mineState.blocks[i];
-  if(!b||b.hp<=0) return;
-  const pk=PICKAXES[mineState.pickIdx];
-  b.hp-=pk.dmg;
+function mineBlockClick(i){
+  if(!mineS.running||mineS.gameOver||mineS.won) return;
+  const b=mineS.blocks[i];
+  if(b.broken) return;
+  const tool=MINE_TOOLS[mineS.toolIdx];
+  const layer=MINE_LAYERS[mineS.layerIdx];
+  b.hp-=tool.dmg;
   if(b.hp<=0){
-    const ore=ORES.find(o=>o.name===b.ore);
-    mineState.inventory[ore.name]=(mineState.inventory[ore.name]||0)+1;
-    mineState.gems+=ore.value;
-    // replace block
-    mineState.blocks[i]={hp:3+Math.floor(mineState.pickIdx*.5),maxHp:3+Math.floor(mineState.pickIdx*.5),ore:pickOre()};
+    b.broken=true;
+    b.hp=0;
+    mineS.inventory[layer.drop]=(mineS.inventory[layer.drop]||0)+1;
+    // Also give wood from wood layer
+    if(layer.drop==='Wood') mineS.inventory['Wood']=(mineS.inventory['Wood']||0)+1;
+    // Check if all blocks broken
+    if(mineS.blocks.every(bl=>bl.broken)){
+      mineS.layerIdx++;
+      if(mineS.layerIdx>=MINE_LAYERS.length){
+        mineWin(); return;
+      }
+      // Add more timer per layer
+      mineS.timerLeft=Math.min(mineS.timerLeft+20,120);
+      mineS.timerTotal=120;
+      document.getElementById('m-timer').textContent=mineS.timerLeft;
+      spawnMineLayer();
+    }
   }
-  renderMining();
+  renderMining2();
 }
 
-function buyPickaxe(idx){
-  const pk=PICKAXES[idx];
-  if(mineState.gems>=pk.cost&&mineState.pickIdx===idx-1){
-    mineState.gems-=pk.cost;
-    mineState.pickIdx=idx;
-    generateBlocks();
-    renderMining();
+function renderMining2(){
+  const layer=MINE_LAYERS[Math.min(mineS.layerIdx,MINE_LAYERS.length-1)];
+  const tool=MINE_TOOLS[mineS.toolIdx];
+  document.getElementById('m-layer').textContent=mineS.layerIdx+1;
+  document.getElementById('m-layer-label').textContent=layer.label;
+  document.getElementById('m-tool-emoji').textContent=tool.emoji;
+  document.getElementById('m-tool-name').textContent=tool.name;
+  document.getElementById('m-tool-dmg').textContent=`${tool.dmg} damage per tap`;
+
+  // Draw canvas blocks
+  const canvas=document.getElementById('mine-canvas');
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  mineS.blocks.forEach((b,i)=>{
+    const col=i%MINE_COLS, row=Math.floor(i/MINE_COLS);
+    const x=col*BLOCK_SIZE, y=row*BLOCK_SIZE;
+    if(b.broken){
+      ctx.fillStyle='rgba(0,0,0,0.3)';
+      ctx.fillRect(x+1,y+1,BLOCK_SIZE-2,BLOCK_SIZE-2);
+      return;
+    }
+    // Base color
+    ctx.fillStyle=layer.color;
+    ctx.fillRect(x,y,BLOCK_SIZE,BLOCK_SIZE);
+    // Darker inner shadow (Minecraft style)
+    ctx.fillStyle=layer.darkColor;
+    ctx.fillRect(x+4,y+4,BLOCK_SIZE-8,BLOCK_SIZE-8);
+    // Pixel noise pattern
+    ctx.fillStyle='rgba(0,0,0,0.15)';
+    for(let px=0;px<4;px++) for(let py=0;py<4;py++){
+      if((px+py+i)%3===0) ctx.fillRect(x+4+px*12,y+4+py*12,8,8);
+    }
+    // Highlight edges (Minecraft bevel)
+    ctx.fillStyle='rgba(255,255,255,0.25)';
+    ctx.fillRect(x,y,BLOCK_SIZE,3);
+    ctx.fillRect(x,y,3,BLOCK_SIZE);
+    ctx.fillStyle='rgba(0,0,0,0.35)';
+    ctx.fillRect(x,y+BLOCK_SIZE-3,BLOCK_SIZE,3);
+    ctx.fillRect(x+BLOCK_SIZE-3,y,3,BLOCK_SIZE);
+    // Border
+    ctx.strokeStyle='rgba(0,0,0,0.6)';
+    ctx.lineWidth=1;
+    ctx.strokeRect(x,y,BLOCK_SIZE,BLOCK_SIZE);
+    // Crack overlay
+    const pct=b.hp/b.maxHp;
+    if(pct<0.75){
+      ctx.strokeStyle='rgba(0,0,0,0.5)';
+      ctx.lineWidth=pct<0.33?3:pct<0.55?2:1;
+      ctx.beginPath();
+      ctx.moveTo(x+BLOCK_SIZE*.3,y+BLOCK_SIZE*.2);
+      ctx.lineTo(x+BLOCK_SIZE*.6,y+BLOCK_SIZE*.7);
+      ctx.stroke();
+      if(pct<0.5){
+        ctx.beginPath();
+        ctx.moveTo(x+BLOCK_SIZE*.6,y+BLOCK_SIZE*.2);
+        ctx.lineTo(x+BLOCK_SIZE*.2,y+BLOCK_SIZE*.6);
+        ctx.stroke();
+      }
+    }
+    // HP bar
+    const barW=(BLOCK_SIZE-8)*(b.hp/b.maxHp);
+    ctx.fillStyle='rgba(0,0,0,0.5)';
+    ctx.fillRect(x+4,y+BLOCK_SIZE-10,BLOCK_SIZE-8,6);
+    ctx.fillStyle=pct>0.6?'#39ff14':pct>0.3?'#ffe600':'#ff2d78';
+    ctx.fillRect(x+4,y+BLOCK_SIZE-10,barW,6);
+  });
+
+  // Inventory
+  const invEl=document.getElementById('m-inventory');
+  invEl.innerHTML=Object.entries(mineS.inventory)
+    .filter(([k,v])=>v>0)
+    .map(([k,v])=>{
+      const layer=MINE_LAYERS.find(l=>l.drop===k);
+      return `<div class="mine-inv-row"><span>${layer?layer.dropEmoji:'📦'} ${k}</span><span>${v}</span></div>`;
+    }).join('')||'<div style="color:var(--dim);font-size:.8rem">Start mining!</div>';
+
+  // Crafting recipe for next tool
+  const nextToolIdx=mineS.toolIdx+1;
+  const craftEl=document.getElementById('m-recipe');
+  const craftBtn=document.getElementById('m-craft-btn');
+  if(nextToolIdx>=MINE_TOOLS.length){
+    craftEl.innerHTML='<div style="color:var(--green);font-size:.85rem;font-weight:700">Max tool! 🔥</div>';
+    craftBtn.disabled=true;
+  } else {
+    const next=MINE_TOOLS[nextToolIdx];
+    const recipe=next.recipe;
+    let canCraft=true;
+    craftEl.innerHTML=Object.entries(recipe).map(([item,need])=>{
+      const have=mineS.inventory[item]||0;
+      const ok=have>=need;
+      if(!ok) canCraft=false;
+      return `<div class="mine-recipe-item"><span class="recipe-need">${item} x${need}</span><span class="recipe-have ${ok?'ok':'no'}">${have}/${need}</span></div>`;
+    }).join('');
+    craftEl.innerHTML=`<div style="color:var(--purple);font-size:.85rem;font-weight:700;margin-bottom:6px">${next.emoji} ${next.name}</div>`+craftEl.innerHTML;
+    craftBtn.disabled=!canCraft;
   }
 }
 
-function saveMine(){ localStorage.setItem('tatum-mine',JSON.stringify(mineState)); }
+function craftTool(){
+  const nextIdx=mineS.toolIdx+1;
+  if(nextIdx>=MINE_TOOLS.length) return;
+  const next=MINE_TOOLS[nextIdx];
+  const recipe=next.recipe;
+  // deduct
+  Object.entries(recipe).forEach(([item,need])=>{ mineS.inventory[item]-=need; });
+  mineS.toolIdx=nextIdx;
+  renderMining2();
+}
+
+function mineGameOver(){
+  clearInterval(mineTimerInterval);
+  mineS.running=false; mineS.gameOver=true;
+  const ov=document.getElementById('mine-overlay');
+  ov.style.display='flex';
+  ov.innerHTML=`<h2 style="color:var(--pink)">⏰ TIME'S UP!</h2>
+    <p>You reached Layer ${mineS.layerIdx+1}!</p>
+    <button class="gbtn gbtn-purple" onclick="startMining()">TRY AGAIN ⛏️</button>`;
+}
+
+function mineWin(){
+  clearInterval(mineTimerInterval);
+  mineS.running=false; mineS.won=true;
+  const elapsed=Math.round((Date.now()-mineS.startTime)/1000);
+  // Save to leaderboard
+  const lb=getLB('mine-lb');
+  lb.push({name:'Tatum',score:elapsed,display:formatTime(elapsed)});
+  lb.sort((a,b)=>a.score-b.score);
+  saveLB('mine-lb',lb);
+  renderMineLB();
+  const ov=document.getElementById('mine-overlay');
+  ov.style.display='flex';
+  ov.innerHTML=`<h2 style="color:var(--yellow)">🏆 YOU WIN!</h2>
+    <p style="font-size:1.2rem">🎉 NETHERITE REACHED! 🎉</p>
+    <p>Time: <strong style="color:var(--green)">${formatTime(elapsed)}</strong></p>
+    <div style="font-size:3rem">🔥💎⛏️🏆</div>
+    <button class="gbtn gbtn-purple" onclick="startMining()">PLAY AGAIN ⛏️</button>`;
+}
+
+function formatTime(s){ return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
+
+function renderMineLB(){
+  const lb=getLB('mine-lb');
+  const el=document.getElementById('m-lb');
+  if(!el) return;
+  if(!lb.length){ el.innerHTML='<div style="color:var(--dim);font-size:.8rem">No completions yet!</div>'; return; }
+  el.innerHTML=lb.slice(0,5).map((e,i)=>`<div class="mine-lb-row"><span>${i+1}. ${e.name||'Tatum'}</span><span>${e.display||formatTime(e.score)}</span></div>`).join('');
+}
+
+// Canvas click handler for mining
+document.addEventListener('DOMContentLoaded',()=>{
+  const canvas=document.getElementById('mine-canvas');
+  if(canvas){
+    canvas.addEventListener('click',e=>{
+      if(!mineS.running) return;
+      const rect=canvas.getBoundingClientRect();
+      const scaleX=canvas.width/rect.width;
+      const scaleY=canvas.height/rect.height;
+      const x=(e.clientX-rect.left)*scaleX;
+      const y=(e.clientY-rect.top)*scaleY;
+      const col=Math.floor(x/BLOCK_SIZE);
+      const row=Math.floor(y/BLOCK_SIZE);
+      if(col>=0&&col<MINE_COLS&&row>=0&&row<MINE_ROWS) mineBlockClick(row*MINE_COLS+col);
+    });
+    canvas.addEventListener('touchstart',e=>{
+      e.preventDefault();
+      if(!mineS.running) return;
+      const rect=canvas.getBoundingClientRect();
+      const scaleX=canvas.width/rect.width;
+      const scaleY=canvas.height/rect.height;
+      const x=(e.touches[0].clientX-rect.left)*scaleX;
+      const y=(e.touches[0].clientY-rect.top)*scaleY;
+      const col=Math.floor(x/BLOCK_SIZE);
+      const row=Math.floor(y/BLOCK_SIZE);
+      if(col>=0&&col<MINE_COLS&&row>=0&&row<MINE_ROWS) mineBlockClick(row*MINE_COLS+col);
+    },{passive:false});
+  }
+});
 
 // ============================================================
-// TARGET SHOOTER
+// TARGET SHOOTER — slower, splats, good guys
 // ============================================================
 let shooterRAF=null, shooterRunning=false;
 
@@ -1220,45 +1451,66 @@ function startShooter(){
 
   const canvas=document.getElementById('shooter-canvas');
   const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height;
+  const W=canvas.width, H=canvas.height;
 
-  let score=0,lives=3,frame=0;
-  const enemies=[];
-  const TARGETS=['🦈','🐊','🦛','🐘','👾','💀','💣','🕷️','🪲'];
-
-  function spawnEnemy(){
-    const fromLeft=Math.random()<0.5;
-    const size=36+Math.floor(score/200)*2;
-    const clampedSize=Math.min(size,56);
-    enemies.push({
-      x:fromLeft?-clampedSize:W+clampedSize,
-      y:20+Math.random()*(H-80),
-      w:clampedSize,h:clampedSize,
-      speed:(fromLeft?1:-1)*(2.5+Math.random()*1.5+score/600),
-      emoji:TARGETS[Math.floor(Math.random()*TARGETS.length)],
-      hit:false,
-    });
-  }
+  let score=0, lives=3, frame=0;
+  const entities=[];   // both bad and good
+  const splats=[];     // splat effects
+  const BADDIES=['🦈','🐊','🦛','🐘','👾','💀','💣','🕷️','🪲','😈'];
+  const GOODIES=['💎','⭐','🌟','🍎','❤️'];
 
   function livesStr(){ return '❤️'.repeat(Math.max(0,lives))+'🖤'.repeat(Math.max(0,3-lives)); }
+
+  function spawnEntity(){
+    const isGood=Math.random()<0.25; // 25% chance good guy
+    const fromLeft=Math.random()<0.5;
+    const size=40;
+    // Start slow (1.5), increase very gradually
+    const baseSpeed=1.5+score/800;
+    const spd=Math.min(baseSpeed+Math.random()*1,5.5);
+    entities.push({
+      x:fromLeft?-size:W+size,
+      y:30+Math.random()*(H-80),
+      w:size,h:size,
+      speed:(fromLeft?1:-1)*spd,
+      emoji:isGood?GOODIES[Math.floor(Math.random()*GOODIES.length)]:BADDIES[Math.floor(Math.random()*BADDIES.length)],
+      good:isGood,
+      hit:false,alpha:1,
+    });
+  }
 
   const onTap=e=>{
     if(!shooterRunning) return;
     const rect=canvas.getBoundingClientRect();
     const scaleX=W/rect.width, scaleY=H/rect.height;
-    const cx=(e.clientX||e.touches[0].clientX)-rect.left;
-    const cy=(e.clientY||e.touches[0].clientY)-rect.top;
-    const mx=cx*scaleX, my=cy*scaleY;
-    for(let i=enemies.length-1;i>=0;i--){
-      const e2=enemies[i];
-      if(mx>e2.x&&mx<e2.x+e2.w&&my>e2.y&&my<e2.y+e2.h&&!e2.hit){
-        e2.hit=true; score+=10;
-        document.getElementById('sh-score').textContent=score;
-        setTimeout(()=>enemies.splice(enemies.indexOf(e2),1),200);
+    const tapX=((e.clientX||e.touches[0].clientX)-rect.left)*scaleX;
+    const tapY=((e.clientY||e.touches[0].clientY)-rect.top)*scaleY;
+
+    // Add splat at tap position
+    const splatColors=['#ff2d78','#ff7b00','#ffe600','#39ff14','#00d4ff','#bf5fff'];
+    splats.push({x:tapX,y:tapY,r:12,maxR:38,color:splatColors[Math.floor(Math.random()*splatColors.length)],alpha:1,spikes:6+Math.floor(Math.random()*5)});
+
+    let hit=false;
+    for(let i=entities.length-1;i>=0;i--){
+      const en=entities[i];
+      if(en.hit) continue;
+      if(tapX>en.x&&tapX<en.x+en.w&&tapY>en.y&&tapY<en.y+en.h){
+        en.hit=true;
+        hit=true;
+        if(en.good){
+          // Shot a goodie — lose a life!
+          lives--;
+          document.getElementById('sh-lives').textContent=livesStr();
+          if(lives<=0){ gameOverShooter(); return; }
+        } else {
+          score+=10;
+          document.getElementById('sh-score').textContent=score;
+        }
         break;
       }
     }
   };
+
   canvas.addEventListener('click',onTap);
   canvas.addEventListener('touchstart',e=>{e.preventDefault();onTap(e);},{passive:false});
 
@@ -1269,44 +1521,76 @@ function startShooter(){
     shooterRAF=requestAnimationFrame(loop);
     frame++;
 
-    const sr=Math.max(35,80-Math.floor(score/100)*2);
-    if(frame%sr===0) spawnEnemy();
+    // Spawn: start sparse, slowly increase
+    const sr=Math.max(50,110-Math.floor(score/80)*3);
+    if(frame%sr===0) spawnEntity();
 
-    for(let i=enemies.length-1;i>=0;i--){
-      const e=enemies[i];
-      e.x+=e.speed;
-      if((e.speed>0&&e.x>W+e.w)||(e.speed<0&&e.x<-e.w)){
-        if(!e.hit){
+    // Move entities
+    for(let i=entities.length-1;i>=0;i--){
+      const en=entities[i];
+      if(en.hit){ en.alpha-=0.08; if(en.alpha<=0) entities.splice(i,1); continue; }
+      en.x+=en.speed;
+      // Escaped off screen
+      if((en.speed>0&&en.x>W+en.w)||(en.speed<0&&en.x<-en.w)){
+        entities.splice(i,1);
+        if(!en.good){
+          // Baddie escaped — lose a life
           lives--;
           document.getElementById('sh-lives').textContent=livesStr();
           if(lives<=0){ gameOverShooter(); return; }
         }
-        enemies.splice(i,1);
       }
     }
 
-    // draw
+    // Animate splats
+    for(let i=splats.length-1;i>=0;i--){
+      const s=splats[i];
+      s.r=Math.min(s.r+3,s.maxR);
+      s.alpha-=0.04;
+      if(s.alpha<=0) splats.splice(i,1);
+    }
+
+    // ---- DRAW ----
     ctx.clearRect(0,0,W,H);
     const grad=ctx.createLinearGradient(0,0,0,H);
     grad.addColorStop(0,'#1a0a00'); grad.addColorStop(1,'#0a0c14');
     ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
 
-    // grid
+    // Grid
     ctx.strokeStyle='rgba(255,123,0,0.04)'; ctx.lineWidth=1;
-    for(let gx=0;gx<W;gx+=40){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
-    for(let gy=0;gy<H;gy+=40){ ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke(); }
+    for(let gx=0;gx<W;gx+=48){ ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
+    for(let gy=0;gy<H;gy+=48){ ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke(); }
 
-    // crosshair lines
-    ctx.strokeStyle='rgba(255,123,0,0.15)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(W/2,0); ctx.lineTo(W/2,H); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
-
-    ctx.textBaseline='top';
-    enemies.forEach(e=>{
+    // Splats
+    splats.forEach(s=>{
       ctx.save();
-      if(e.hit){ ctx.globalAlpha=0.3; }
-      ctx.font=`${e.w}px serif`;
-      ctx.fillText(e.emoji,e.x,e.y);
+      ctx.globalAlpha=s.alpha;
+      ctx.fillStyle=s.color;
+      // Draw spiky splat shape
+      ctx.beginPath();
+      for(let sp=0;sp<s.spikes*2;sp++){
+        const angle=(sp/s.spikes/2)*Math.PI*2-Math.PI/2;
+        const r=sp%2===0?s.r:s.r*0.5;
+        const sx=s.x+Math.cos(angle)*r;
+        const sy=s.y+Math.sin(angle)*r;
+        sp===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Entities
+    ctx.textBaseline='top';
+    entities.forEach(en=>{
+      ctx.save();
+      ctx.globalAlpha=en.alpha;
+      if(en.good){
+        // Glow effect for goodies
+        ctx.shadowColor='#39ff14'; ctx.shadowBlur=12;
+      }
+      ctx.font=`${en.w}px serif`;
+      ctx.fillText(en.emoji,en.x,en.y);
       ctx.restore();
     });
   }
