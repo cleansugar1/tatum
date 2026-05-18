@@ -1054,15 +1054,6 @@ function winFallAndGoHome(){
 // ============================================================
 // WORD SEARCH
 // ============================================================
-const WS_WORD_POOL = [
-  'CREEPER','DIAMOND','ROBLOX','ROBUX','NETHER','ENDERMAN','BLAZE','PICKAXE',
-  'OBSIDIAN','CRAFTING','SKELETON','WITHER','ZOMBIE','SPIDER','POTION',
-  'TRALALA','BRAINROT','SHARK','SIGMA','RIZZ','BUSSIN','GOATED','SLAY',
-  'MINECRAFT','STEVE','NOTCH','ENDER','BLOXFRUIT','PIGGY','ADOPT',
-  'NETHERITE','REDSTONE','FURNACE','EMERALD','STRONGHOLD','VILLAGE',
-  'TRIDENT','PHANTOM','RAVAGER','SHULKER','WARDEN','AXOLOTL',
-];
-
 const WS_COLS = 10, WS_ROWS = 10;
 let wsState = null, wsTimerInterval = null;
 
