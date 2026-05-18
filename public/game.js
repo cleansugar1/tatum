@@ -164,8 +164,11 @@ function genMathQuestion(){
   document.getElementById('pw-err').style.display='none';
   document.getElementById('pw-input').value='';
 }
-genMathQuestion();
-document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter') checkPw();});
+document.addEventListener('DOMContentLoaded',()=>{
+  genMathQuestion();
+  document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter') checkPw();});
+  initScratch();
+});
 function checkPw(){
   const v=parseInt(document.getElementById('pw-input').value);
   if(v===mathAnswer){
