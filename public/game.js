@@ -1,3 +1,23 @@
+
+// ============================================================
+// RESPONSIVE CANVAS SIZING
+// ============================================================
+function canvasSize(maxW, maxH, aspectRatio) {
+  const availW = Math.min(window.innerWidth - 32, maxW);
+  const availH = Math.min(window.innerHeight - 160, maxH);
+  const byW = { w: availW, h: Math.round(availW / aspectRatio) };
+  const byH = { w: Math.round(availH * aspectRatio), h: availH };
+  return byW.h <= availH ? byW : byH;
+}
+function sizeCanvas(canvas, maxW, maxH, aspectRatio) {
+  const { w, h } = canvasSize(maxW, maxH, aspectRatio);
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  return { ctx, W: w, H: h };
+}
+
 // ============================================================
 // STARS
 // ============================================================
@@ -169,7 +189,14 @@ function checkPw(){
 let scratchColor='#ffffff',scratchSize=3,scratchDrawing=false;
 function initScratch(){
   const canvas=document.getElementById('scratch-canvas');if(!canvas)return;
-  const ctx=canvas.getContext('2d');ctx.lineCap='round';ctx.lineJoin='round';
+  // Size to parent
+  const dpr=window.devicePixelRatio||1;
+  const parent=canvas.parentElement;
+  const pw=parent?Math.min(parent.clientWidth-4,300):280;
+  const ph=Math.round(pw*0.88);
+  canvas.width=pw*dpr;canvas.height=ph*dpr;
+  canvas.style.width=pw+'px';canvas.style.height=ph+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);ctx.lineCap='round';ctx.lineJoin='round';
   function getPos(e){const rect=canvas.getBoundingClientRect();const scaleX=canvas.width/rect.width,scaleY=canvas.height/rect.height;const src=e.touches?e.touches[0]:e;return{x:(src.clientX-rect.left)*scaleX,y:(src.clientY-rect.top)*scaleY};}
   const startDraw=e=>{e.preventDefault();scratchDrawing=true;const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);};
   const draw=e=>{e.preventDefault();if(!scratchDrawing)return;const p=getPos(e);ctx.strokeStyle=scratchColor;ctx.lineWidth=scratchSize;ctx.lineTo(p.x,p.y);ctx.stroke();};
@@ -743,20 +770,15 @@ function initShooter(){document.getElementById('shooter-overlay').style.display=
 function startShooter(){
   document.getElementById('shooter-overlay').style.display='none';if(shooterRAF)cancelAnimationFrame(shooterRAF);shooterRunning=true;
   const canvas=document.getElementById('shooter-canvas');
-  const dpr=window.devicePixelRatio||1;
-  const availW=Math.min((canvas.parentElement?.clientWidth||680),900);
-  const CW=availW,CH=Math.round(availW*0.52);
-  canvas.width=CW*dpr;canvas.height=CH*dpr;canvas.style.width=CW+'px';canvas.style.height=CH+'px';
-  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
-  const W=CW,H=CH;let score=0,lives=3,frame=0,combo=0;
+  const { ctx, W, H } = sizeCanvas(canvas, 820, 480, 820/480);let score=0,lives=3,frame=0,combo=0;
   const entities=[],splats=[],projectiles=[];
   const BADDIES=['🦈','🐊','🦛','🐘','👾','💀','💣','🕷️','🪲','😈'];
   const GOODIES=['💎','⭐','🌟'];
   function livesStr(){return'❤️'.repeat(Math.max(0,lives))+'🖤'.repeat(Math.max(0,3-lives));}
   function spawnEntity(){
     const isGood=Math.random()<0.25;const fromLeft=Math.random()<0.5;const size=40;
-    const spd=Math.min(1.5+score/800+Math.random()*0.8,5);
-    entities.push({x:fromLeft?-size:W+size,y:30+Math.random()*(H-80),w:size,h:size,speed:(fromLeft?1:-1)*spd,emoji:isGood?GOODIES[Math.floor(Math.random()*GOODIES.length)]:BADDIES[Math.floor(Math.random()*BADDIES.length)],good:isGood,hit:false,alpha:1});
+    const spd=Math.min(2.5+score/600+Math.random()*1.2,7);
+    entities.push({x:fromLeft?-size:W+size,y:20+Math.random()*(H-60),w:size,h:size,speed:(fromLeft?1:-1)*spd,emoji:isGood?GOODIES[Math.floor(Math.random()*GOODIES.length)]:BADDIES[Math.floor(Math.random()*BADDIES.length)],good:isGood,hit:false,alpha:1});
   }
   const splatColors=['#ff2d78','#ff7b00','#ffe600','#39ff14','#00d4ff','#bf5fff'];
   const onTap=e=>{
@@ -784,7 +806,7 @@ function startShooter(){
   activeCleanup=()=>{shooterRunning=false;cancelAnimationFrame(shooterRAF);canvas.removeEventListener('click',onTap);};
   function loop(){
     if(!shooterRunning)return;shooterRAF=requestAnimationFrame(loop);frame++;
-    if(frame%Math.max(50,110-Math.floor(score/80)*3)===0)spawnEntity();
+    if(frame%Math.max(30,90-Math.floor(score/60)*3)===0)spawnEntity();
     for(let i=entities.length-1;i>=0;i--){
       const en=entities[i];if(en.hit){en.alpha-=0.08;if(en.alpha<=0)entities.splice(i,1);continue;}
       en.x+=en.speed;
@@ -832,11 +854,11 @@ function initBoss(){document.getElementById('boss-overlay').style.display='flex'
 function startBoss(){
   document.getElementById('boss-overlay').style.display='none';
   const bossCanvas=document.getElementById('boss-canvas');
-  const bossWrap=bossCanvas.parentElement;
   const dprB=window.devicePixelRatio||1;
-  const bossW=Math.min(bossWrap?bossWrap.clientWidth:460,560);const bossH=Math.round(bossW*1.08);
+  const sideW=160+10; // side panel + gap
+  const bossW=Math.min(Math.max(window.innerWidth-sideW*2-40,240),560);
+  const bossH=Math.min(Math.round(bossW*1.1),window.innerHeight-130);
   bossCanvas.width=bossW*dprB;bossCanvas.height=bossH*dprB;bossCanvas.style.width=bossW+'px';bossCanvas.style.height=bossH+'px';
-  const bossCtxScale=dprB;
   bossState={bossIdx:0,bossHp:BOSSES[0].maxHp,playerHp:100,playerMaxHp:100,snacks:0,shieldCharges:3,maxShield:3,shielded:false,weaponIdx:0,log:[],animFrame:0,running:true,bossAnim:0,hit:false,playerHit:false,projectiles:[],playerProjectiles:[],warnActive:false};
   updateBossUI();renderStore();bossAttackLoop();bossSnackLoop();drawBossCanvas();
   activeCleanup=()=>{bossState&&(bossState.running=false);clearTimeout(bossAtkTimeout);clearTimeout(bossSnackTimeout);cancelAnimationFrame(bossRAF);};
@@ -1025,4 +1047,371 @@ function winFallAndGoHome(){
     ['win-goat','win-title','win-msg','win-back'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('fallen');});
     goHome();
   },1600);
+}
+
+// ============================================================
+// WORD SEARCH
+// ============================================================
+const WS_WORD_POOL = [
+  'CREEPER','DIAMOND','ROBLOX','ROBUX','NETHER','ENDERMAN','BLAZE','PICKAXE',
+  'OBSIDIAN','CRAFTING','SKELETON','WITHER','ZOMBIE','SPIDER','POTION',
+  'TRALALA','BRAINROT','SHARK','SIGMA','RIZZ','BUSSIN','GOATED','SLAY',
+  'MINECRAFT','STEVE','NOTCH','ENDER','BLOXFRUIT','PIGGY','ADOPT',
+  'NETHERITE','REDSTONE','FURNACE','EMERALD','STRONGHOLD','VILLAGE',
+  'TRIDENT','PHANTOM','RAVAGER','SHULKER','WARDEN','AXOLOTL',
+];
+
+const WS_COLS = 10, WS_ROWS = 10;
+const WS_CELL = 36;
+let wsState = null, wsTimerInterval = null;
+
+function initWordSearch() {
+  document.getElementById('ws-overlay').style.display = 'flex';
+  document.getElementById('ws-found').textContent = '0';
+  document.getElementById('ws-time').textContent = '0:00';
+}
+
+function startWordSearch() {
+  document.getElementById('ws-overlay').style.display = 'none';
+  clearInterval(wsTimerInterval);
+  const words = [...WS_WORD_POOL].sort(() => Math.random() - 0.5).slice(0, 10);
+  const grid = buildWSGrid(words);
+  let startTime = Date.now();
+  let foundCount = 0;
+  let selecting = false, selStart = null, selEnd = null;
+
+  wsState = { grid, words, found: new Array(words.length).fill(false), foundCells: [], startTime, selecting: false, selStart: null, selEnd: null };
+
+  // Render word list
+  const wl = document.getElementById('ws-word-list');
+  wl.innerHTML = words.map((w, i) => `<div class="ws-word" id="ws-w-${i}">${w}</div>`).join('');
+
+  wsTimerInterval = setInterval(() => {
+    if (!wsState) return;
+    const elapsed = Math.floor((Date.now() - wsState.startTime) / 1000);
+    document.getElementById('ws-time').textContent = `${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}`;
+  }, 1000);
+
+  activeCleanup = () => { clearInterval(wsTimerInterval); wsState = null; };
+
+  const canvas = document.getElementById('ws-canvas');
+  // Setup retina
+  const wsSize = Math.min(window.innerWidth - 200, window.innerHeight - 180, 400);
+  const WS_CELL_SIZE = Math.floor(wsSize / WS_COLS);
+  const CW = WS_COLS * wsCell_SIZE, CH = WS_ROWS * wsCell_SIZE;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = CW * dpr; canvas.height = CH * dpr;
+  canvas.style.width = CW + 'px'; canvas.style.height = CH + 'px';
+  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
+  // Override WS_CELL for this session
+  const wsCell = WS_CELL_SIZE;
+
+  function getCellFromEvent(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = (CW) / rect.width, scaleY = (CH) / rect.height;
+    const src = e.touches ? e.touches[0] : e;
+    const x = (src.clientX - rect.left) * scaleX;
+    const y = (src.clientY - rect.top) * scaleY;
+    return { col: Math.floor(x / wsCell), row: Math.floor(y / wsCell) };
+  }
+
+  const onStart = e => { e.preventDefault(); const c = getCellFromEvent(e); wsState.selecting = true; wsState.selStart = c; wsState.selEnd = c; drawWS(ctx, CW, CH, wsCell); };
+  const onMove = e => { e.preventDefault(); if (!wsState.selecting) return; wsState.selEnd = getCellFromEvent(e); drawWS(ctx, CW, CH, wsCell); };
+  const onEnd = e => {
+    e.preventDefault();
+    if (!wsState || !wsState.selecting) return;
+    wsState.selecting = false;
+    checkWSSelection(ctx, CW, CH, wsCell);
+  };
+
+  canvas.addEventListener('mousedown', onStart); canvas.addEventListener('mousemove', onMove); canvas.addEventListener('mouseup', onEnd);
+  canvas.addEventListener('touchstart', onStart, { passive: false }); canvas.addEventListener('touchmove', onMove, { passive: false }); canvas.addEventListener('touchend', onEnd, { passive: false });
+
+  drawWS(ctx, CW, CH, wsCell);
+}
+
+function buildWSGrid(words) {
+  const grid = Array.from({ length: WS_ROWS }, () => Array(WS_COLS).fill(''));
+  const directions = [[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]];
+  const placed = [];
+
+  for (const word of words) {
+    let tries = 0, success = false;
+    while (tries++ < 200 && !success) {
+      const dir = directions[Math.floor(Math.random() * directions.length)];
+      const startRow = Math.floor(Math.random() * WS_ROWS);
+      const startCol = Math.floor(Math.random() * WS_COLS);
+      const cells = [];
+      let ok = true;
+      for (let i = 0; i < word.length; i++) {
+        const r = startRow + dir[0] * i, c = startCol + dir[1] * i;
+        if (r < 0 || r >= WS_ROWS || c < 0 || c >= WS_COLS) { ok = false; break; }
+        if (grid[r][c] !== '' && grid[r][c] !== word[i]) { ok = false; break; }
+        cells.push({ r, c });
+      }
+      if (ok) {
+        cells.forEach((cell, i) => { grid[cell.r][cell.c] = word[i]; });
+        placed.push({ word, cells });
+        success = true;
+      }
+    }
+  }
+
+  // Fill blanks
+  const alpha = 'ABCDEFGHIJKLMNOPRSTUVWXYZ';
+  for (let r = 0; r < WS_ROWS; r++)
+    for (let c = 0; c < WS_COLS; c++)
+      if (grid[r][c] === '') grid[r][c] = alpha[Math.floor(Math.random() * alpha.length)];
+
+  wsState = wsState || {};
+  wsState.placedWords = placed;
+  return grid;
+}
+
+function drawWS(ctx, W, H, wsCell) { wsCell = wsCell || WS_CELL;
+  if (!wsState) return;
+  ctx.clearRect(0, 0, W, H);
+  // BG
+  ctx.fillStyle = '#0d1020'; ctx.fillRect(0, 0, W, H);
+
+  // Draw found highlights
+  wsState.foundCells.forEach(({ cells, color }) => {
+    ctx.fillStyle = color;
+    cells.forEach(({ r, c }) => {
+      ctx.fillRect(c * WS_CELL + 1, r * WS_CELL + 1, WS_CELL - 2, WS_CELL - 2);
+    });
+  });
+
+  // Draw current selection highlight
+  if (wsState.selecting && wsState.selStart && wsState.selEnd) {
+    const cells = getLineCells(wsState.selStart, wsState.selEnd);
+    ctx.fillStyle = 'rgba(255,230,0,0.25)';
+    cells.forEach(({ r, c }) => {
+      if (r >= 0 && r < WS_ROWS && c >= 0 && c < WS_COLS)
+        ctx.fillRect(c * WS_CELL + 1, r * WS_CELL + 1, WS_CELL - 2, WS_CELL - 2);
+    });
+  }
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(0,212,255,0.1)'; ctx.lineWidth = 1;
+  for (let r = 0; r <= WS_ROWS; r++) { ctx.beginPath(); ctx.moveTo(0, r * WS_CELL); ctx.lineTo(W, r * WS_CELL); ctx.stroke(); }
+  for (let c = 0; c <= WS_COLS; c++) { ctx.beginPath(); ctx.moveTo(c * WS_CELL, 0); ctx.lineTo(c * WS_CELL, H); ctx.stroke(); }
+
+  // Letters
+  ctx.font = 'bold 16px Nunito'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (let r = 0; r < WS_ROWS; r++) {
+    for (let c = 0; c < WS_COLS; c++) {
+      ctx.fillStyle = '#e8eaf6';
+      ctx.fillText(wsState.grid[r][c], c * WS_CELL + WS_CELL / 2, r * WS_CELL + WS_CELL / 2);
+    }
+  }
+}
+
+function getLineCells(start, end) {
+  const dr = end.row - start.row, dc = end.col - start.col;
+  const steps = Math.max(Math.abs(dr), Math.abs(dc));
+  if (steps === 0) return [start];
+  const cells = [];
+  for (let i = 0; i <= steps; i++) {
+    cells.push({ r: start.row + Math.round(dr * i / steps), c: start.col + Math.round(dc * i / steps) });
+  }
+  return cells;
+}
+
+function checkWSSelection(ctx, W, H, wsCell) { wsCell = wsCell || WS_CELL;
+  if (!wsState || !wsState.selStart || !wsState.selEnd) return;
+  const cells = getLineCells(wsState.selStart, wsState.selEnd);
+  const selected = cells.map(({ r, c }) => (r >= 0 && r < WS_ROWS && c >= 0 && c < WS_COLS) ? wsState.grid[r][c] : '').join('');
+  const selectedRev = selected.split('').reverse().join('');
+
+  const colors = ['rgba(57,255,20,0.35)','rgba(0,212,255,0.35)','rgba(255,230,0,0.35)','rgba(255,45,120,0.35)','rgba(191,95,255,0.35)','rgba(255,123,0,0.35)','rgba(57,255,20,0.25)','rgba(0,212,255,0.25)','rgba(255,230,0,0.25)','rgba(255,45,120,0.25)'];
+
+  wsState.placedWords.forEach(({ word, cells: wCells }, idx) => {
+    if (wsState.found[idx]) return;
+    if (selected === word || selectedRev === word) {
+      wsState.found[idx] = true;
+      wsState.foundCells.push({ cells: wCells, color: colors[idx % colors.length] });
+      document.getElementById(`ws-w-${idx}`).classList.add('found');
+      const foundCount = wsState.found.filter(Boolean).length;
+      document.getElementById('ws-found').textContent = foundCount;
+      playCorrect();
+      drawWS(ctx, W, H);
+      if (foundCount === wsState.words.length) {
+        clearInterval(wsTimerInterval);
+        launchConfetti(); playWin();
+        setTimeout(() => {
+          const elapsed = Math.floor((Date.now() - wsState.startTime) / 1000);
+          const ov = document.getElementById('ws-overlay');
+          ov.style.display = 'flex';
+          ov.innerHTML = `<h2 style="color:var(--blue)">🎉 ALL FOUND!</h2><p>Time: <strong style="color:var(--green)">${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}</strong></p><button class="gbtn gbtn-blue" onclick="startWordSearch()">NEW PUZZLE 🔄</button>`;
+        }, 800);
+      }
+    }
+  });
+  drawWS(ctx, W, H);
+}
+
+// ============================================================
+// PONG
+// ============================================================
+let pongRAF = null, pongRunning = false;
+
+function initPong() {
+  document.getElementById('pong-overlay').style.display = 'flex';
+  document.getElementById('pong-player-score').textContent = '0';
+  document.getElementById('pong-cpu-score').textContent = '0';
+}
+
+function startPong() {
+  document.getElementById('pong-overlay').style.display = 'none';
+  if (pongRAF) cancelAnimationFrame(pongRAF);
+  pongRunning = true;
+
+  const canvas = document.getElementById('pong-canvas');
+  const { ctx, W, H } = sizeCanvas(canvas, 700, 430, 700/430);
+
+  const PADDLE_W = 18, PADDLE_H = 80;
+  const BALL_SIZE = 28;
+  const WIN_SCORE = 7;
+
+  let playerScore = 0, cpuScore = 0;
+  let playerY = H / 2 - PADDLE_H / 2;
+  let cpuY = H / 2 - PADDLE_H / 2;
+  let ballX = W / 2, ballY = H / 2;
+  let ballVX = 4 * (Math.random() > 0.5 ? 1 : -1);
+  let ballVY = (Math.random() * 3 + 1) * (Math.random() > 0.5 ? 1 : -1);
+  let serving = false;
+
+  // Touch/mouse drag for player paddle
+  let dragging = false, lastTouchY = 0;
+  const onTouchStart = e => { e.preventDefault(); dragging = true; lastTouchY = e.touches ? e.touches[0].clientY : e.clientY; };
+  const onTouchMove = e => {
+    e.preventDefault();
+    if (!dragging) return;
+    const curY = e.touches ? e.touches[0].clientY : e.clientY;
+    const rect = canvas.getBoundingClientRect();
+    const scaleY = H / rect.height;
+    const dy = (curY - lastTouchY) * scaleY;
+    playerY = Math.max(0, Math.min(H - PADDLE_H, playerY + dy));
+    lastTouchY = curY;
+  };
+  const onTouchEnd = () => { dragging = false; };
+  canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+  canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+  canvas.addEventListener('touchend', onTouchEnd);
+  canvas.addEventListener('mousedown', onTouchStart);
+  canvas.addEventListener('mousemove', onTouchMove);
+  canvas.addEventListener('mouseup', onTouchEnd);
+
+  activeCleanup = () => { pongRunning = false; cancelAnimationFrame(pongRAF); };
+
+  function resetBall(towardPlayer) {
+    ballX = W / 2; ballY = H / 2;
+    ballVX = 4 * (towardPlayer ? -1 : 1);
+    ballVY = (Math.random() * 3 + 1) * (Math.random() > 0.5 ? 1 : -1);
+  }
+
+  function loop() {
+    if (!pongRunning) return;
+    pongRAF = requestAnimationFrame(loop);
+
+    // CPU AI — medium: tracks ball with slight lag and imperfect positioning
+    const cpuCenter = cpuY + PADDLE_H / 2;
+    const targetY = ballY - PADDLE_H / 2;
+    const cpuSpeed = 3.5 + cpuScore * 0.1; // gets slightly harder as it scores
+    if (cpuCenter < ballY - 10) cpuY = Math.min(H - PADDLE_H, cpuY + cpuSpeed);
+    else if (cpuCenter > ballY + 10) cpuY = Math.max(0, cpuY - cpuSpeed);
+    // Intentional imperfection — occasional slight delay
+    if (Math.random() < 0.08) cpuY += (Math.random() - 0.5) * 8;
+
+    // Move ball
+    ballX += ballVX; ballY += ballVY;
+
+    // Wall bounce top/bottom
+    if (ballY < 0) { ballY = 0; ballVY *= -1; beep(400, 0.04, 'square', 0.15); }
+    if (ballY > H - BALL_SIZE) { ballY = H - BALL_SIZE; ballVY *= -1; beep(400, 0.04, 'square', 0.15); }
+
+    // Player paddle (left)
+    if (ballX < PADDLE_W + 10 && ballX > PADDLE_W - 6 && ballY + BALL_SIZE > playerY && ballY < playerY + PADDLE_H) {
+      ballVX = Math.abs(ballVX) * 1.05;
+      const hitPos = (ballY + BALL_SIZE / 2 - playerY) / PADDLE_H;
+      ballVY = (hitPos - 0.5) * 10;
+      ballVX = Math.min(ballVX, 12);
+      beep(500, 0.05, 'square', 0.25);
+    }
+
+    // CPU paddle (right)
+    if (ballX + BALL_SIZE > W - PADDLE_W - 10 && ballX + BALL_SIZE < W - PADDLE_W + 6 && ballY + BALL_SIZE > cpuY && ballY < cpuY + PADDLE_H) {
+      ballVX = -Math.abs(ballVX) * 1.05;
+      const hitPos = (ballY + BALL_SIZE / 2 - cpuY) / PADDLE_H;
+      ballVY = (hitPos - 0.5) * 10;
+      ballVX = Math.max(ballVX, -12);
+      beep(300, 0.05, 'square', 0.2);
+    }
+
+    // Scoring
+    if (ballX < -BALL_SIZE) {
+      cpuScore++;
+      document.getElementById('pong-cpu-score').textContent = cpuScore;
+      beep(150, 0.2, 'sawtooth', 0.3);
+      if (cpuScore >= WIN_SCORE) { gameOverPong(false); return; }
+      resetBall(false);
+    }
+    if (ballX > W + BALL_SIZE) {
+      playerScore++;
+      document.getElementById('pong-player-score').textContent = playerScore;
+      beep(600, 0.1, 'sine', 0.25); beep(800, 0.08, 'sine', 0.2, 0.08);
+      if (playerScore >= WIN_SCORE) { gameOverPong(true); return; }
+      resetBall(true);
+    }
+
+    // Draw
+    ctx.clearRect(0, 0, W, H);
+    // BG
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, '#001a08'); grad.addColorStop(0.5, '#0a0c14'); grad.addColorStop(1, '#1a0008');
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+    // Center dashed line
+    ctx.strokeStyle = 'rgba(57,255,20,0.15)'; ctx.lineWidth = 3; ctx.setLineDash([12, 12]);
+    ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.stroke(); ctx.setLineDash([]);
+
+    // Score display on canvas
+    ctx.font = 'bold 48px Boogaloo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(57,255,20,0.2)'; ctx.fillText(playerScore, W / 4, H / 2);
+    ctx.fillStyle = 'rgba(255,45,120,0.2)'; ctx.fillText(cpuScore, (W * 3) / 4, H / 2);
+
+    // Player paddle (creeper green)
+    ctx.fillStyle = '#39ff14';
+    ctx.fillRect(6, playerY, PADDLE_W, PADDLE_H);
+    // Creeper face on paddle
+    ctx.fillStyle = '#000';
+    ctx.fillRect(10, playerY + 16, 4, 4); ctx.fillRect(16, playerY + 16, 4, 4);
+    ctx.fillRect(12, playerY + 22, 8, 4); ctx.fillRect(10, playerY + 26, 4, 4); ctx.fillRect(18, playerY + 26, 4, 4);
+
+    // CPU paddle (pink/red)
+    ctx.fillStyle = '#ff2d78';
+    ctx.fillRect(W - PADDLE_W - 6, cpuY, PADDLE_W, PADDLE_H);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(W - PADDLE_W - 2, cpuY + 16, 4, 4); ctx.fillRect(W - PADDLE_W + 4, cpuY + 16, 4, 4);
+    ctx.fillRect(W - PADDLE_W, cpuY + 22, 8, 4); ctx.fillRect(W - PADDLE_W - 2, cpuY + 26, 4, 4); ctx.fillRect(W - PADDLE_W + 6, cpuY + 26, 4, 4);
+
+    // Ball — diamond emoji
+    ctx.font = `${BALL_SIZE}px serif`; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+    ctx.fillText('💎', ballX, ballY);
+  }
+
+  function gameOverPong(playerWon) {
+    pongRunning = false; cancelAnimationFrame(pongRAF);
+    if (playerWon) { launchConfetti(); playWin(); }
+    else playGameOver();
+    const ov = document.getElementById('pong-overlay');
+    ov.style.display = 'flex';
+    ov.innerHTML = `<h2 style="color:${playerWon ? 'var(--green)' : 'var(--pink)'}">${playerWon ? '🏆 YOU WIN!' : '💀 YOU LOST!'}</h2>
+      <p>${playerWon ? 'W rizz! You beat the computer! 👑' : 'So close! Try again!'}</p>
+      <p style="font-family:'Boogaloo',cursive;font-size:1.4rem">${playerScore} — ${cpuScore}</p>
+      <button class="gbtn gbtn-green" onclick="startPong()">PLAY AGAIN 🏓</button>`;
+  }
+
+  loop();
 }

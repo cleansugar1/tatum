@@ -118,6 +118,31 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 .lb-name{color:var(--text);flex:1;margin:0 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .lb-empty{color:var(--dim);font-size:.8rem;text-align:center;padding:6px;}
 
+
+.gcard-wordsearch{border-color:rgba(0,212,255,.35);}.gcard-wordsearch:active{box-shadow:0 16px 40px rgba(0,212,255,.3);}.gcard-wordsearch .gc-title{color:var(--blue);}
+.gcard-pong{border-color:rgba(57,255,20,.35);}.gcard-pong:active{box-shadow:0 16px 40px rgba(57,255,20,.3);}.gcard-pong .gc-title{color:var(--green);}
+.secret-unlock-btn{display:flex;align-items:center;gap:10px;background:var(--card);border:2px dashed rgba(255,230,0,.4);border-radius:14px;padding:12px 20px;cursor:pointer;margin-top:4px;max-width:960px;width:100%;transition:border-color .2s;}
+.secret-unlock-btn:active{border-color:var(--yellow);}
+.secret-unlock-btn-icon{font-size:1.8rem;}
+.secret-unlock-btn-text{font-family:'Boogaloo',cursive;font-size:1.1rem;color:var(--yellow);}
+.secret-unlock-btn-sub{font-size:.78rem;color:var(--dim);font-weight:700;}
+/* Secret code screen */
+#secret-screen{justify-content:flex-start;padding:20px;padding-top:60px;gap:16px;background:radial-gradient(ellipse at center,#1a1500 0%,#0a0c14 70%);}
+.secret-screen-box{background:var(--card);border:2px solid rgba(255,230,0,.4);border-radius:20px;padding:28px;max-width:560px;width:100%;}
+/* Word search */
+#wordsearch-screen{background:radial-gradient(ellipse at center,#001428 0%,#0a0c14 70%);}
+.ws-layout{display:flex;gap:16px;width:100%;max-width:900px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
+.ws-grid-wrap{position:relative;}
+#ws-canvas{border:3px solid rgba(0,212,255,.4);border-radius:12px;cursor:pointer;touch-action:none;box-shadow:0 0 20px rgba(0,212,255,.15);max-width:100%;}
+.ws-words-panel{background:var(--card);border:1px solid rgba(0,212,255,.25);border-radius:14px;padding:14px;min-width:160px;flex:0 0 160px;}
+.ws-words-title{font-family:'Boogaloo',cursive;font-size:1rem;color:var(--blue);margin-bottom:10px;}
+.ws-word{font-size:.88rem;font-weight:700;padding:4px 0;color:var(--dim);transition:all .2s;}
+.ws-word.found{color:var(--green);text-decoration:line-through;}
+.ws-timer{font-family:'Boogaloo',cursive;font-size:1.4rem;color:var(--yellow);text-align:center;margin-top:10px;}
+/* Pong */
+#pong-screen{background:radial-gradient(ellipse at center,#001a08 0%,#0a0c14 70%);}
+#pong-canvas{border:3px solid rgba(57,255,20,.4);border-radius:12px;touch-action:none;box-shadow:0 0 20px rgba(57,255,20,.15);max-width:100%;}
+
 /* ===== DODGE ===== */
 #dodge-screen{background:radial-gradient(ellipse at center,#1a0015 0%,#0a0c14 70%);}
 .dodge-layout{display:flex;gap:14px;width:100%;max-width:1000px;align-items:flex-start;justify-content:center;}
@@ -149,12 +174,12 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 
 /* ===== WHACK ===== */
 #whack-screen{background:radial-gradient(ellipse at center,#001a08 0%,#0a0c14 70%);}
-.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:600px;width:100%;}
-.hole{background:var(--card);border:2px solid rgba(57,255,20,.2);border-radius:16px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:4rem;cursor:pointer;transition:transform .1s;user-select:none;}
+.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:min(320px,80vmin);}
+.hole{background:var(--card);border:2px solid rgba(57,255,20,.2);border-radius:14px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:2.4rem;cursor:pointer;transition:transform .1s;user-select:none;}
 .hole:active{transform:scale(.88);}
 .hole.active{background:rgba(57,255,20,.12);border-color:var(--green);animation:pop .15s ease;}
 .hole.missed{background:rgba(255,45,120,.12);border-color:var(--pink);}
-.whack-timer-bar{width:100%;max-width:600px;height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;}
+.whack-timer-bar{width:min(320px,80vmin);max-width:100%;height:10px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;}
 .whack-timer-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .1s linear;}
 
 /* ===== MINING ===== */
@@ -166,7 +191,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 .mine-layer-label{font-family:'Boogaloo',cursive;font-size:1rem;color:var(--purple);}
 .mine-timer-bar{width:100%;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;}
 .mine-timer-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--yellow));transition:width .25s linear;}
-#mine-canvas{border:3px solid rgba(191,95,255,.4);border-radius:12px;cursor:pointer;image-rendering:pixelated;box-shadow:0 0 20px rgba(191,95,255,.2);}
+#mine-canvas{border:3px solid rgba(191,95,255,.4);border-radius:12px;cursor:pointer;image-rendering:pixelated;box-shadow:0 0 20px rgba(191,95,255,.2);width:min(240px,80vmin) !important;height:min(240px,80vmin) !important;}
 .mine-tool-box{background:var(--card);border:2px solid rgba(191,95,255,.4);border-radius:14px;padding:12px;text-align:center;}
 .mine-tool-emoji{font-size:2.4rem;margin-bottom:4px;}
 .mine-tool-name{font-family:'Boogaloo',cursive;font-size:.9rem;color:var(--purple);}
@@ -189,9 +214,9 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 
 /* ===== BOSS BATTLE ===== */
 #boss-screen{background:radial-gradient(ellipse at center,#1a0005 0%,#0a0c14 70%);}
-.boss-layout{display:flex;gap:12px;width:100%;max-width:1100px;align-items:flex-start;justify-content:center;flex-wrap:wrap;}
-.boss-canvas-wrap{position:relative;flex:0 0 auto;}
-.boss-side{width:165px;display:flex;flex-direction:column;gap:10px;}
+.boss-layout{display:flex;gap:10px;width:100%;max-width:1100px;align-items:flex-start;justify-content:center;}
+.boss-canvas-wrap{position:relative;flex:1 1 auto;min-width:0;}
+.boss-side{width:160px;flex:0 0 160px;display:flex;flex-direction:column;gap:8px;max-height:calc(100vh - 120px);overflow-y:auto;}
 .boss-hp-section{background:var(--card);border-radius:14px;padding:12px;}
 .boss-hp-label{font-family:'Boogaloo',cursive;font-size:.85rem;margin-bottom:5px;}
 .hp-bar-wrap{height:16px;background:rgba(255,255,255,.1);border-radius:8px;overflow:hidden;margin-bottom:4px;}
@@ -232,13 +257,70 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 .win-item{position:absolute;transition:top 1.2s cubic-bezier(.4,2,.6,1),transform 1.2s ease;}
 .win-item.fallen{top:calc(100vh - 120px) !important;}
 
+
+/* ===== RESPONSIVE ===== */
+
+/* Make password panels fluid */
+.pw-wrap{ flex:1 1 280px; min-width:0; max-width:380px; }
+.pw-scratch-wrap{ flex:1 1 280px; min-width:0; max-width:380px; }
+#scratch-canvas{ width:100% !important; height:auto !important; aspect-ratio:1.15; }
+
+/* Games grid fluid */
+.games-grid{ grid-template-columns:repeat(auto-fill,minmax(min(200px,45vw),1fr)); }
+
+/* All canvases: never overflow */
+canvas{ max-width:100% !important; height:auto !important; }
+#scratch-canvas{ aspect-ratio:1.15; }
+
+/* Leaderboard shrinks */
+.lb-wrap{ min-width:120px; flex:0 0 auto; }
+
+/* Word search layout stacks on small screens */
+.ws-words-panel{ flex:1 1 140px; min-width:0; }
+
+/* Boss side panels shrink */
+.boss-side{ width:140px; flex:0 0 140px; }
+
+/* Mine panels shrink */
+.mine-left-panel,.mine-right-panel{ flex:0 0 130px; }
+
+/* Buttons scale on small screens */
+@media(max-width:480px){
+  .gbtn{ padding:12px 18px; font-size:1rem; min-width:120px; }
+  .game-title{ font-size:1.4rem; }
+  .hud-val{ font-size:1.2rem; }
+  .hud-label{ font-size:.65rem; }
+  .game-hud{ gap:12px; }
+  .back-btn{ padding:8px 12px; font-size:.82rem; }
+}
+
+/* Phone portrait — stack everything */
 @media(max-width:600px){
-  .dodge-layout{flex-direction:column;align-items:center;}
-  .quiz-opts{grid-template-columns:1fr;}
-  .mining-layout2{flex-direction:column;align-items:center;}
-  .mine-left-panel,.mine-right-panel{width:100%;flex-direction:row;flex-wrap:wrap;}
-  .boss-layout{flex-direction:column;align-items:center;}
-  .boss-side{width:100%;flex-direction:row;flex-wrap:wrap;}
+  .pw-outer{ flex-direction:column; align-items:center; }
+  .pw-wrap, .pw-scratch-wrap{ flex:0 0 auto; width:92%; max-width:400px; }
+  .dodge-layout{ flex-direction:column; align-items:center; }
+  .quiz-opts{ grid-template-columns:1fr; }
+  .mining-layout2{ flex-direction:column; align-items:center; }
+  .mine-left-panel,.mine-right-panel{ width:100%; flex-direction:row; flex-wrap:wrap; flex:unset; }
+  .mine-inv-box,.mine-craft-box,.mine-lb-box,.mine-tool-box{ flex:1; min-width:130px; }
+  .boss-layout{ flex-direction:column; align-items:center; }
+  .boss-side{ width:100%; flex:unset; flex-direction:row; flex-wrap:wrap; max-height:none; overflow-y:visible; }
+  .boss-hp-section,.boss-store,.boss-actions,.snack-bag-wrap{ flex:1; min-width:140px; }
+  .ws-layout{ flex-direction:column; align-items:center; }
+  .ws-words-panel{ width:100%; flex:unset; }
+}
+
+/* Tablet landscape (iPad mini ~1024px) — optimised layout */
+@media(min-width:601px) and (max-width:1100px){
+  .games-grid{ grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); }
+  .boss-side{ width:145px; flex:0 0 145px; }
+  .mine-left-panel,.mine-right-panel{ flex:0 0 140px; }
+  .quiz-box{ max-width:100%; }
+}
+
+/* Desktop wide */
+@media(min-width:1101px){
+  .games-grid{ grid-template-columns:repeat(4,1fr); }
 }
 </style>
 </head>
@@ -262,7 +344,7 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
     <div class="pw-scratch-wrap">
       <div class="pw-scratch-title">✏️ Show Your Work!</div>
       <div class="pw-scratch-sub">Write here with your finger 👇</div>
-      <canvas id="scratch-canvas" width="300" height="260"></canvas>
+      <canvas id="scratch-canvas"></canvas>
       <div class="scratch-toolbar">
         <div class="scratch-color active" style="background:#fff" onclick="setScratchColor('#ffffff',this)"></div>
         <div class="scratch-color" style="background:#ffe600" onclick="setScratchColor('#ffe600',this)"></div>
@@ -300,17 +382,16 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
       <div class="gcard gcard-whack" onclick="goGame('whack-screen',initWhack)"><span class="gc-emoji">🔨</span><div class="gc-title">WHACK-A-CREEPER</div><div class="gc-desc">Smash the brainrot creepers!</div></div>
       <div class="gcard gcard-mining" onclick="goGame('mining-screen',initMining)"><span class="gc-emoji">⛏️</span><div class="gc-title">MINING CLICKER</div><div class="gc-desc">Mine 10 layers to Netherite!</div></div>
       <div class="gcard gcard-shooter" onclick="goGame('shooter-screen',initShooter)"><span class="gc-emoji">🎯</span><div class="gc-title">TARGET SHOOTER</div><div class="gc-desc">Blast enemies, dodge the good guys!</div></div>
+      <div class="gcard gcard-wordsearch" onclick="goGame('wordsearch-screen',initWordSearch)"><span class="gc-emoji">🔤</span><div class="gc-title">WORD SEARCH</div><div class="gc-desc">Find hidden Roblox & Minecraft words!</div></div>
+      <div class="gcard gcard-pong" onclick="goGame('pong-screen',initPong)"><span class="gc-emoji">🏓</span><div class="gc-title">CREEPER PONG</div><div class="gc-desc">First to 7 wins! Drag to move your paddle!</div></div>
     </div>
-    <div class="secret-panel">
-      <div class="secret-title">🔓 SECRET CODE — Crack it to unlock a HIDDEN GAME</div>
-      <div class="secret-instructions">Answer each clue below. Put all the answers together with no spaces to make the code!</div>
-      <div class="secret-clues" id="secret-clues"></div>
-      <div class="secret-input-row">
-        <input class="secret-input" id="secret-input" placeholder="Type code here..." maxlength="30" autocomplete="off">
-        <button class="secret-btn" onclick="checkSecretCode()">CRACK IT 🔓</button>
+    <button class="secret-unlock-btn" onclick="goGame('secret-screen',null)">
+      <span class="secret-unlock-btn-icon">🔓</span>
+      <div>
+        <div class="secret-unlock-btn-text">Secret Code</div>
+        <div class="secret-unlock-btn-sub">Crack the code to unlock a hidden game...</div>
       </div>
-      <div class="secret-feedback" id="secret-feedback"></div>
-    </div>
+    </button>
   </div>
 </div>
 
@@ -455,11 +536,12 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
       </div>
       <div class="boss-actions">
         <button class="boss-btn" id="heal-btn" onclick="bossHeal()" disabled style="background:var(--green);color:#000">🍎 EAT SNACK<br><small>Heal +30 HP (1🍎)</small></button>
-        <button class="boss-btn" id="shield-btn" onclick="bossShield()" style="background:var(--blue);color:#000">🛡️ SHIELD NOW<br><small id="shield-count">3 charges left</small></button>
+        <button class="boss-btn" id="shield-btn" onclick="bossShield()" style="background:var(--blue);color:#000">🛡️ SHIELD<br><small id="shield-count">3 charges left</small></button>
       </div>
-      <div class="boss-store">
-        <div class="boss-store-title">🛒 SNACK STORE</div>
-        <div id="store-items"></div>
+      <div class="boss-hp-section">
+        <div class="boss-hp-label" style="color:var(--purple)">👹 Fighting</div>
+        <div style="font-size:1.6rem;text-align:center" id="boss-name-display">?</div>
+        <div style="font-size:.72rem;color:var(--dim);text-align:center" id="boss-phase-display">Phase 1 of 3</div>
       </div>
     </div>
     <div class="boss-canvas-wrap">
@@ -479,14 +561,13 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
         <div style="font-family:'Boogaloo',cursive;font-size:.85rem;color:var(--dim);text-align:center" id="weapon-name">Iron Sword</div>
         <div style="font-family:'Boogaloo',cursive;font-size:.85rem;color:var(--orange);text-align:center" id="weapon-dmg">5 dmg/hit</div>
       </div>
+      <div class="boss-store">
+        <div class="boss-store-title">🛒 SNACK STORE</div>
+        <div id="store-items"></div>
+      </div>
       <div class="boss-hp-section">
         <div class="boss-hp-label" style="color:var(--yellow)">📜 Battle Log</div>
         <div class="boss-log" id="boss-log">Get ready to fight!</div>
-      </div>
-      <div class="boss-hp-section">
-        <div class="boss-hp-label" style="color:var(--purple)">👹 Fighting</div>
-        <div style="font-size:1.8rem;text-align:center" id="boss-name-display">?</div>
-        <div style="font-size:.75rem;color:var(--dim);text-align:center" id="boss-phase-display">Phase 1 of 3</div>
       </div>
     </div>
   </div>
@@ -501,6 +582,68 @@ canvas{display:block;border-radius:14px;max-width:100%;touch-action:none;}
 </div>
 
 <script src="game.js"></script>
+
+<!-- SECRET CODE SCREEN -->
+<div id="secret-screen" class="screen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--yellow)">🔓 SECRET CODE</div>
+  <div class="secret-screen-box">
+    <div style="font-family:'Boogaloo',cursive;font-size:1rem;color:var(--yellow);margin-bottom:6px;">Crack the code to unlock a HIDDEN GAME 🎮</div>
+    <div style="color:var(--dim);font-size:.82rem;margin-bottom:14px;">Answer each clue. Put ALL answers together with NO spaces!</div>
+    <div class="secret-clues" id="secret-clues"></div>
+    <div class="secret-input-row" style="margin-top:12px;">
+      <input class="secret-input" id="secret-input" placeholder="Type code here..." maxlength="30" autocomplete="off">
+      <button class="secret-btn" onclick="checkSecretCode()">CRACK IT 🔓</button>
+    </div>
+    <div class="secret-feedback" id="secret-feedback"></div>
+  </div>
+</div>
+
+<!-- WORD SEARCH -->
+<div id="wordsearch-screen" class="screen game-screen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--blue)">🔤 WORD SEARCH</div>
+  <div class="game-hud">
+    <div class="hud-item"><span class="hud-label">Found</span><span class="hud-val" style="color:var(--blue)" id="ws-found">0</span></div>
+    <div class="hud-item"><span class="hud-label">To Find</span><span class="hud-val" style="color:var(--dim)" id="ws-total">10</span></div>
+    <div class="hud-item"><span class="hud-label">Time</span><span class="hud-val" style="color:var(--yellow)" id="ws-time">0:00</span></div>
+  </div>
+  <div class="ws-layout">
+    <div class="ws-grid-wrap">
+      <canvas id="ws-canvas"></canvas>
+      <div class="overlay" id="ws-overlay">
+        <h2 style="color:var(--blue)">🔤 WORD SEARCH</h2>
+        <p>Find all 10 hidden words!<br>Drag across letters to select.<br>Words go in all directions!</p>
+        <button class="gbtn gbtn-blue" onclick="startWordSearch()">START 🔍</button>
+      </div>
+    </div>
+    <div class="ws-words-panel">
+      <div class="ws-words-title">🎯 Find These:</div>
+      <div id="ws-word-list"></div>
+      <div class="ws-timer" id="ws-timer-display"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PONG -->
+<div id="pong-screen" class="screen game-screen">
+  <button class="back-btn" onclick="goHome()">← Home</button>
+  <div class="game-title" style="color:var(--green)">🏓 CREEPER PONG</div>
+  <div class="game-hud">
+    <div class="hud-item"><span class="hud-label">You</span><span class="hud-val" style="color:var(--green)" id="pong-player-score">0</span></div>
+    <div class="hud-item"><span class="hud-label" style="color:var(--dim)">First to 7 wins!</span></div>
+    <div class="hud-item"><span class="hud-label">Computer</span><span class="hud-val" style="color:var(--pink)" id="pong-cpu-score">0</span></div>
+  </div>
+  <div style="position:relative">
+    <canvas id="pong-canvas"></canvas>
+    <div class="overlay" id="pong-overlay">
+      <h2 style="color:var(--green)">🏓 CREEPER PONG</h2>
+      <p>Drag your paddle to hit the 💎 diamond ball!<br>First to 7 points wins!<br>You're on the LEFT, computer on the RIGHT.</p>
+      <button class="gbtn gbtn-green" onclick="startPong()">START 🏓</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
 <!-- JS injected separately -->
