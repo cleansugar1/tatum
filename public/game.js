@@ -1062,8 +1062,15 @@ const WS_WORD_POOL = [
 ];
 
 const WS_COLS = 10, WS_ROWS = 10;
-const WS_CELL = 36;
 let wsState = null, wsTimerInterval = null;
+
+const WS_WORD_POOL = [
+  'CREEPER','DIAMOND','ROBLOX','ROBUX','NETHER','ENDERMAN','BLAZE','PICKAXE',
+  'OBSIDIAN','CRAFTING','SKELETON','WITHER','ZOMBIE','SPIDER','POTION',
+  'TRALALA','BRAINROT','SHARK','SIGMA','RIZZ','BUSSIN','GOATED','SLAY',
+  'MINECRAFT','STEVE','NOTCH','ENDER','BLOXFRUIT','PIGGY','ADOPT',
+  'NETHERITE','REDSTONE','FURNACE','EMERALD','WARDEN','AXOLOTL','TRIDENT',
+];
 
 function initWordSearch() {
   document.getElementById('ws-overlay').style.display = 'flex';
@@ -1074,13 +1081,35 @@ function initWordSearch() {
 function startWordSearch() {
   document.getElementById('ws-overlay').style.display = 'none';
   clearInterval(wsTimerInterval);
-  const words = [...WS_WORD_POOL].sort(() => Math.random() - 0.5).slice(0, 10);
-  const grid = buildWSGrid(words);
-  let startTime = Date.now();
-  let foundCount = 0;
-  let selecting = false, selStart = null, selEnd = null;
 
-  wsState = { grid, words, found: new Array(words.length).fill(false), foundCells: [], startTime, selecting: false, selStart: null, selEnd: null };
+  const words = [...WS_WORD_POOL].sort(() => Math.random() - 0.5).slice(0, 10);
+
+  // Size canvas to fit screen
+  const canvas = document.getElementById('ws-canvas');
+  const dpr = window.devicePixelRatio || 1;
+  const availW = Math.min(window.innerWidth - 220, window.innerHeight - 200, 380);
+  const CELL = Math.max(28, Math.floor(availW / WS_COLS));
+  const CW = WS_COLS * CELL;
+  const CH = WS_ROWS * CELL;
+  canvas.width = CW * dpr;
+  canvas.height = CH * dpr;
+  canvas.style.width = CW + 'px';
+  canvas.style.height = CH + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  // Build grid
+  const grid = buildWSGrid(words);
+
+  wsState = {
+    grid, words,
+    found: new Array(words.length).fill(false),
+    foundCells: [],
+    placedWords: wsState ? wsState.placedWords : [],
+    startTime: Date.now(),
+    selecting: false, selStart: null, selEnd: null,
+    CELL, CW, CH, ctx
+  };
 
   // Render word list
   const wl = document.getElementById('ws-word-list');
@@ -1094,161 +1123,138 @@ function startWordSearch() {
 
   activeCleanup = () => { clearInterval(wsTimerInterval); wsState = null; };
 
-  const canvas = document.getElementById('ws-canvas');
-  // Setup retina
-  const wsSize = Math.min(window.innerWidth - 200, window.innerHeight - 180, 400);
-  const WS_CELL_SIZE = Math.floor(wsSize / WS_COLS);
-  const CW = WS_COLS * wsCell_SIZE, CH = WS_ROWS * wsCell_SIZE;
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = CW * dpr; canvas.height = CH * dpr;
-  canvas.style.width = CW + 'px'; canvas.style.height = CH + 'px';
-  const ctx = canvas.getContext('2d'); ctx.scale(dpr, dpr);
-  // Override WS_CELL for this session
-  const wsCell = WS_CELL_SIZE;
-
-  function getCellFromEvent(e) {
+  function getCell(e) {
     const rect = canvas.getBoundingClientRect();
-    const scaleX = (CW) / rect.width, scaleY = (CH) / rect.height;
+    const scaleX = CW / rect.width, scaleY = CH / rect.height;
     const src = e.touches ? e.touches[0] : e;
     const x = (src.clientX - rect.left) * scaleX;
     const y = (src.clientY - rect.top) * scaleY;
-    return { col: Math.floor(x / wsCell), row: Math.floor(y / wsCell) };
+    return { col: Math.max(0, Math.min(WS_COLS-1, Math.floor(x / CELL))), row: Math.max(0, Math.min(WS_ROWS-1, Math.floor(y / CELL))) };
   }
 
-  const onStart = e => { e.preventDefault(); const c = getCellFromEvent(e); wsState.selecting = true; wsState.selStart = c; wsState.selEnd = c; drawWS(ctx, CW, CH, wsCell); };
-  const onMove = e => { e.preventDefault(); if (!wsState.selecting) return; wsState.selEnd = getCellFromEvent(e); drawWS(ctx, CW, CH, wsCell); };
-  const onEnd = e => {
-    e.preventDefault();
-    if (!wsState || !wsState.selecting) return;
-    wsState.selecting = false;
-    checkWSSelection(ctx, CW, CH, wsCell);
-  };
+  const onStart = e => { e.preventDefault(); wsState.selecting = true; wsState.selStart = getCell(e); wsState.selEnd = wsState.selStart; drawGrid(); };
+  const onMove  = e => { e.preventDefault(); if (!wsState || !wsState.selecting) return; wsState.selEnd = getCell(e); drawGrid(); };
+  const onEnd   = e => { e.preventDefault(); if (!wsState || !wsState.selecting) return; wsState.selecting = false; checkWord(); };
 
-  canvas.addEventListener('mousedown', onStart); canvas.addEventListener('mousemove', onMove); canvas.addEventListener('mouseup', onEnd);
-  canvas.addEventListener('touchstart', onStart, { passive: false }); canvas.addEventListener('touchmove', onMove, { passive: false }); canvas.addEventListener('touchend', onEnd, { passive: false });
+  canvas.addEventListener('mousedown', onStart);
+  canvas.addEventListener('mousemove', onMove);
+  canvas.addEventListener('mouseup', onEnd);
+  canvas.addEventListener('touchstart', onStart, { passive: false });
+  canvas.addEventListener('touchmove', onMove, { passive: false });
+  canvas.addEventListener('touchend', onEnd, { passive: false });
 
-  drawWS(ctx, CW, CH, wsCell);
+  function drawGrid() {
+    if (!wsState) return;
+    const { CELL, CW, CH, ctx, grid, foundCells, selStart, selEnd, selecting } = wsState;
+    ctx.clearRect(0, 0, CW, CH);
+    ctx.fillStyle = '#0d1020'; ctx.fillRect(0, 0, CW, CH);
+
+    // Found highlights
+    foundCells.forEach(({ cells, color }) => {
+      ctx.fillStyle = color;
+      cells.forEach(({ r, c }) => ctx.fillRect(c*CELL+1, r*CELL+1, CELL-2, CELL-2));
+    });
+
+    // Selection highlight
+    if (selecting && selStart && selEnd) {
+      const cells = getLine(selStart, selEnd);
+      ctx.fillStyle = 'rgba(255,230,0,0.28)';
+      cells.forEach(({ r, c }) => {
+        if (r>=0&&r<WS_ROWS&&c>=0&&c<WS_COLS) ctx.fillRect(c*CELL+1, r*CELL+1, CELL-2, CELL-2);
+      });
+    }
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(0,212,255,0.12)'; ctx.lineWidth = 1;
+    for (let r = 0; r <= WS_ROWS; r++) { ctx.beginPath(); ctx.moveTo(0, r*CELL); ctx.lineTo(CW, r*CELL); ctx.stroke(); }
+    for (let c = 0; c <= WS_COLS; c++) { ctx.beginPath(); ctx.moveTo(c*CELL, 0); ctx.lineTo(c*CELL, CH); ctx.stroke(); }
+
+    // Letters
+    ctx.font = `bold ${Math.max(12, CELL*0.44)}px Nunito`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#e8eaf6';
+    for (let r = 0; r < WS_ROWS; r++)
+      for (let c = 0; c < WS_COLS; c++)
+        ctx.fillText(grid[r][c], c*CELL + CELL/2, r*CELL + CELL/2);
+  }
+
+  function getLine(start, end) {
+    const dr = end.row - start.row, dc = end.col - start.col;
+    const steps = Math.max(Math.abs(dr), Math.abs(dc));
+    if (steps === 0) return [{ r: start.row, c: start.col }];
+    const cells = [];
+    for (let i = 0; i <= steps; i++)
+      cells.push({ r: start.row + Math.round(dr*i/steps), c: start.col + Math.round(dc*i/steps) });
+    return cells;
+  }
+
+  function checkWord() {
+    if (!wsState || !wsState.selStart || !wsState.selEnd) return;
+    const cells = getLine(wsState.selStart, wsState.selEnd);
+    const selected = cells.map(({ r, c }) => (r>=0&&r<WS_ROWS&&c>=0&&c<WS_COLS) ? wsState.grid[r][c] : '').join('');
+    const reversed = selected.split('').reverse().join('');
+    const colors = ['rgba(57,255,20,0.4)','rgba(0,212,255,0.4)','rgba(255,230,0,0.4)','rgba(255,45,120,0.4)','rgba(191,95,255,0.4)','rgba(255,123,0,0.4)','rgba(57,255,20,0.25)','rgba(0,212,255,0.25)','rgba(255,230,0,0.25)','rgba(255,45,120,0.25)'];
+    wsState.placedWords.forEach(({ word, cells: wCells }, idx) => {
+      if (wsState.found[idx]) return;
+      if (selected === word || reversed === word) {
+        wsState.found[idx] = true;
+        wsState.foundCells.push({ cells: wCells, color: colors[idx % colors.length] });
+        document.getElementById(`ws-w-${idx}`)?.classList.add('found');
+        const count = wsState.found.filter(Boolean).length;
+        document.getElementById('ws-found').textContent = count;
+        playCorrect();
+        drawGrid();
+        if (count === wsState.words.length) {
+          clearInterval(wsTimerInterval);
+          launchConfetti(); playWin();
+          setTimeout(() => {
+            const elapsed = Math.floor((Date.now() - wsState.startTime) / 1000);
+            const ov = document.getElementById('ws-overlay');
+            ov.style.display = 'flex';
+            ov.innerHTML = `<h2 style="color:var(--blue)">🎉 ALL FOUND!</h2><p>Time: <strong style="color:var(--green)">${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}</strong></p><button class="gbtn gbtn-blue" onclick="startWordSearch()">NEW PUZZLE 🔄</button>`;
+          }, 800);
+        }
+      }
+    });
+    drawGrid();
+  }
+
+  drawGrid();
 }
 
 function buildWSGrid(words) {
   const grid = Array.from({ length: WS_ROWS }, () => Array(WS_COLS).fill(''));
-  const directions = [[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]];
+  const dirs = [[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]];
   const placed = [];
-
   for (const word of words) {
-    let tries = 0, success = false;
-    while (tries++ < 200 && !success) {
-      const dir = directions[Math.floor(Math.random() * directions.length)];
-      const startRow = Math.floor(Math.random() * WS_ROWS);
-      const startCol = Math.floor(Math.random() * WS_COLS);
+    let tries = 0, ok = false;
+    while (tries++ < 300 && !ok) {
+      const dir = dirs[Math.floor(Math.random() * dirs.length)];
+      const sr = Math.floor(Math.random() * WS_ROWS);
+      const sc = Math.floor(Math.random() * WS_COLS);
       const cells = [];
-      let ok = true;
+      let valid = true;
       for (let i = 0; i < word.length; i++) {
-        const r = startRow + dir[0] * i, c = startCol + dir[1] * i;
-        if (r < 0 || r >= WS_ROWS || c < 0 || c >= WS_COLS) { ok = false; break; }
-        if (grid[r][c] !== '' && grid[r][c] !== word[i]) { ok = false; break; }
+        const r = sr + dir[0]*i, c = sc + dir[1]*i;
+        if (r<0||r>=WS_ROWS||c<0||c>=WS_COLS) { valid=false; break; }
+        if (grid[r][c] !== '' && grid[r][c] !== word[i]) { valid=false; break; }
         cells.push({ r, c });
       }
-      if (ok) {
+      if (valid) {
         cells.forEach((cell, i) => { grid[cell.r][cell.c] = word[i]; });
         placed.push({ word, cells });
-        success = true;
+        ok = true;
       }
     }
   }
-
   // Fill blanks
   const alpha = 'ABCDEFGHIJKLMNOPRSTUVWXYZ';
   for (let r = 0; r < WS_ROWS; r++)
     for (let c = 0; c < WS_COLS; c++)
       if (grid[r][c] === '') grid[r][c] = alpha[Math.floor(Math.random() * alpha.length)];
-
-  wsState = wsState || {};
-  wsState.placedWords = placed;
+  if (wsState) wsState.placedWords = placed;
+  else wsState = { placedWords: placed };
   return grid;
-}
-
-function drawWS(ctx, W, H, wsCell) { wsCell = wsCell || WS_CELL;
-  if (!wsState) return;
-  ctx.clearRect(0, 0, W, H);
-  // BG
-  ctx.fillStyle = '#0d1020'; ctx.fillRect(0, 0, W, H);
-
-  // Draw found highlights
-  wsState.foundCells.forEach(({ cells, color }) => {
-    ctx.fillStyle = color;
-    cells.forEach(({ r, c }) => {
-      ctx.fillRect(c * WS_CELL + 1, r * WS_CELL + 1, WS_CELL - 2, WS_CELL - 2);
-    });
-  });
-
-  // Draw current selection highlight
-  if (wsState.selecting && wsState.selStart && wsState.selEnd) {
-    const cells = getLineCells(wsState.selStart, wsState.selEnd);
-    ctx.fillStyle = 'rgba(255,230,0,0.25)';
-    cells.forEach(({ r, c }) => {
-      if (r >= 0 && r < WS_ROWS && c >= 0 && c < WS_COLS)
-        ctx.fillRect(c * WS_CELL + 1, r * WS_CELL + 1, WS_CELL - 2, WS_CELL - 2);
-    });
-  }
-
-  // Grid lines
-  ctx.strokeStyle = 'rgba(0,212,255,0.1)'; ctx.lineWidth = 1;
-  for (let r = 0; r <= WS_ROWS; r++) { ctx.beginPath(); ctx.moveTo(0, r * WS_CELL); ctx.lineTo(W, r * WS_CELL); ctx.stroke(); }
-  for (let c = 0; c <= WS_COLS; c++) { ctx.beginPath(); ctx.moveTo(c * WS_CELL, 0); ctx.lineTo(c * WS_CELL, H); ctx.stroke(); }
-
-  // Letters
-  ctx.font = 'bold 16px Nunito'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  for (let r = 0; r < WS_ROWS; r++) {
-    for (let c = 0; c < WS_COLS; c++) {
-      ctx.fillStyle = '#e8eaf6';
-      ctx.fillText(wsState.grid[r][c], c * WS_CELL + WS_CELL / 2, r * WS_CELL + WS_CELL / 2);
-    }
-  }
-}
-
-function getLineCells(start, end) {
-  const dr = end.row - start.row, dc = end.col - start.col;
-  const steps = Math.max(Math.abs(dr), Math.abs(dc));
-  if (steps === 0) return [start];
-  const cells = [];
-  for (let i = 0; i <= steps; i++) {
-    cells.push({ r: start.row + Math.round(dr * i / steps), c: start.col + Math.round(dc * i / steps) });
-  }
-  return cells;
-}
-
-function checkWSSelection(ctx, W, H, wsCell) { wsCell = wsCell || WS_CELL;
-  if (!wsState || !wsState.selStart || !wsState.selEnd) return;
-  const cells = getLineCells(wsState.selStart, wsState.selEnd);
-  const selected = cells.map(({ r, c }) => (r >= 0 && r < WS_ROWS && c >= 0 && c < WS_COLS) ? wsState.grid[r][c] : '').join('');
-  const selectedRev = selected.split('').reverse().join('');
-
-  const colors = ['rgba(57,255,20,0.35)','rgba(0,212,255,0.35)','rgba(255,230,0,0.35)','rgba(255,45,120,0.35)','rgba(191,95,255,0.35)','rgba(255,123,0,0.35)','rgba(57,255,20,0.25)','rgba(0,212,255,0.25)','rgba(255,230,0,0.25)','rgba(255,45,120,0.25)'];
-
-  wsState.placedWords.forEach(({ word, cells: wCells }, idx) => {
-    if (wsState.found[idx]) return;
-    if (selected === word || selectedRev === word) {
-      wsState.found[idx] = true;
-      wsState.foundCells.push({ cells: wCells, color: colors[idx % colors.length] });
-      document.getElementById(`ws-w-${idx}`).classList.add('found');
-      const foundCount = wsState.found.filter(Boolean).length;
-      document.getElementById('ws-found').textContent = foundCount;
-      playCorrect();
-      drawWS(ctx, W, H);
-      if (foundCount === wsState.words.length) {
-        clearInterval(wsTimerInterval);
-        launchConfetti(); playWin();
-        setTimeout(() => {
-          const elapsed = Math.floor((Date.now() - wsState.startTime) / 1000);
-          const ov = document.getElementById('ws-overlay');
-          ov.style.display = 'flex';
-          ov.innerHTML = `<h2 style="color:var(--blue)">🎉 ALL FOUND!</h2><p>Time: <strong style="color:var(--green)">${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')}</strong></p><button class="gbtn gbtn-blue" onclick="startWordSearch()">NEW PUZZLE 🔄</button>`;
-        }, 800);
-      }
-    }
-  });
-  drawWS(ctx, W, H);
 }
 
 // ============================================================
